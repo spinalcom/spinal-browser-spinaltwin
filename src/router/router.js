@@ -29,17 +29,24 @@ Vue.use(VueRouter);
 
 const AppList = () => import('./AppList/AppList.vue');
 const OperationCenter = () => import('./OperationCenter/OperationCenter.vue');
-const MaintenanceBook = () => import('./MaintenanceBook/MaintenanceBook.vue');
+const MaintenanceBookTicket = () => import('./MaintenanceBookTicket/MaintenanceBookTicket.vue');
+const MaintenanceBookTicketConsult = () => import('./MaintenanceBookTicket/MaintenanceBookTicketConsult.vue');
 
 export const routes = [
   { path: '*', redirect: { name: 'App List' } },
   { path: '/AppList', name: 'App List', component: AppList },
   { path: '/OperationCenter', name: 'Operation Center', component: OperationCenter },
-  { path: '/MaintenanceBook', name: 'Maintenance Book', component: MaintenanceBook },
+  { path: '/MaintenanceBook/ticket', name: 'Maintenance Book Ticket', component: MaintenanceBookTicket },
 ];
 
+const realRoute = [
+  { path: '/MaintenanceBook/ticket/consult', name: 'Maintenance Book Ticket consult', component: MaintenanceBookTicketConsult },
+  ...routes,
+
+]
+
 export const router = new VueRouter({
-  routes
+  routes: realRoute
 });
 
 router.beforeResolve(function (to, from, next) {

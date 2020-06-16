@@ -23,13 +23,28 @@ with this file. If not, see
 -->
 
 <template>
-  <div>
-    MaintenanceBook
+  <div class="applist-main-container">
+    <div class="applist-container">
+      <router-link to="/MaintenanceBook/ticket/consult"
+                   v-ripple
+                   class="router-link-btn">
+        <el-card :body-style="{ padding: '0px' }"
+                 shadow="always">
+          <div class="app-item-image-container">
+            <svg class="app-item-image"></svg>
+          </div>
+          <div class="app-item-text">
+            <span>{{$t('MaintenanceBookTicket.intro.consult')}}</span>
+          </div>
+        </el-card>
+      </router-link>
+    </div>
   </div>
 </template>
+
 <script>
 export default {
-  name: "MaintenanceBook",
+  name: "MaintenanceBookTicket",
   data() {
     return {};
   }
