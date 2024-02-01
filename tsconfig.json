@@ -7,9 +7,12 @@
     "sourceMap": true,
     "downlevelIteration": true,
     "baseUrl": "src",
-    "target": "es6"
+    "target": "es6",
+    "experimentalDecorators": true,
+    "skipLibCheck": true,
+    "moduleResolution": "node",
+    "strict": false,
   },
-  "experimentalDecorators": true,
   "paths": {
     "@/*": [
       "src/*"
@@ -28,6 +31,8 @@
     "node_modules"
   ],
   "inclure": [
-    "./src/**/*"
+    "src/**/*",
+    "src/**/*.vue",
+    "**/*.d.ts"
   ]
 }

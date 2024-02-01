@@ -24,18 +24,16 @@ with this file. If not, see
 
 <template>
   <div v-if="hover">
-    <el-button type="primary"
-               icon="el-icon-download"
-               @click="download">
-
+    <el-button type="primary" icon="el-icon-download" @click="download">
       Download
     </el-button>
 
-    <el-button type="primary"
-               icon="el-icon-position"
-               v-if="displayBtn()"
-               @click="restoreState">
-
+    <el-button
+      type="primary"
+      icon="el-icon-position"
+      v-if="displayBtn()"
+      @click="restoreState"
+    >
       Restore viewpoint
     </el-button>
   </div>
@@ -43,25 +41,24 @@ with this file. If not, see
 
 <script>
 export default {
-  name: "actionsBtn",
-  props: ["hover", "viewPoint"],
+  name: 'actionsBtn',
+  props: ['hover', 'viewPoint'],
   methods: {
     displayBtn() {
-      console.log(this.viewPoint);
       if (
         this.viewPoint &&
-        this.viewPoint.hasOwnProperty("viewState") &&
-        this.viewPoint.hasOwnProperty("objectState")
+        this.viewPoint.hasOwnProperty('viewState') &&
+        this.viewPoint.hasOwnProperty('objectState')
       )
         return true;
       return false;
     },
     download() {
-      this.$emit("download");
+      this.$emit('download');
     },
     restoreState() {
-      this.$emit("restoreState");
-    }
-  }
+      this.$emit('restoreState');
+    },
+  },
 };
 </script>

@@ -24,81 +24,94 @@ with this file. If not, see
 
 <template>
   <el-row class="spinal-space-tableau-row">
-    <el-tabs type="border-card"
-             class="tabs-container">
-      <el-tab-pane label="Tableau"
-                   class="spinal-space-tab-container">
+    <el-tabs type="border-card" class="tabs-container">
+      <el-tab-pane label="Tableau" class="spinal-space-tab-container">
         <el-row class="barre">
-          <el-button class="boutton-barre"
-                     icon="el-icon-download"
-                     circle
-                     @click="exportData"></el-button>
-          <el-button class="boutton-barre"
-                     icon="el-icon-view"
-                     circle
-                     @click="SeeAll"></el-button>
+          <el-button
+            class="boutton-barre"
+            icon="el-icon-download"
+            circle
+            @click="exportData"
+          ></el-button>
+          <el-button
+            class="boutton-barre"
+            icon="el-icon-view"
+            circle
+            @click="SeeAll"
+          ></el-button>
         </el-row>
-        <div class="spinal-space-table-content spinal-scrollbar"
-             v-if="!roomsSelected">
-          <el-table :data="data"
-                    class="tab"
-                    border
-                    style="width: 100%"
-                    :header-cell-style="{&quot;background-color&quot;: &quot;#f0f2f5&quot;}"
-                    @row-click="SeeEvent">
+        <div
+          class="spinal-space-table-content spinal-scrollbar"
+          v-if="!roomsSelected"
+        >
+          <el-table
+            :data="data"
+            class="tab"
+            border
+            style="width: 100%"
+            :header-cell-style="{ 'background-color': '#f0f2f5' }"
+            @row-click="SeeEvent"
+          >
             <el-table-column :label="$t('SpaceManagement.Nom')">
               <template slot-scope="scope">
                 <div>
-                  <div class="spinal-table-cell-color"
-                       :style="{'background-color': scope.row.color}"></div>
+                  <div
+                    class="spinal-table-cell-color"
+                    :style="{ 'background-color': scope.row.color }"
+                  ></div>
                   <div> {{ scope.row.name }} </div>
                 </div>
               </template>
             </el-table-column>
-            <el-table-column prop="rooms.length"
-                             :label="$t('SpaceManagement.NombreDePiece')"
-                             align="center">
+            <el-table-column
+              prop="rooms.length"
+              :label="$t('SpaceManagement.NombreDePiece')"
+              align="center"
+            >
             </el-table-column>
             true
-            <el-table-column prop="surface"
-                             :label="$t('SpaceManagement.Surface')"
-                             align="center">
+            <el-table-column
+              prop="surface"
+              :label="$t('SpaceManagement.Surface') + ' (m²)'"
+            >
+              align="center">
               <template slot-scope="scope">
-                {{ scope.row.surface | roundSurface }} m²
+                {{ scope.row.surface | roundSurface }}
               </template>
             </el-table-column>
-            <el-table-column label=""
-                             width="65"
-                             align="center">
+            <el-table-column label="" width="65" align="center">
               <template slot-scope="scope">
-                <el-button icon="el-icon-arrow-right"
-                           circle
-                           @click="seeRoomTable(scope.row)"></el-button>
+                <el-button
+                  icon="el-icon-arrow-right"
+                  circle
+                  @click="seeRoomTable(scope.row)"
+                ></el-button>
               </template>
             </el-table-column>
           </el-table>
         </div>
-        <div class="spinal-space-table-content spinal-scrollbar"
-             v-else>
-          <roomLstVue ref="roomscomponent"
-                      :rooms="roomsSelected.rooms"
-                      :color="roomsSelected.color"
-                      @seeEvent="SeeEvent"
-                      @addBreadcrumb="emitBreadcrumb">
+        <div class="spinal-space-table-content spinal-scrollbar" v-else>
+          <roomLstVue
+            ref="roomscomponent"
+            :rooms="roomsSelected.rooms"
+            :color="roomsSelected.color"
+            @seeEvent="SeeEvent"
+            @addBreadcrumb="emitBreadcrumb"
+          >
           </roomLstVue>
         </div>
       </el-tab-pane>
-      <el-tab-pane label="Dashboard"
-                   class="spinal-space-tab-container">
+      <el-tab-pane label="Dashboard" class="spinal-space-tab-container">
         <el-row class="barre">
-          <el-button class="boutton-barre"
-                     circle
-                     icon="el-icon-view"
-                     @click="SeeAll"></el-button>
+          <el-button
+            class="boutton-barre"
+            circle
+            icon="el-icon-view"
+            @click="SeeAll"
+          ></el-button>
         </el-row>
         <div class="spinal-space-table-content spinal-scrollbar">
-          <el-carousel height="500px"
-                       :loop="false">
+          <el-carousel height="500px" :loop="false">
             <el-carousel-item>
               <h3 class="small">
                 <ChartsPiece :entreprise="data"></ChartsPiece>
@@ -122,103 +135,107 @@ with this file. If not, see
 </template>
 
 <script>
-import roomLstVue from "./roomLstVue";
-import ChartsPiece from "./ChartsPiece";
-import ChartsEsp from "./ChartsEsp";
-import { EventBus } from "../../../services/event";
-import excelManager from "spinal-env-viewer-plugin-excel-manager-service";
-import fileSaver from "file-saver";
-
-import groupManagerUtilities from "spinal-env-viewer-room-manager/js/utilities";
+import roomLstVue from './roomLstVue';
+import ChartsPiece from './ChartsPiece';
+import ChartsEsp from './ChartsEsp';
+import { EventBus } from '../../../services/event';
+import excelManager from 'spinal-env-viewer-plugin-excel-manager-service';
+import fileSaver from 'file-saver';
+import { SpinalGraphService } from 'spinal-env-viewer-graph-service';
+import groupManagerUtilities from 'spinal-env-viewer-room-manager/js/utilities';
 
 export default {
   components: { ChartsPiece, ChartsEsp, roomLstVue },
   filters: {
     roundSurface(surface) {
       return Math.round(surface * 100) / 100;
-    }
+    },
   },
-  props: ["selectCategorie"],
+  props: ['selectCategorie'],
   data() {
     return {
       categoryLst: [],
       fields: [],
       items: [],
       roomsSelected: null,
-      categorieRoomSelect: null
+      categorieRoomSelect: null,
     };
   },
   computed: {
-    data: function() {
-      return this.selectCategorie.groups.map(obj => {
-        // if (this.roomsSelected && this.roomsSelected.id === obj.id) {
-        //   this.roomsSelected = obj;
-        // }
-        console.log(obj)
+    data: function () {
+      return this.selectCategorie.groups.map((obj) => {
         let roo = {
           id: obj.id,
           name: obj.name,
           color: obj.color,
           rooms: obj.rooms,
-          surface: obj.rooms.reduce((acc, e) => acc + e.surface, 0)
+          surface: obj.rooms.reduce((acc, e) => acc + e.surface, 0),
         };
 
         if (this.roomsSelected && this.roomsSelected.id === roo.id) {
           this.roomsSelected = {
             id: roo.id,
             rooms: roo.rooms,
-            color: roo.color
+            color: roo.color,
           };
         }
         return roo;
       });
-    }
+    },
   },
   mounted() {
     this.roomsSelected = null;
   },
   methods: {
     getColor(color) {
-      return { backgroundColor: color[0] === "#" ? color : `#${color}` };
+      return { backgroundColor: color[0] === '#' ? color : `#${color}` };
     },
     async SeeEvent(data) {
       const allBimObjects = await this.getAllBimObjects(data);
-      EventBus.$emit("see", {
+      EventBus.$emit('see', {
         id: data.id,
         ids: allBimObjects,
-        color: data.color
+        color: data.color,
       });
     },
 
     async getAllBimObjects(data) {
       // const allBimObjects = await groupManagerUtilities.getBimObjects(id);
-      const promises = data.rooms.map(el =>
-        groupManagerUtilities.getBimObjects(el.id)
+      const promises = data.rooms.map((el) =>
+        //groupManagerUtilities.getBimObjects(el.id)
+        this.getBimObjectsAndRoomReference(el.id)
       );
-
-      const allBimObjects = await Promise.all(promises).then(result => {
+      const allBimObjects = await Promise.all(promises).then((result) => {
         result = result.flat(10);
         return result;
       });
-
-      return allBimObjects.map(el => el.get());
+      return allBimObjects.map((el) => el.get());
     },
+
+    async getBimObjectsAndRoomReference(roomId) {
+      let objects = await groupManagerUtilities.getBimObjects(roomId);
+      let ref = await SpinalGraphService.getChildren(roomId, [
+        'hasReferenceObject.ROOM',
+      ]); // la constante dans spinal-env-viewer-context-geographic-service/build/constants.js pas correcte
+      return objects.concat(ref);
+    },
+
     async SeeAll() {
       if (this.roomsSelected) {
         this.$refs.roomscomponent.SeeAll();
         return;
       }
 
-      let promises = this.data.map(async el => {
+      let promises = this.data.map(async (el) => {
         return {
           id: el.id,
           ids: await this.getAllBimObjects(el),
-          color: el.color
+          color: el.color,
         };
       });
 
       let allBimObjects = await Promise.all(promises);
-      EventBus.$emit("seeAll", allBimObjects);
+      EventBus.$emit('seeAll', allBimObjects);
     },
     exportData() {
       //let excelRows = Object.assign({}, this.data);
@@ -226,43 +243,42 @@ export default {
       let headers = this.getHeader();
       let excelData = [
         {
-          name: "Tableau",
-          author: "",
+          name: 'Tableau',
+          author: '',
           data: [
             {
-              name: "Tableau",
+              name: 'Tableau',
               header: headers,
-              rows: this.getRow()
-            }
-          ]
-        }
+              rows: this.getRow(),
+            },
+          ],
+        },
       ];
-      excelManager.export(excelData).then(reponse => {
+      excelManager.export(excelData).then((reponse) => {
         fileSaver.saveAs(new Blob(reponse), `Tableau.xlsx`);
       });
-      console.log("expoooooooooooort", this.data);
     },
 
     seeRoomTable(roomData) {
       this.roomsSelected = {
         id: roomData.id,
         rooms: roomData.rooms,
-        color: roomData.color
+        color: roomData.color,
       };
-      const resetRoomFct = this.$emit("updateBreadcrumb", {
+      const resetRoomFct = this.$emit('updateBreadcrumb', {
         index: 2,
         item: {
           name: roomData.name,
           click: () => {
             // this.$refs.roomscomponent.resetTabRoom();
-            this.$emit("resetRoomSelect");
+            this.$emit('resetRoomSelect');
             const groupSelected = this.selectCategorie.groups.find(
-              el => el.id === roomData.id
+              (el) => el.id === roomData.id
             );
 
             this.seeRoomTable(groupSelected);
-          }
-        }
+          },
+        },
       });
 
       // this.$emit("addbreadcrumb", {
@@ -288,8 +304,7 @@ export default {
       // });
     },
     emitBreadcrumb(data) {
-      console.log(data);
-      this.$emit("addbreadcrumb", data);
+      this.$emit('addbreadcrumb', data);
     },
 
     resetRoomSelected() {
@@ -299,33 +314,33 @@ export default {
       if (this.roomsSelected) {
         return [
           {
-            key: "name",
-            header: "name",
-            width: 10
+            key: 'name',
+            header: 'name',
+            width: 10,
           },
           {
-            key: "surface",
-            header: "Surface",
-            width: 10
-          }
+            key: 'surface',
+            header: 'Surface',
+            width: 10,
+          },
         ];
       } else {
         return [
           {
-            key: "name",
-            header: "name",
-            width: 10
+            key: 'name',
+            header: 'name',
+            width: 10,
           },
           {
-            key: "rooms",
-            header: "Nombre de pièces",
-            width: 10
+            key: 'rooms',
+            header: 'Nombre de pièces',
+            width: 10,
           },
           {
-            key: "surface",
-            header: "Surface",
-            width: 10
-          }
+            key: 'surface',
+            header: 'Surface',
+            width: 10,
+          },
         ];
       }
     },
@@ -333,14 +348,14 @@ export default {
       if (this.roomsSelected) {
         return this.roomsSelected.rooms;
       } else {
-        return this.data.map(gitu => {
+        return this.data.map((gitu) => {
           let excelRows = Object.assign({}, gitu);
           excelRows.rooms = gitu.rooms.length;
           return excelRows;
         });
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -370,4 +385,3 @@ export default {
   top: 0;
 }
 </style>
-

@@ -23,18 +23,14 @@ with this file. If not, see
 -->
 
 <template>
-  <div>
-    dss
-  </div>
+  <div> dss </div>
 </template>
 
 <script>
-import SpinalBackend from "../../services/spinalBackend";
-
 export default {
   data() {
     return {
-      contextLst: []
+      contextLst: [],
     };
   },
   components: {},
@@ -42,7 +38,6 @@ export default {
   methods: {},
   async mounted() {},
   watch: {},
-  beforeDestroy() {}
+  beforeDestroy() {},
 };
 </script>
-

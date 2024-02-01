@@ -23,26 +23,28 @@ with this file. If not, see
 -->
 
 <template>
-
-  <li class="clearfix"
-      v-if="type === MESSAGE_TYPES.file">
+  <li class="clearfix" v-if="type === MESSAGE_TYPES.file">
     <div class="message-data align-right">
-      <span class="message-data-time">{{date}}</span> &nbsp; &nbsp;
-      <span class="message-data-name">{{username}}</span>
+      <span class="message-data-time">{{ date }}</span> &nbsp; &nbsp;
+      <span class="message-data-name">{{ username }}</span>
     </div>
-    <div class="message messageIcon other-message float-right"
-         @mouseover="hover = true"
-         @mouseleave="hover = false">
+    <div
+      class="message messageIcon other-message float-right"
+      @mouseover="hover = true"
+      @mouseleave="hover = false"
+    >
       <div class="texte">
         <i class="el-icon-document">description</i>
-        {{message}}
+        {{ message }}
       </div>
 
-      <actions-btn class="message_actions"
-                   :hover="hover"
-                   @download="download"
-                   @restoreState="restoreState"
-                   :viewPoint="viewPoint"></actions-btn>
+      <actions-btn
+        class="message_actions"
+        :hover="hover"
+        @download="download"
+        @restoreState="restoreState"
+        :viewPoint="viewPoint"
+      ></actions-btn>
 
       <!-- <div class="message_actions"
            v-if="hover">
@@ -52,91 +54,90 @@ with this file. If not, see
           Download
         </md-button>
       </div> -->
-
     </div>
-
   </li>
 
-  <li class="clearfix"
-      v-else-if="type === MESSAGE_TYPES.image"
-      @mouseover="hover = true"
-      @mouseleave="hover = false">
+  <li
+    class="clearfix"
+    v-else-if="type === MESSAGE_TYPES.image"
+    @mouseover="hover = true"
+    @mouseleave="hover = false"
+  >
     <div class="message-data align-right">
-      <span class="message-data-time">{{date}}</span> &nbsp; &nbsp;
-      <span class="message-data-name">{{username}}</span>
+      <span class="message-data-time">{{ date }}</span> &nbsp; &nbsp;
+      <span class="message-data-name">{{ username }}</span>
     </div>
-    <div class="message other-message float-right"
-         @mouseover="hover = true"
-         @mouseleave="hover = false">
+    <div
+      class="message other-message float-right"
+      @mouseover="hover = true"
+      @mouseleave="hover = false"
+    >
       <div class="images">
-        <div class="img_texte">{{message}}</div>
+        <div class="img_texte">{{ message }}</div>
         <div class="image">
-          <img :src="`/sceen/_?u=${image}`"
-               alt="image" />
+          <img :src="`/sceen/_?u=${image}`" alt="image" />
         </div>
       </div>
 
-      <actions-btn class="message_actions"
-                   :hover="hover"
-                   @download="download"
-                   @restoreState="restoreState"
-                   :viewPoint="viewPoint"></actions-btn>
-
+      <actions-btn
+        class="message_actions"
+        :hover="hover"
+        @download="download"
+        @restoreState="restoreState"
+        :viewPoint="viewPoint"
+      ></actions-btn>
     </div>
   </li>
 
-  <li class="clearfix"
-      v-else>
+  <li class="clearfix" v-else>
     <div class="message-data align-right">
-      <span class="message-data-time">{{date}}</span> &nbsp; &nbsp;
-      <span class="message-data-name">{{username}}</span>
+      <span class="message-data-time">{{ date }}</span> &nbsp; &nbsp;
+      <span class="message-data-name">{{ username }}</span>
     </div>
     <div class="message other-message float-right">
       <div class="texte">
-        {{message}}
+        {{ message }}
       </div>
     </div>
-
   </li>
 </template>
 
 <script>
-import { MESSAGE_TYPES } from "spinal-models-documentation";
-import actionBtnVue from "./actionsBtn.vue";
+import { MESSAGE_TYPES } from 'spinal-models-documentation';
+import actionBtnVue from './actionsBtn.vue';
 
 export default {
-  name: "message",
+  name: 'message',
   props: {
     date: {},
     username: {},
     message: {},
     type: {},
     file: {},
-    viewPoint: {}
+    viewPoint: {},
   },
   components: {
-    "actions-btn": actionBtnVue
+    'actions-btn': actionBtnVue,
   },
   data() {
     this.MESSAGE_TYPES = MESSAGE_TYPES;
     return {
       hover: false,
       image: undefined,
-      info: undefined
+      info: undefined,
     };
   },
   mounted() {
     setTimeout(() => {
-      console.log("this.file", this.viewPoint);
       this.chargeImg();
     }, 500);
   },
   methods: {
     chargeImg() {
       if (this.file) {
-        this.file.load(f => {
+        this.file.load((f) => {
           this.info = f;
-          f._ptr.load(path => {
+          f._ptr.load((path) => {
             this.image = path._server_id;
           });
         });
@@ -144,9 +145,9 @@ export default {
     },
 
     download() {
-      var element = document.createElement("a");
-      element.setAttribute("href", "/sceen/_?u=" + this.image);
-      element.setAttribute("download", this.info.name.get());
+      var element = document.createElement('a');
+      element.setAttribute('href', '/sceen/_?u=' + this.image);
+      element.setAttribute('download', this.info.name.get());
       element.click();
     },
 
@@ -169,7 +170,7 @@ export default {
 
     isolate(viewer, items) {
       const bimObjectService = window.spinal.BimObjectService;
-      items.map(el => {
+      items.map((el) => {
         const bimFileId =
           bimObjectService.mappingModelIdBimFileId[el.modelId].bimFileId;
         const model = spinal.BimObjectService.getModelByBimfile(bimFileId);
@@ -180,15 +181,15 @@ export default {
 
     selection(viewer, items) {
       const bimObjectService = window.spinal.BimObjectService;
-      items.map(el => {
+      items.map((el) => {
         const bimFileId =
           bimObjectService.mappingModelIdBimFileId[el.modelId].bimFileId;
         const model = spinal.BimObjectService.getModelByBimfile(bimFileId);
 
-        model.selector.setSelection(el.selection, model, "selectOnly");
+        model.selector.setSelection(el.selection, model, 'selectOnly');
       });
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -253,7 +254,7 @@ li.clearfix {
     bottom: 100%;
     left: 7%;
     border: solid transparent;
-    content: " ";
+    content: ' ';
     height: 0;
     width: 0;
     position: absolute;
@@ -303,7 +304,7 @@ li.clearfix {
   visibility: hidden;
   display: block;
   font-size: 0;
-  content: " ";
+  content: ' ';
   clear: both;
   height: 0;
 }

@@ -25,23 +25,42 @@ with this file. If not, see
 <template>
   <div>
     <table-vue></table-vue>
-    
   </div>
-  
 </template>
 
 <script>
-import Table from "../../compoments/insight/table.vue";
+import Table from '../../compoments/insight/table.vue';
+import { EventBus } from "../../services/event";
 
 export default {
-  components : {
-    "table-vue" : Table
+  components: {
+    'table-vue': Table,
   },
   data() {
     return {};
-
+  },
+  async mounted(){
+    // EventBus.$on("Autodesk.Viewing.SELECTION_CHANGED_EVENT", async (res) => {
+    //   if(res.dbIdArray[0] != undefined){
+    //       let bimObjectNodeModel = await window.spinal.BimObjectService.getBIMObject(res.dbIdArray[0], res.model);
+    //       EventBus.$emit("Insight.Autodesk.Viewing.SELECTION_CHANGED_EVENT", bimObjectNodeModel);
+    //       // let parents = await SpinalGraphService.getParents(bimObjectNodeModel.id.get(), "hasReferenceObject.ROOM");
+    //       // if(parents.length !=0 ){
+    //       //   let parentNode = SpinalGraphService.getRealNode(parents[0].id.get());
+    //       //   let index = tableComponent.data.findIndex(el => el.serverId == parentNode._server_id);
+    //       //   if(index != -1){
+    //       //     tableComponent.setCurrentRow(this.data[index]);
+    //       //     let rowsElement = tableComponent.$el.getElementsByClassName("context-node-explorer-table-row");
+    //       //     rowsElement[index].scrollIntoView({block: "center" });
+    //       //   }
+    //       // }
+    //     }
+    //   // EventBus.$emit("Insight.Autodesk.Viewing.SELECTION_CHANGED_EVENT");
+    // });
+    
+  },
+  beforeDestroy(){
+    // EventBus.$off("Autodesk.Viewing.SELECTION_CHANGED_EVENT");
   }
 };
 </script>
-
-

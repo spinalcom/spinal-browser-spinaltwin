@@ -25,47 +25,48 @@ with this file. If not, see
 <template>
   <div class="spinal-header-container">
     <div>
-      <img v-for="logo in logos"
-           class="spinal-header-logo"
-           :src="logo.src"
-           :key="logo.name"
-           :alt="logo.name">
-
+      <img
+        v-for="logo in logos"
+        class="spinal-header-logo"
+        :src="logo.src"
+        :key="logo.name"
+        :alt="logo.name"
+      />
     </div>
-    <div v-ripple
-         class="menu-icon-header-container"
-         @click="drawer = true">
-      <i data-eva="keypad-outline"
-         data-eva-animation="zoom"
-         data-eva-height="24"
-         data-eva-width="24"></i>
+    <div v-ripple class="menu-icon-header-container" @click="drawer = true">
+      <i
+        data-eva="keypad-outline"
+        data-eva-animation="zoom"
+        data-eva-height="24"
+        data-eva-width="24"
+      ></i>
     </div>
-    <el-drawer class="spinal-drawer"
-               :visible.sync="drawer"
-               :with-header="false">
+    <el-drawer
+      class="spinal-drawer"
+      :visible.sync="drawer"
+      :with-header="false"
+    >
       <drawer @close="drawer = false"></drawer>
     </el-drawer>
-
   </div>
 </template>
 
-
 <script>
-import { getDefaultLanguage, loadLanguageAsync } from "./../../services/i18n";
-import drawer from "../drawer/drawer.vue";
-import spinalimg from "../../assets/imgs/spinaltwin_logo_fond_phto_RVB.png";
+import { getDefaultLanguage, loadLanguageAsync } from './../../services/i18n';
+import drawer from '../drawer/drawer.vue';
+import spinalimg from '../../assets/imgs/spinaltwin_logo_fond_phto_RVB.png';
 export default {
-  name: "spinal-header",
+  name: 'spinal-header',
   components: { drawer },
   data() {
     return {
       drawer: false,
-      logos: []
+      logos: [],
     };
   },
   created() {
-    this.logos.push({ src: spinalimg, name: "spinalcom" });
-    getDefaultLanguage().then(lang => {
+    this.logos.push({ src: spinalimg, name: 'spinalcom' });
+    getDefaultLanguage().then((lang) => {
       this.currentLang = lang;
     });
   },
@@ -77,12 +78,12 @@ export default {
     setLang(lang) {
       loadLanguageAsync(lang.toLocaleLowerCase());
       this.currentLang = lang;
-    }
-  }
+    },
+  },
 };
 </script>
 
-<style  scoped>
+<style scoped>
 .spinal-header-container {
   height: 60px;
   display: flex;

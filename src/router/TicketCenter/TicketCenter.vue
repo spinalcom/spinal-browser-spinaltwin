@@ -35,19 +35,19 @@ with this file. If not, see
 // import { ViewManager } from "../../services/ViewManager/ViewManager";
 
 // Generic components
-import SpinalBreadcrumb from "../../compoments/SpinalBreadcrumb/SpinalBreadcrumb.vue";
-import TabManager from "../../compoments/TabManager/TabManager.vue";
+import SpinalBreadcrumb from '../../compoments/SpinalBreadcrumb/SpinalBreadcrumb.vue';
+import TabManager from '../../compoments/TabManager/TabManager.vue';
 
 // Specific components
-import Explorer from "./components/Explorer.vue";
-import Visualizer from "./components/Visualizer.vue";
-import TicketDetails from "./components/TicketDetails.vue";
+import Explorer from './components/Explorer.vue';
+import Visualizer from './components/Visualizer.vue';
+import TicketDetails from './components/TicketDetails.vue';
 
-const VIEW_KEY = "Ticket Center";
+const VIEW_KEY = 'Ticket Center';
 
 // Component exports
 export default {
-  name: "TicketCenter",
+  name: 'TicketCenter',
   components: {
     SpinalBreadcrumb,
     TabManager,
@@ -58,7 +58,7 @@ export default {
       viewKey: VIEW_KEY,
       tabs: [
         {
-          name: "Explorer",
+          name: 'Explorer',
           content: Explorer,
           props: {
             viewKey: VIEW_KEY,

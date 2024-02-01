@@ -27,46 +27,48 @@ with this file. If not, see
     <div class="spinal-space-header-container">
       <div class="spinal-space-header">
         <div class="spinal-space-header-breadcrum-container spinal-scrollbar">
-          <el-breadcrumb class="breadcrumb-style"
-                         separator="/">
+          <el-breadcrumb class="breadcrumb-style" separator="/">
             <el-breadcrumb-item>
               <a @click="onclick(null)">Space Management</a>
             </el-breadcrumb-item>
-            <el-breadcrumb-item v-for="(breadcrumb, index) in breadcrumbs"
-                                :key="index">
+            <el-breadcrumb-item
+              v-for="(breadcrumb, index) in breadcrumbs"
+              :key="index"
+            >
               <a @click="breadcrumb.click">{{ breadcrumb.name }}</a>
             </el-breadcrumb-item>
           </el-breadcrumb>
         </div>
-        <el-button icon="el-icon-s-grid"
-                   circle
-                   @click="openDrawer"></el-button>
+        <el-button icon="el-icon-s-grid" circle @click="openDrawer"></el-button>
       </div>
     </div>
     <div class="spinal-space-spacecon_container-container">
-      <div v-if="selectCategorie == null"
-           class="spacecon_container">
-        <tableau-context v-if="contextSelected === null"
-                         :context-lst="contextLst"
-                         @select="SelectContext">
+      <div v-if="selectCategorie == null" class="spacecon_container">
+        <tableau-context
+          v-if="contextSelected === null"
+          :context-lst="contextLst"
+          @select="SelectContext"
+        >
         </tableau-context>
 
-        <tableau-category v-else
-                          :context-selected="contextSelected"
-                          @seeGroups="onclick"></tableau-category>
+        <tableau-category
+          v-else
+          :context-selected="contextSelected"
+          @seeGroups="onclick"
+        ></tableau-category>
       </div>
 
-      <div v-else
-           class="spacecon_container">
-        <room-data v-if="roomNodeId"
-                   :node-id="roomNodeId"></room-data>
+      <div v-else class="spacecon_container">
+        <room-data v-if="roomNodeId" :node-id="roomNodeId"></room-data>
 
-        <categoryLstVue v-show="!roomNodeId"
-                        ref="categoryListe"
-                        :select-categorie="selectCategorie"
-                        @addbreadcrumb="addbreadcrumb"
-                        @updateBreadcrumb="removeAndAddBreadcrumb"
-                        @resetRoomSelect="roomNodeId = null">
+        <categoryLstVue
+          v-show="!roomNodeId"
+          ref="categoryListe"
+          :select-categorie="selectCategorie"
+          @addbreadcrumb="addbreadcrumb"
+          @updateBreadcrumb="removeAndAddBreadcrumb"
+          @resetRoomSelect="roomNodeId = null"
+        >
         </categoryLstVue>
       </div>
     </div>
@@ -74,21 +76,21 @@ with this file. If not, see
 </template>
 
 <script>
-import { spinalBackEnd } from "../../services/spinalBackend";
-import categoryLstVue from "./component/categoryLstVue";
-import tableauContext from "./tableaucontext";
-import tableauCategory from "./tableaucategory";
+import { spinalBackEnd } from '../../services/spinalBackend';
+import categoryLstVue from './component/categoryLstVue';
+import tableauContext from './tableaucontext';
+import tableauCategory from './tableaucategory';
 // import { roomLstVue } from "../space/component/roomLstVue";
-import RoomData from "./component/RoomData.vue";
+import RoomData from './component/RoomData.vue';
 
-import { EventBus } from "../../services/event";
-import "./space.css";
+import { EventBus } from '../../services/event';
+import './space.css';
 export default {
   components: {
     categoryLstVue,
     tableauContext,
     tableauCategory,
-    "room-data": RoomData
+    'room-data': RoomData,
   },
   props: [],
   data() {
@@ -97,18 +99,17 @@ export default {
       selectCategorie: null,
       roomNodeId: null,
       breadcrumbs: [],
-      contextSelected: null
+      contextSelected: null,
     };
   },
   async mounted() {
     this.contextLst = await spinalBackEnd.spaceBack.getData();
 
-    EventBus.$on("sidebar-homeSelect", item => {
+    EventBus.$on('sidebar-homeSelect', (item) => {
       if (item) {
         spinalBackEnd.spaceBack
           .getDataFilterItem(item)
-          .then(result => {
-            console.log("resuuuuuuuultat____", result);
+          .then((result) => {
             this.contextLst = result;
 
             if (this.contextSelected) {
@@ -129,14 +130,10 @@ export default {
               }
             }
           })
-          .catch(err => {
+          .catch((err) => {
             console.error(err);
           });
       }
-    });
-
-    EventBus.$on("sidebar-homeSelect", item => {
-      console.log("sidebar-homeSelect", item);
     });
   },
   methods: {
@@ -150,13 +147,13 @@ export default {
             name: categorie.name,
             click: () => {
               const realCategory = this.contextSelected.categories.find(
-                el => el.id === categorie.id
+                (el) => el.id === categorie.id
               );
               this.onclick(realCategory);
               this.roomNodeId = null;
               this.$refs.categoryListe.resetRoomSelected();
-            }
-          }
+            },
+          },
         });
       } else if (changepage) {
         this.contextSelected = null;
@@ -166,9 +163,7 @@ export default {
     },
 
     addbreadcrumb(resultat) {
-      console.log(resultat);
-      console.log("appelle de add breadcrubm");
-      if (typeof resultat.roomNodeId !== "undefined") {
+      if (typeof resultat.roomNodeId !== 'undefined') {
         this.roomNodeId = resultat.roomNodeId;
       }
       this.breadcrumbs = [...this.breadcrumbs, resultat];
@@ -183,10 +178,10 @@ export default {
         const obj = {
           name: context.name,
           click: () => {
-            const another = this.contextLst.find(el => el.id === context.id);
+            const another = this.contextLst.find((el) => el.id === context.id);
             this.roomNodeId = null;
             this.SelectContext(another);
-          }
+          },
         };
 
         this.breadcrumbs = [...this.breadcrumbs, obj];
@@ -196,16 +191,15 @@ export default {
     },
 
     removeAndAddBreadcrumb(data) {
-      console.log(data);
       this.roomNodeId = null;
       this.breadcrumbs.splice(data.index);
 
       this.breadcrumbs = [...this.breadcrumbs, data.item];
     },
     openDrawer() {
-      EventBus.$emit("open-drawer");
-    }
-  }
+      EventBus.$emit('open-drawer');
+    },
+  },
 };
 </script>
 

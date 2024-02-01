@@ -24,24 +24,23 @@ with this file. If not, see
 
 <template>
   <div class="content">
-    <div class="md-caption">{{file.name}}</div>
-    <div class="md-caption delete"
-         @click="remove">X</div>
+    <div class="md-caption">{{ file.name }}</div>
+    <div class="md-caption delete" @click="remove">X</div>
   </div>
 </template>
 
 <script>
 export default {
-  name: "attachment",
-  props: ["file"],
+  name: 'attachment',
+  props: ['file'],
   data() {
     return {};
   },
   methods: {
     remove() {
-      this.$emit("remove", this.file);
-    }
-  }
+      this.$emit('remove', this.file);
+    },
+  },
 };
 </script>
 

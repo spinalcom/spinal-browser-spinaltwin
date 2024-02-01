@@ -22,57 +22,40 @@ with this file. If not, see
 <http://resources.spinalcom.com/licenses.pdf>.
 -->
 
-<!--
-Copyright 2020 SpinalCom - www.spinalcom.com
-
-This file is part of SpinalCore.
-
-Please read all of the following terms and conditions
-of the Free Software license Agreement ("Agreement")
-carefully.
-
-This Agreement is a legally binding contract between
-the Licensee (as defined below) and SpinalCom that
-sets forth the terms and conditions that govern your
-use of the Program. By installing and/or using the
-Program, you agree to abide by all the terms and
-conditions stated or referenced herein.
-
-If you do not agree to abide by these terms and
-conditions, do not demonstrate your acceptance and do
-not install or use the Program.
-You should have received a copy of the license along
-with this file. If not, see
-<http://resources.spinalcom.com/licenses.pdf>.
--->
-
 <template>
   <div>
-    <el-button icon="el-icon-circle-plus-outline"
-               circle
-               @click="dialogFormVisible = !dialogFormVisible">
+    <el-button
+      icon="el-icon-circle-plus-outline"
+      circle
+      @click="dialogFormVisible = !dialogFormVisible"
+    >
     </el-button>
 
-    <div class="div-dialog spinal-scrollbar"
-         title="Adresse d'expédition"
-         v-if="dialogFormVisible">
+    <div
+      class="div-dialog spinal-scrollbar"
+      title="Adresse d'expédition"
+      v-if="dialogFormVisible"
+    >
       <!-- ///////////////////////////////////////////////////////////////////////////////////-
         ////////////////////////////////// Tableau Categorie calendrier /////////////////////////////////////
       ////////////////////////////////////////////////////////////////////////////////////////-->
       <div class="radio-cas">
-        <el-cascader-panel v-on:change="cascaderSelection"
-                           :props="props"></el-cascader-panel>
+        <el-cascader-panel
+          v-on:change="cascaderSelection"
+          :props="props"
+        ></el-cascader-panel>
       </div>
-      <br>
+      <br />
 
       <!-- ///////////////////////////////////////////////////////////////////////////////////-
         ////////////////////////////////// Formulaire calendrier /////////////////////////////////////
       ////////////////////////////////////////////////////////////////////////////////////////-->
-      <el-form :disabled="isFormDisable"
-               ref="form"
-               :model="form"
-               label-width="120px">
-
+      <el-form
+        :disabled="isFormDisable"
+        ref="form"
+        :model="form"
+        label-width="120px"
+      >
         <el-form-item label="Name">
           <el-input v-model="form.name"></el-input>
         </el-form-item>
@@ -80,9 +63,11 @@ with this file. If not, see
         <el-form-item label="Start date">
           <div class="block">
             <span class="demonstration"></span>
-            <el-date-picker v-model="form.value1"
-                            type="datetime"
-                            placeholder="Select date and time">
+            <el-date-picker
+              v-model="form.value1"
+              type="datetime"
+              placeholder="Select date and time"
+            >
             </el-date-picker>
           </div>
         </el-form-item>
@@ -90,9 +75,11 @@ with this file. If not, see
         <el-form-item label="End date">
           <div class="block">
             <span class="demonstration"></span>
-            <el-date-picker v-model="form.value2"
-                            type="datetime"
-                            placeholder="Select date and time">
+            <el-date-picker
+              v-model="form.value2"
+              type="datetime"
+              placeholder="Select date and time"
+            >
             </el-date-picker>
           </div>
         </el-form-item>
@@ -100,10 +87,8 @@ with this file. If not, see
         <el-form-item class="dialog-footer">
           <el-button @click="dialogFormVisible = false">Annuler</el-button>
 
-          <el-button type="primary"
-                     @click="confirmDate">Confirmer</el-button>
+          <el-button type="primary" @click="confirmDate">Confirmer</el-button>
         </el-form-item>
-
       </el-form>
 
       <!-- <div slot="footer"
@@ -118,10 +103,10 @@ with this file. If not, see
 
 <script>
 // import SpinalBackend from "../../services/spinalBackend";
-import { serviceTicketPersonalized } from "spinal-service-ticket";
-import { SpinalEventService } from "spinal-env-viewer-task-service";
+import { serviceTicketPersonalized } from 'spinal-service-ticket';
+import { SpinalEventService } from 'spinal-env-viewer-task-service';
 
-import { SpinalGraphService } from "spinal-env-viewer-graph-service";
+import { SpinalGraphService } from 'spinal-env-viewer-graph-service';
 
 export default {
   data() {
@@ -129,29 +114,29 @@ export default {
       dialogFormVisible: false,
       isFormDisable: true,
       form: {
-        name: "",
-        value1: "",
-        value2: ""
+        name: '',
+        value1: '',
+        value2: '',
       },
       EventInterface: {
-        contextId: "",
-        groupId: "",
-        categoryId: "",
+        contextId: '',
+        groupId: '',
+        categoryId: '',
         nodeId: this.nodeId,
-        startDate: "",
-        endDate: "",
-        name: ""
+        startDate: '',
+        endDate: '',
+        name: '',
       },
       props: {
         lazy: true,
         async lazyLoad(node, resolve) {
           if (node.level === 0) {
             const contextList = await SpinalEventService.getEventContexts();
-            const res = contextList.map(itm => {
+            const res = contextList.map((itm) => {
               return {
                 value: itm.id.get(),
                 label: itm.name.get(),
-                leaf: false
+                leaf: false,
               };
             });
             resolve(res);
@@ -159,11 +144,11 @@ export default {
             const processLst = await SpinalEventService.getEventsCategories(
               node.data.value
             );
-            const res = processLst.map(itm => {
+            const res = processLst.map((itm) => {
               return {
                 value: itm.id.get(),
                 label: itm.name.get(),
-                leaf: false
+                leaf: false,
               };
             });
             resolve(res);
@@ -171,7 +156,7 @@ export default {
             const CommonIncidentLst = await SpinalEventService.getEventsGroups(
               node.data.value
             );
-            const res = CommonIncidentLst.map(itm => {
+            const res = CommonIncidentLst.map((itm) => {
               return { value: itm.id.get(), label: itm.name.get(), leaf: true };
             });
             resolve(res);
@@ -186,12 +171,12 @@ export default {
           //   // Appelez le callback `resolve` pour renvoyer les données des noeuds enfants et indiquer que le chargement est terminé.
           //   resolve(nodes);
           // }, 1000);
-        }
-      }
+        },
+      },
     };
   },
   components: {},
-  props: ["nodeId"],
+  props: ['nodeId'],
   methods: {
     cascaderSelection(value) {
       this.EventInterface.contextId = value[0];
@@ -205,23 +190,20 @@ export default {
       this.EventInterface.startDate = new Date(this.form.value1).getTime();
       this.EventInterface.endDate = new Date(this.form.value2).getTime();
       this.EventInterface.name = this.form.name;
-      console.log("EventInterface", this.EventInterface);
       SpinalEventService.createEvent(
         this.EventInterface.contextId,
         this.EventInterface.groupId,
         this.nodeId,
         this.EventInterface,
         {}
-      ).then(result => {
-        console.log("result", result);
-
-        this.$emit("reload");
+      ).then((result) => {
+        this.$emit('reload');
       });
-    }
+    },
   },
   async mounted() {},
   watch: {},
-  beforeDestroy() {}
+  beforeDestroy() {},
 };
 </script>
 

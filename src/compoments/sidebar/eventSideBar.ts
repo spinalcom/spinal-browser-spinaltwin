@@ -22,8 +22,8 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
-import { EventBus } from "../../services/event";
-import { viewerUtils } from "../../services/viewerUtils/viewerUtils";
+import { EventBus } from '../../services/event';
+import { viewerUtils } from '../../services/viewerUtils/viewerUtils';
 import { spinalBackEnd } from '../../services/spinalBackend';
 var debounce = require('lodash.debounce');
 
@@ -33,37 +33,63 @@ const sidebarHomeSelectDebounce = debounce(sidebarHomeSelect, 500);
 
 EventBus.$on('sidebar-selected-item', async (item) => {
   await viewerUtils.waitInitialized();
-  return sidebarSelectedItemDebounce(item)
+  // return sidebarSelectedItemDebounce(item);
+  return sidebarSelectedItem(item);
 });
 EventBus.$on('sidebar-mouseover-item', async (item) => {
   await viewerUtils.waitInitialized();
   return sidebarMouseoverItemDebounce(item);
 });
+EventBus.$on('sidebar-mouseover-item-without-debounce', async (item) => {
+  await viewerUtils.waitInitialized();
+  return sidebarMouseoverItem(item);
+});
+
 EventBus.$on('sidebar-homeSelect', async (item) => {
   await viewerUtils.waitInitialized();
-  return sidebarHomeSelectDebounce(item)
+  return sidebarHomeSelectDebounce(item);
 });
 
 async function sidebarHomeSelect(item) {
-  viewerUtils.clearSelection()
+  viewerUtils.clearSelection();
+  // const face = 'top,front';
+  const face = 'top';
+
   if (!item) {
-    const face = 'front,top,right';
+    // const face = 'front,top,right';
     viewerUtils.showAll();
-    await viewerUtils.rotateTo(face);
-    await viewerUtils.fitToView();
+    viewerUtils.rotateTo(face);
+    // await viewerUtils.rotateTo(face);
+    // await viewerUtils.fitToView();
+
+    // viewerUtils.fitToView().then(()=> {
+    //   setTimeout(()=> {
+    //     viewerUtils.rotateTo(face);
+    //     viewerUtils.clearSelection();
+    //   }, 100);
+    // });
   } else {
     const lstByModel = await spinalBackEnd.spatialBack.getLstByModel(item);
     viewerUtils.isolateObjects(lstByModel);
-    await viewerUtils.rotateTo('front,top,right');
-    await viewerUtils.fitToView(lstByModel);
+    viewerUtils.rotateTo(face);
+    // await viewerUtils.rotateTo(face);
+    // await viewerUtils.rotateTo('front,top,right');
+    // await viewerUtils.fitToView(lstByModel);
+
+    // viewerUtils.fitToView(lstByModel).then(()=> {
+    //   setTimeout(()=> {
+    //     viewerUtils.rotateTo(face);
+    //     viewerUtils.clearSelection();
+    //   }, 100);
+    // });
   }
-  viewerUtils.clearSelection()
+  viewerUtils.clearSelection();
 }
 
 async function sidebarMouseoverItem(item) {
   if (item) {
     const lstByModel = await spinalBackEnd.spatialBack.getLstByModel(item);
-    viewerUtils.selectObjects(lstByModel);
+    // viewerUtils.selectObjects(lstByModel);
   }
 }
 async function sidebarSelectedItem(item) {
@@ -73,5 +99,4 @@ async function sidebarSelectedItem(item) {
     await viewerUtils.rotateTo('top');
     viewerUtils.fitToView(lstByModel);
   }
-
 }

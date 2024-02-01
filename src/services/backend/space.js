@@ -22,50 +22,42 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
-
 // import { groupService } from "spinal-env-viewer-room-manager/services/service.js";
 
-import { groupManagerService } from "spinal-env-viewer-plugin-group-manager-service";
+import { groupManagerService } from 'spinal-env-viewer-plugin-group-manager-service';
 
-import { SpinalGraphService } from "spinal-env-viewer-graph-service";
-import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
 import { FileSystem } from 'spinal-core-connectorjs_type';
-import { ROOM_TYPE } from "spinal-env-viewer-context-geographic-service/build/constants";
+import { ROOM_TYPE } from 'spinal-env-viewer-context-geographic-service/build/constants';
+import { SpinalGraphService } from 'spinal-env-viewer-graph-service';
+import { serviceDocumentation } from 'spinal-env-viewer-plugin-documentation-service';
 
-import q from "q";
+import q from 'q';
 
 export default class Space {
-
   constructor() {
     this.allContext;
 
     this.initDefer = q.defer();
-
   }
 
   async init(graph) {
-
-
     //"SpinalControlPointGroupContext"
     //ROOM_TYPE
     await SpinalGraphService.waitForInitialization();
-    let contextNodes = await graph.getChildren("hasContext");
+    let contextNodes = await graph.getChildren('hasContext');
     const cons = await groupManagerService.getGroupContexts(ROOM_TYPE);
-    const contexts = contextNodes.filter(context => {
+    const contexts = contextNodes.filter((context) => {
       for (const con of cons) {
-        let id = typeof con.id === "string" ? con.id : con.id.get();
+        let id = typeof con.id === 'string' ? con.id : con.id.get();
         if (context.info.id.get() === id) return true;
       }
       return false;
       // return context.info.type.get() === groupService.constants.ROOMS_GROUP_CONTEXT;
     });
-    const Icontexts = contexts.map(el => this.Icontext(el));
+    const Icontexts = contexts.map((el) => this.Icontext(el));
     const res = await Promise.all(Icontexts);
     this.initDefer.resolve(res);
-
-
   }
-
 
   getData() {
     return this.initDefer.promise;
@@ -73,16 +65,13 @@ export default class Space {
 
   async getDataFilterItem(item) {
     const data = await this.initDefer.promise;
-    console.log("getDataFilterItem Item", item);
     if (!item) return data;
     const itemNode = FileSystem._objects[item.server_id];
-    if (itemNode.getType().get() !== "geographicFloor") {
+    if (itemNode.getType().get() !== 'geographicFloor') {
       return data;
     }
 
-    const idsAGarder = item.children.map(obj => obj.id);
-    console.log("getDataFilterItem Item node", itemNode);
-    console.log("getDataFilterItem data", data);
+    const idsAGarder = item.children.map((obj) => obj.id);
     const tmp = [];
     for (const d of data) {
       const cats = [];
@@ -97,25 +86,24 @@ export default class Space {
             rooms,
             id: grp.id,
             name: grp.name,
-            color: grp.color
+            color: grp.color,
           });
         }
         cats.push({
           groups,
           id: cat.id,
-          name: cat.name
+          name: cat.name,
         });
       }
       tmp.push({
         categories: cats,
         id: d.id,
-        name: d.name
+        name: d.name,
       });
     }
 
     return tmp;
   }
-
 
   async Icontext(context) {
     let catLst = await groupManagerService.getCategories(context.info.id.get());
@@ -127,10 +115,9 @@ export default class Space {
     return {
       name: context.info.name.get(),
       id: context.info.id.get(),
-      categories: await Promise.all(arr)
+      categories: await Promise.all(arr),
     };
   }
-
 
   async Icategorie(categorie) {
     let grpLst = await groupManagerService.getGroups(categorie.id.get());
@@ -141,39 +128,42 @@ export default class Space {
     return {
       name: categorie.name.get(),
       id: categorie.id.get(),
-      groups: await Promise.all(arr2)
+      groups: await Promise.all(arr2),
     };
   }
 
   async Igroup(group) {
-    let roomLst = await groupManagerService.getElementsLinkedToGroup(group.id.get());
+    let roomLst = await groupManagerService.getElementsLinkedToGroup(
+      group.id.get()
+    );
     let arr3 = [];
     for (let room of roomLst) {
       arr3.push(this.Iroom(room));
     }
 
-    if (typeof group.color === "undefined") {
+    if (typeof group.color === 'undefined') {
       const color = this.getRandomColor();
-      group.add_attr("color", color);
+      group.add_attr('color', color);
     }
 
     return {
       name: group.name.get(),
       id: group.id.get(),
       color: group.color.get(),
-      rooms: await Promise.all(arr3)
+      rooms: await Promise.all(arr3),
     };
   }
 
   getsurface(arr) {
     for (let attribute of arr) {
-      if (attribute.label.get() === "surface" || attribute.label.get() === "area") {
+      if (
+        attribute.label.get() === 'surface' ||
+        attribute.label.get() === 'area'
+      ) {
         return parseFloat(attribute.value.get());
       }
     }
     return 0;
-
-
   }
 
   async Iroom(room) {
@@ -183,32 +173,22 @@ export default class Space {
     return {
       name: room.name.get(),
       id: room.id.get(),
-      surface: espace
-
+      surface: espace,
     };
   }
 
-
-
-
-
-
-
   getRandomColor() {
-    var letters = "0123456789ABCDEF";
-    var color = "#";
+    var letters = '0123456789ABCDEF';
+    var color = '#';
     for (var i = 0; i < 6; i++) {
       color += letters[Math.floor(Math.random() * 16)];
     }
     return color;
   }
 
-
-
   ///////////////////////////////////////////////////////////
   //                surface  utilities                     //
   ///////////////////////////////////////////////////////////
-
 
   getContextSurface(contextObject) {
     let surface = 0;
@@ -241,7 +221,6 @@ export default class Space {
     return roomObject.surface ? roomObject.surface : 0;
   }
 
-
   ///////////////////////////////////////////////////////////
   //                Rooms Count  utilities                 //
   ///////////////////////////////////////////////////////////
@@ -268,5 +247,4 @@ export default class Space {
   getGroupRoomCount(groupObject) {
     return groupObject.rooms.length;
   }
-
 }

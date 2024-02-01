@@ -23,38 +23,70 @@ with this file. If not, see
 -->
 
 <!DOCTYPE html>
-<html style="overflow: hidden;">
+<html style="overflow: hidden">
+  <head>
+    <base href="/html/spinaltwin/" />
+    <title>Spinal Twin</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta name="theme-color" content="#292929" />
+    <meta
+      name="viewport"
+      content="initial-scale=1, maximum-scale=1, user-scalable=no"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="./icons/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="./icons/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="./icons/favicon-16x16.png"
+    />
+    <link rel="manifest" href="./icons/site.webmanifest" />
+    <link
+      rel="mask-icon"
+      href="./icons/safari-pinned-tab.svg"
+      color="#5bbad5"
+    />
+    <link rel="shortcut icon" href="./icons/favicon.ico" />
+    <meta name="msapplication-TileColor" content="#da532c" />
+    <meta name="msapplication-config" content="./icons/browserconfig.xml" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+  </head>
 
-<head>
-      <base href="/html/spinaltwin/">
-      <title>Spinal Twin</title>
-      <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-      <meta name="theme-color" content="#292929">
-      <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
-      <link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png">
-      <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32x32.png">
-      <link rel="icon" type="image/png" sizes="16x16" href="./icons/favicon-16x16.png">
-      <link rel="manifest" href="./icons/site.webmanifest">
-      <link rel="mask-icon" href="./icons/safari-pinned-tab.svg" color="#5bbad5">
-      <link rel="shortcut icon" href="./icons/favicon.ico">
-      <meta name="msapplication-TileColor" content="#da532c">
-      <meta name="msapplication-config" content="./icons/browserconfig.xml">
-      <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
-            integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
-      <!-- <link rel="stylesheet" href="https://developer.api.autodesk.com/modelderivative/v2/viewers/6.*/style.min.css" -->
-            <!-- type="text/css"> -->
-      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-</head>
-
-<body>
-      <div id="app">
-            <div id="page-loader" class="fade show"><span class="spinner"></span></div>
-      </div>
-      <img class="powerby-logo" src="./assets/imgs/spinaltwin_logo_fond_phto_RVB.png" alt="spinalcore-poweredby">
-      <!-- <script src="https://unpkg.com/eva-icons"></script> -->
-      <!-- <script src="https://developer.api.autodesk.com/modelderivative/v2/viewers/6.*/viewer3D.min.js"> -->
-      <!-- </script> -->
-      <!-- <script src="https://cdn.plot.ly/plotly-latest.min.js"></script> -->
-      <script src="./login/index.ts"></script>
-</body>
+  <body>
+    <div id="app">
+      <div id="page-loader" class="fade show"
+        ><span class="spinner"></span
+      ></div>
+    </div>
+    <img
+      class="powerby-logo"
+      src="./assets/imgs/spinaltwin_logo_fond_phto_RVB.png"
+      alt="spinalcore-poweredby"
+    />
+    <!-- <script src="https://unpkg.com/eva-icons"></script> -->
+    <!-- <script src="https://developer.api.autodesk.com/modelderivative/v2/viewers/6.*/viewer3D.min.js"> -->
+    <!-- </script> -->
+    <!-- <script src="https://cdn.plot.ly/plotly-latest.min.js"></script> -->
+    <script type="module" src="./login/index.ts"></script>
+  </body>
 </html>

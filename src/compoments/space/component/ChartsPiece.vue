@@ -22,15 +22,9 @@ with this file. If not, see
 <http://resources.spinalcom.com/licenses.pdf>.
 -->
 
-
-
-
 <template>
   <div>
-
-    <div ref="charts">
-
-    </div>
+    <div ref="charts"> </div>
   </div>
 </template>
 
@@ -43,16 +37,16 @@ export default {
           x: [],
           y: [],
           marker: {
-            color: []
+            color: [],
           },
-          type: "bar",
+          type: 'bar',
           text: [],
-          textposition: "auto"
-        }
-      ]
+          textposition: 'auto',
+        },
+      ],
     };
   },
-  props: ["entreprise"],
+  props: ['entreprise'],
   methods: {
     updateEntreprise() {
       this.data[0].x = [];
@@ -68,7 +62,7 @@ export default {
         this.data[0].marker.color.push(oneEntreprise.color);
       }
       Plotly.redraw(this.$refs.charts, this.data);
-    }
+    },
   },
   mounted() {
     Plotly.newPlot(this.$refs.charts, this.data);
@@ -77,12 +71,11 @@ export default {
   watch: {
     entreprise: {
       deep: true,
-      handler: function() {
+      handler: function () {
         this.updateEntreprise();
-      }
-    }
+      },
+    },
   },
-  beforeDestroy() {}
+  beforeDestroy() {},
 };
 </script>
-

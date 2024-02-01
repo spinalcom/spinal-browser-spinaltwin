@@ -1,9 +1,12 @@
 node_modules
 launch.config.js
-package.json
 package-lock.json
 .apps.json
 .browser_organs
 .config.json
 www
 old
+.parcel-cache
+.env
+TODO
+*_old*

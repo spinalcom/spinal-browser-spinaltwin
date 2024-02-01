@@ -22,79 +22,69 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
-import {
-  TICKET_CONTEXT_NAME,
-  TICKET_CONTEXT_TYPE,
-  TICKET_RELATION_CONTEXT_PROCESS,
-  TICKET_PROCESS_TYPE,
-  TICKET_RELATION_PROCESS_STEP,
-  TICKET_STEP_TYPE,
-  TICKET_RELATION_STEP_TICKET,
-  TICKET_TICKET_TYPE,
-  TICKET_RELATION_PROCESS_OBJET,
-  TICKET_OBJECT_TYPE
-} from '../../constants';
-import q from "q";
+import q from 'q';
+import { TICKET_TICKET_TYPE } from '../../constants';
 
 import { FileSystem } from 'spinal-core-connectorjs_type';
-import { EventBus } from '../event';
-import ProcessOnChange from '../utlils/ProcessOnChange';
-import throttle from 'lodash.throttle';
-import { SpinalGraphService, SpinalNode, SpinalContext } from 'spinal-env-viewer-graph-service';
+import { SpinalContext, SpinalNode } from 'spinal-env-viewer-graph-service';
 
-import { TicketItem } from './ticketItem'
-type mapTicketItem = Map<string, TicketItem[]>
-
+import { TicketItem } from './ticketItem';
+type mapTicketItem = Map<string, TicketItem[]>;
 
 export default class BackEndTicket {
   initDefer = q.defer();
   info: any;
   ticketContext: SpinalNode<any>;
-  contexts: SpinalContext<any>[] = []
+  contexts: SpinalContext<any>[] = [];
 
   constructor() {
     this.info = {
       contextStructure: [],
-      allTickets: []
+      allTickets: [],
     };
   }
   async getContexts(): Promise<Map<string, TicketItem[]>> {
-    const res: Map<string, TicketItem[]> = new Map()
-    await Promise.all(this.contexts.map(async (item) => {
-      return this.getItemsInContext(item, item, true).then((map) => {
-        for (const [key, value] of map) {
-          if (!res.has(key)) res.set(key, []);
-          const arr = res.get(key);
-          arr.push(...value)
-        }
+    const res: Map<string, TicketItem[]> = new Map();
+    await Promise.all(
+      this.contexts.map(async (item) => {
+        return this.getItemsInContext(item, item, true).then((map) => {
+          for (const [key, value] of map) {
+            if (!res.has(key)) res.set(key, []);
+            const arr = res.get(key)!;
+            arr.push(...value);
+          }
+        });
       })
-    }))
+    );
     return res;
   }
 
   getItems(serverId: number, contextServerId: number): Promise<mapTicketItem> {
-    const node = <SpinalNode<any>>(FileSystem._objects[serverId]);
-    const context = <SpinalContext<any>>(FileSystem._objects[contextServerId]);
+    const node = <SpinalNode<any>>FileSystem._objects[serverId];
+    const context = <SpinalContext<any>>FileSystem._objects[contextServerId];
     if (!node || !context) return Promise.resolve(new Map());
-    return this.getItemsInContext(node, context)
+    return this.getItemsInContext(node, context);
   }
 
-
-  private async getItemsInContext(node: SpinalNode<any>,
-    context: SpinalContext<any>, giveSelf = false): Promise<mapTicketItem> {
+  private async getItemsInContext(
+    node: SpinalNode<any>,
+    context: SpinalContext<any>,
+    giveSelf = false
+  ): Promise<mapTicketItem> {
     const seen: Set<SpinalNode<any>> = new Set([node]);
-    let promises: Promise<{ children: SpinalNode<any>[]; item: TicketItem; }>[] = [];
+    let promises: Promise<{ children: SpinalNode<any>[]; item: TicketItem }>[] =
+      [];
     let nextGen: SpinalNode<any>[] = [node];
     let currentGen: SpinalNode<any>[] = [];
-    const res: mapTicketItem = new Map()
+    const res: mapTicketItem = new Map();
     const allItems: Map<number, TicketItem> = new Map();
     const nodeType: string = node.info.type.get();
     if (!res.has(nodeType)) {
       res.set(nodeType, []);
     }
-    const arr = res.get(nodeType);
+    const arr = res.get(nodeType)!;
     const item = TicketItem.getItemFromMap(allItems, node);
-    arr.push(item)
+    arr.push(item);
     let depth = 0;
     while (nextGen.length) {
       currentGen = nextGen;
@@ -102,18 +92,25 @@ export default class BackEndTicket {
       nextGen = [];
       depth += 1;
       for (const n of currentGen) {
-        if (depth <= 2 || (n.info.type && n.info.type.get() !== TICKET_TICKET_TYPE)) {
+        if (
+          depth <= 2 ||
+          (n.info.type && n.info.type.get() !== TICKET_TICKET_TYPE)
+        ) {
           const item = TicketItem.getItemFromMap(allItems, n);
-          promises.push(n.getChildrenInContext(context).then((children) => {
-            return { children, item }
-          }));
+          promises.push(
+            n.getChildrenInContext(context).then((children) => {
+              return { children, item };
+            })
+          );
         }
       }
-      const childrenArrays: { children: SpinalNode<any>[]; item: TicketItem; }[]
-        = await Promise.all(promises);
+      const childrenArrays: {
+        children: SpinalNode<any>[];
+        item: TicketItem;
+      }[] = await Promise.all(promises);
       for (const children of childrenArrays) {
         for (const child of children.children) {
-          children.item.addChildrenInItem(allItems, child)
+          children.item.addChildrenInItem(allItems, child);
           if (!seen.has(child)) {
             nextGen.push(child);
             seen.add(child);
@@ -122,18 +119,14 @@ export default class BackEndTicket {
       }
     }
     if (giveSelf) return res;
-    return typeof item.children !== "undefined" ? item.children : new Map();
+    return typeof item.children !== 'undefined' ? item.children : new Map();
   }
-
-
-
-
 
   async init(graph) {
     // this.ticketContext = await graph.getContext(TICKET_CONTEXT_NAME);
     const children = await graph.getChildren();
     for (const context of children) {
-      if (context.info.type.get() === "SpinalSystemServiceTicket") {
+      if (context.info.type.get() === 'SpinalSystemServiceTicket') {
         this.contexts.push(context);
       }
     }

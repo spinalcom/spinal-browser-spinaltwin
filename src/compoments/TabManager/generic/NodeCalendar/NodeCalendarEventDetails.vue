@@ -38,10 +38,9 @@ with this file. If not, see
         {{ event.title }}
       </h2>
     </el-header>
+
     <el-main>
-      <h3>
-        Details
-      </h3>
+      <h3> Details </h3>
       <div class="separate">
         <p> Period </p>
         <p> {{ _formatDate(event.start) }} - {{ _formatDate(event.end) }} </p>
@@ -49,7 +48,8 @@ with this file. If not, see
       <el-tooltip :content="$t('spinal-twin.EventDelete')">
         <el-popconfirm
           @confirm="deleteEvent()"
-          :title="$t('spinal-twin.DeleteConfirm')">
+          :title="$t('spinal-twin.DeleteConfirm')"
+        >
           <el-button
             icon="el-icon-delete"
             type="danger"
@@ -63,51 +63,47 @@ with this file. If not, see
 </template>
 
 <script>
-import { SpinalEventService } from "spinal-env-viewer-task-service";
+import { SpinalEventService } from 'spinal-env-viewer-task-service';
 
 export default {
-  name: "NodeCalendarEventDetails",
-  components: {  },
+  name: 'NodeCalendarEventDetails',
+  components: {},
   props: {
     event: {
       type: Object,
       required: true,
     },
   },
-  
+
   data() {
     return {
       eventNode: false,
     };
   },
 
-  async mounted() {
-  },
+  async mounted() {},
 
   methods: {
-    async deleteEvent()
-    {
-      let test = await SpinalEventService.removeEvent(this.event.id);
-      console.debug(test);
-      this.$emit("update");
+    async deleteEvent() {
+      await SpinalEventService.removeEvent(this.event.id);
+      this.$emit('update');
     },
 
-    close()
-    {
-      this.$emit("close");
+    close() {
+      this.$emit('close');
     },
 
     _formatDate(argDate) {
       let date = new Date(argDate);
-      return `${date.getFullYear()}-${date.getMonth() +
-        1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}`;
+      return `${date.getFullYear()}-${
+        date.getMonth() + 1
+      }-${date.getDate()} ${date.getHours()}:${date.getMinutes()}`;
     },
   },
-}
+};
 </script>
 
 <style scoped>
-
 .separate {
   display: flex;
   justify-content: space-between;

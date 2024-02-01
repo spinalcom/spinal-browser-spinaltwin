@@ -93,30 +93,30 @@ with this file. If not, see
 
 <script>
 // import SpinalBackend from "../../services/spinalBackend";
-import { serviceTicketPersonalized } from "spinal-service-ticket";
-import { SpinalEventService } from "spinal-env-viewer-task-service";
-import { FileSystem } from "spinal-core-connectorjs_type";
-import { SpinalGraphService } from "spinal-env-viewer-graph-service";
+import { serviceTicketPersonalized } from 'spinal-service-ticket';
+import { SpinalEventService } from 'spinal-env-viewer-task-service';
+import { FileSystem } from 'spinal-core-connectorjs_type';
+import { SpinalGraphService } from 'spinal-env-viewer-graph-service';
 export default {
-  name: "CreateEvent",
+  name: 'CreateEvent',
   data() {
     return {
       nodeInfo: { selectedNode: SpinalGraphService.getRealNode(this.nodeId) },
       dialogFormVisible: false,
       isFormDisable: true,
       form: {
-        name: "",
-        value1: "",
-        value2: "",
+        name: '',
+        value1: '',
+        value2: '',
       },
       EventInterface: {
-        contextId: "",
-        groupId: "",
-        categoryId: "",
+        contextId: '',
+        groupId: '',
+        categoryId: '',
         nodeId: SpinalGraphService.getRealNode(this.nodeId).getId().get(),
-        startDate: "",
-        endDate: "",
-        name: "",
+        startDate: '',
+        endDate: '',
+        name: '',
       },
       props: {
         lazy: true,
@@ -167,7 +167,7 @@ export default {
     };
   },
   components: {},
-  props: ["nodeId"],
+  props: ['nodeId'],
   methods: {
     cascaderSelection(value) {
       this.EventInterface.contextId = value[0];
@@ -177,7 +177,7 @@ export default {
     },
     async getEvents() {
       const events = await SpinalEventService.getEvents(this.nodeId);
-      const promises = events.map(el => this._formatEvent(el.get()));
+      const promises = events.map((el) => this._formatEvent(el.get()));
       return Promise.all(promises);
     },
     _formatEvent(event) {
@@ -197,8 +197,9 @@ export default {
 
     _formatDate(argDate) {
       let date = new Date(argDate);
-      return `${date.getFullYear()}-${date.getMonth() +
-        1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}`;
+      return `${date.getFullYear()}-${
+        date.getMonth() + 1
+      }-${date.getDate()} ${date.getHours()}:${date.getMinutes()}`;
     },
 
     async updateDate() {
@@ -206,25 +207,21 @@ export default {
     },
     onEventClick(event, e) {
       this.selectedEvent = event;
-      console.log("idEventSelectid", this.selectedEvent.class, this.nodeId);
       this.showDialog = true;
 
       // Prevent navigating to narrower view (default vue-cal behavior).
       e.stopPropagation();
     },
     confirmDate() {
-      console.log("inside confirm date");
       this.showDialog = false;
       this.EventInterface.startDate = new Date(this.form.value1).getTime();
       this.EventInterface.endDate = new Date(this.form.value2).getTime();
       this.EventInterface.name = this.form.name;
-      console.log("llllkkkkkkkkkkk", this.form);
-      console.log("this.selectedEvent", this.selectedEvent);
       if (this.selectedEvent) {
         SpinalEventService.updateEvent(
           this.selectedEvent.class,
           this.EventInterface
-        ).then(async result => {
+        ).then(async (result) => {
           this.calendrier = await this.getEvents();
         });
       } else {
@@ -234,20 +231,17 @@ export default {
           this.nodeInfo.selectedNode.getId().get(),
           this.EventInterface,
           {}
-        ).then((async result => {
-          console.log("result", result);
-          this.$emit("reload");
-        })
-        );
+        ).then(async (result) => {
+          this.$emit('reload');
+        });
       }
     },
     async deleteDate() {
-      console.log("lllllllllllllllllkk", this.selectedEvent.class);
       await SpinalEventService.removeEvent(this.selectedEvent.class);
 
       this.calendrier = await this.getEvents();
       this.showDialog = false;
-    }
+    },
   },
   async mounted() {},
   watch: {},

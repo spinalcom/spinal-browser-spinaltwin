@@ -23,46 +23,44 @@ with this file. If not, see
 -->
 
 <template>
-  <el-container v-loading="loading"
-                class="body-container">
+  <el-container v-loading="loading" class="body-container">
     <div class="body-main-container">
       <mainContent></mainContent>
     </div>
-    <el-drawer class="spinal-drawer"
-               :visible.sync="drawer"
-               :with-header="false">
+    <el-drawer
+      class="spinal-drawer"
+      :visible.sync="drawer"
+      :with-header="false"
+    >
       <drawer @close="drawer = false"></drawer>
     </el-drawer>
   </el-container>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import spinalHeader from "./compoments/header/header.vue";
-import spinalBackEnd from "./services/spinalBackend";
-import mainContent from "./compoments/mainContent/index.vue";
-import DocumentReady from "./services/utlils/DocumentReady";
-import { getDefaultLanguage } from "./services/i18n";
-import drawer from "./compoments/drawer/drawer.vue";
-import { EventBus } from "./services/event";
+import spinalBackEnd from './services/spinalBackend';
+import mainContent from './compoments/mainContent/index.vue';
+import DocumentReady from './services/utlils/DocumentReady';
+import { getDefaultLanguage } from './services/i18n';
+import drawer from './compoments/drawer/drawer.vue';
+import { EventBus } from './services/event';
 
-export default Vue.extend({
+export default {
   components: {
-    "spinal-header": spinalHeader,
     mainContent,
-    drawer
+    drawer,
   },
   data() {
     return {
       loading: true,
-      drawer: false
+      drawer: false,
     };
   },
   async mounted() {
     try {
       await spinalBackEnd.getGraph();
       this.loading = false;
-      EventBus.$on("open-drawer", () => {
+      EventBus.$on('open-drawer', () => {
         this.drawer = true;
       });
     } catch (e) {
@@ -71,12 +69,12 @@ export default Vue.extend({
         console.error(e);
         // @ts-ignore
         window.location =
-          "/html/spinaltwin/login.html" + location.hash + location.search;
+          '/html/spinaltwin/login.html' + location.hash + location.search;
       });
     }
   },
-  methods: {}
-});
+  methods: {},
+};
 </script>
 
 <style scoped>
@@ -84,6 +82,8 @@ export default Vue.extend({
   height: 100%;
   width: 100%;
   display: flex;
+  /* position: fixed; */
+  overflow: hidden;
 }
 .body-main-container {
   width: 100%;

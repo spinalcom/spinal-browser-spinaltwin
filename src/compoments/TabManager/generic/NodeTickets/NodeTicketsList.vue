@@ -23,13 +23,37 @@ with this file. If not, see
 -->
 
 <template>
-  <el-main>
+  <div style="height: 100%">
+    <!-- <el-table
+      v-if="tickets"
+      :data="tickets"
+      :header-cell-style="{ 'background-color': '#f0f2f5' }"
+      border
+      height="100%"
+    > -->
     <el-table
       v-if="tickets"
       :data="tickets"
-      :header-cell-style="{'background-color': '#f0f2f5'}"
+      :header-cell-style="{
+        'background-color': '#ffffff',
+        'text-align': 'left',
+        'letter-spacing': '1px',
+        'color': '#214353',
+        'opacity': '1',
+        'height': 'fit-content',
+      }"
+      :row-style="{
+        'background': '#ffffff 0% 0% no-repeat padding-box',
+        'border': '1px solid #F8F8F8',
+        'border-radius': '5px',
+        'opacity': '1',
+        'text-align': 'left',
+        'letter-spacing': '0.9px',
+        'color': '#214353',
+        'opacity': '1',
+      }"
       border
-      style="overflow: auto;"
+      max-height="70vh"
     >
       <el-table-column label="Ticket">
         <div slot-scope="scope">
@@ -46,43 +70,25 @@ with this file. If not, see
           {{ scope.row.creation }}
         </div>
       </el-table-column>
-      <el-table-column
-          label="Actions"
-          fixed="right"
-          width=120>
+      <el-table-column label="Actions" fixed="right" width="80">
         <div slot-scope="scope">
           <el-tooltip :content="$t('spinal-twin.TicketInspect')">
-              <el-button
-                @click="select(scope.row)"
-                icon="el-icon-search"
-                circle
-              ></el-button>
-          </el-tooltip>
-          <el-tooltip :content="$t('spinal-twin.TicketArchive')">
-              <el-button
-                @click="archive(scope.row)"
-                icon="el-icon-delete"
-                circle
-                type=danger
-              ></el-button>
+            <el-button
+              @click="select(scope.row)"
+              icon="el-icon-search"
+              circle
+            ></el-button>
           </el-tooltip>
         </div>
       </el-table-column>
     </el-table>
-    <el-button
-      v-on:click.native="debug(tickets)"
-      class="spl-input-button"
-      icon="el-icon-search"
-      type="primary"
-      size="small"
-      circle
-    ></el-button>
-  </el-main>
+  </div>
 </template>
 
 <script>
 export default {
-  name: "NodeTicketsList.vue",
+  // name: 'NodeTicketsList.vue',
+  name: 'NodeTicketsList',
   props: {
     tickets: {
       required: true,
@@ -90,22 +96,12 @@ export default {
     },
   },
   data() {
-    return {
-      
-    };
+    return {};
   },
   methods: {
-    debug(item) {
-      console.debug(item);
-    },
-
-    archive(ticket) {
-      this.$emit("archive", ticket);
-    },
-
     select(ticket) {
-      this.$emit("select", ticket);
+      this.$emit('select', ticket);
     },
   },
-}
+};
 </script>

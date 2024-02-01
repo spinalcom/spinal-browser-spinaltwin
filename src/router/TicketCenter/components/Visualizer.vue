@@ -36,27 +36,26 @@ with this file. If not, see
 </template>
 
 <script>
-import { ViewManager } from "../../../services/ViewManager/ViewManager";
-import { BackEndTicket } from "../backend/ticket";
-import "../backend/EventHandler";
+import { ViewManager } from '../../../services/ViewManager/ViewManager';
+import '../backend/EventHandler';
 
 export default {
-  name: "Visualizer",
+  name: 'Visualizer',
   props: {
     Properties: {
       required: true,
       type: Object,
-      validator: function(value) {
-        if (value.viewKey == "") {
-          return "danger";
+      validator: function (value) {
+        if (value.viewKey == '') {
+          return 'danger';
         }
-        return "success";
+        return 'success';
       },
     },
   },
   data() {
     return {
-      CurrentObject: "",
+      CurrentObject: '',
       data: [
         {
           values: [],
@@ -64,8 +63,8 @@ export default {
           marker: {
             colors: [],
           },
-          textinfo: "value",
-          type: "pie",
+          textinfo: 'value',
+          type: 'pie',
         },
       ],
     };
@@ -80,7 +79,6 @@ export default {
   },
   methods: {
     async onViewChange(view) {
-      console.debug(view);
       this.CurrentObject = view.name;
 
       // Plotly.redraw(this.$refs.charts, this.data);
@@ -90,9 +88,6 @@ export default {
         item.name,
         item.serverId
       );
-    },
-    async debug() {
-      console.debug("");
     },
   },
 };

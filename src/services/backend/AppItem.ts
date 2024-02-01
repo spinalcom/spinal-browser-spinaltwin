@@ -22,19 +22,18 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
-import { SpinalNode } from "spinal-env-viewer-graph-service";
-import { FileSystem } from 'spinal-core-connectorjs_type'
+import { FileSystem } from 'spinal-core-connectorjs_type';
+import { SpinalNode } from 'spinal-env-viewer-graph-service';
 import {
-  SITE_RELATION,
   BUILDING_RELATION,
-  FLOOR_RELATION,
-  ZONE_RELATION,
-  ROOM_RELATION,
-  REFERENCE_RELATION,
   EQUIPMENT_RELATION,
-
-  EQUIPMENT_TYPE
-} from "../../constants";
+  FLOOR_RELATION,
+  REFERENCE_RELATION,
+  ROOM_RELATION,
+  SITE_RELATION,
+  ZONE_RELATION,
+} from '../../constants';
+import { IBimObject } from '../interfaces/IBimObject';
 
 export class AppItem {
   name: string;
@@ -43,24 +42,24 @@ export class AppItem {
   children?: Map<string, AppItem[]>;
 
   constructor(name: string, serverId: number, type: string) {
-    this.name = name
-    this.serverId = serverId
+    this.name = name;
+    this.serverId = serverId;
     this.type = type;
   }
 
   getType(): string {
     const node = FileSystem._objects[this.serverId];
-    if (!node || !node.info.type) return "";
+    if (!node || !node.info.type) return '';
     return node.info.type.get();
   }
 
   getId(): string {
     const node = FileSystem._objects[this.serverId];
-    if (!node || !node.info.id) return "";
+    if (!node || !node.info.id) return '';
     return node.info.id.get();
   }
 
-  getColor(): string {
+  getColor(): string | undefined {
     const node = FileSystem._objects[this.serverId];
     if (!node || !node.info.color) return undefined;
     return node.info.color.get();
@@ -69,79 +68,91 @@ export class AppItem {
   setColor(color): void {
     const node = FileSystem._objects[this.serverId];
     if (!node) return;
-    if (!node.info.color) node.info.add_attr("color", color)
+    if (!node.info.color) node.info.add_attr('color', color);
     else node.info.color.set(color);
   }
 
-  async getBimObjectsByType(typeName) {
-    const node = <SpinalNode<any>>(FileSystem._objects[this.serverId]);
-    const tmp = await node.find([
-      SITE_RELATION,
-      BUILDING_RELATION,
-      FLOOR_RELATION,
-      ZONE_RELATION,
-      ROOM_RELATION,
-      REFERENCE_RELATION,
-      EQUIPMENT_RELATION,
-      "SpinalSystemServiceTicketHasProcess"
-    ], (item) => {
-      return (item.info.type && item.info.type.get() === typeName)
-    })
+  async getBimObjectsByType(typeName: string): Promise<IBimObject[]> {
+    const node = <SpinalNode<any>>FileSystem._objects[this.serverId];
+    const tmp = await node.find(
+      [
+        SITE_RELATION,
+        BUILDING_RELATION,
+        FLOOR_RELATION,
+        ZONE_RELATION,
+        ROOM_RELATION,
+        REFERENCE_RELATION,
+        EQUIPMENT_RELATION,
+        'SpinalSystemServiceTicketHasProcess',
+      ],
+      (item) => {
+        return item.info.type && item.info.type.get() === typeName;
+      }
+    );
 
+    const res: IBimObject[] = [];
     return tmp.reduce((arr, bimObj) => {
       for (const item of arr) {
         if (item._server_id === bimObj._server_id) return arr;
       }
       arr.push({
-        _server_id: bimObj._server_id,
+        _server_id: bimObj._server_id!,
         bimFileId: bimObj.info.bimFileId.get(),
         dbid: bimObj.info.dbid.get(),
         externalId: bimObj.info.externalId.get(),
         id: bimObj.info.id.get(),
         name: bimObj.info.name.get(),
         type: bimObj.info.type.get(),
-      })
+      });
       return arr;
-    }, [])
+    }, res);
   }
 
-  addChildrenInItem(allItems: Map<number, AppItem>, node: SpinalNode<any>, type): void {
-    if (typeof this.children === "undefined") {
-      Object.assign(this, { children: new Map() })
+  addChildrenInItem(
+    allItems: Map<number, AppItem>,
+    node: SpinalNode<any>,
+    type
+  ): void {
+    if (typeof this.children === 'undefined') {
+      Object.assign(this, { children: new Map() });
     }
     const nodeType = node.info.type.get();
-    if (!this.children.has(nodeType)) {
-      this.children.set(nodeType, [])
+    if (!this.children?.has(nodeType)) {
+      this.children?.set(nodeType, []);
     }
-    const arr = this.children.get(nodeType)
+    const arr = this.children?.get(nodeType)!;
     const child = AppItem.getItemFromMap(allItems, node, type);
     arr.push(child);
   }
 
-  static getItemFromMap(allItems: Map<number, AppItem>, node: SpinalNode<any>, type)
-    : AppItem {
-    const server_id: number = node._server_id
+  static getItemFromMap(
+    allItems: Map<number, AppItem>,
+    node: SpinalNode<any>,
+    type
+  ): AppItem {
+    const server_id: number = node._server_id!;
     if (allItems.has(server_id)) {
-      return allItems.get(server_id)
+      return allItems.get(server_id)!;
     }
-    const item: AppItem = new AppItem(node.info.name.get(), server_id, type)
+    const item: AppItem = new AppItem(node.info.name.get(), server_id, type);
     allItems.set(server_id, item);
-    return item
+    return item;
   }
 
-  countItems()
-  {
+  async countItems(): Promise<number> {
     const node = FileSystem._objects[this.serverId];
     if (node && node.getType().get() === this.type) return 1;
-    if (typeof this.children === "undefined") return 0;
-    const prom = [];
+    if (typeof this.children === 'undefined') {
+      return 0;
+    }
+    const prom: Promise<number>[] = [];
     for (const [, arrayItem] of this.children) {
       for (const item of arrayItem) {
         prom.push(item.countItems());
       }
     }
-    return Promise.all(prom)
-      .then((resArr) => resArr.reduce((prev, curr) => prev + curr, 0));
+    return Promise.all(prom).then((resArr) =>
+      resArr.reduce((prev, curr) => prev + curr, 0)
+    );
   }
 }
-

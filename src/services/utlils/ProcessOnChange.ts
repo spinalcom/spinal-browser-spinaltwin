@@ -21,7 +21,7 @@
  * with this file. If not, see
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
-import { Process, Model } from 'spinal-core-connectorjs_type';
+import { Model, Process } from 'spinal-core-connectorjs_type';
 const throttle = require('lodash.throttle');
 const debounce = require('lodash.debounce');
 
@@ -35,8 +35,8 @@ const debounce = require('lodash.debounce');
  * @extends {Process}
  */
 export default class ProcessOnChange extends Process {
-  _models: spinal.Model[]
-  fctOnChange: () => void
+  _models: spinal.Model[];
+  fctOnChange: () => void;
   /**
    *Creates an instance of ProcessOnChange.
    * @param {fctOnChange} fctOnChange
@@ -47,8 +47,8 @@ export default class ProcessOnChange extends Process {
    *   })} [option]
    * @memberof ProcessOnChange
    */
-   constructor(fctOnChange, option) {
-    super(new Model, false);
+  constructor(fctOnChange, option) {
+    super(new Model(), false);
     this._models = [];
     if (typeof option !== 'undefined') {
       if (option.type === 'debounce') {
@@ -112,5 +112,4 @@ export default class ProcessOnChange extends Process {
       return this.fctOnChange();
     }
   }
-
 }

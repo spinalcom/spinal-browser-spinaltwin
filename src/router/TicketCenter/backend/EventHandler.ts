@@ -21,25 +21,26 @@
  * with this file. If not, see
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
-import { EventBus } from "./event";
-import { viewerUtils } from "../../../services/viewerUtils/viewerUtils";
-import BackEndTicket from "../backend/ticket";
+import { EventBus } from './event';
+import { viewerUtils } from '../../../services/viewerUtils/viewerUtils';
+import BackEndTicket from '../backend/ticket';
 
-var lastColorZone = null;
-var lastColorItem = null;
-var backEndTicket = BackEndTicket.getInstance()
+var lastColorZone: any = null;
+var lastColorItem: any = null;
+var backEndTicket = BackEndTicket.getInstance();
 
 EventBus.$on('view-color-item', async (item) => {
-
-  if (lastColorItem || (lastColorZone &&
-    lastColorZone.server_id === item.server_id)) {
-    lastColorItem = null
-    lastColorZone = null
-    viewerUtils.restoreColorThemingItems()
+  if (
+    lastColorItem ||
+    (lastColorZone && lastColorZone.server_id === item.server_id)
+  ) {
+    lastColorItem = null;
+    lastColorZone = null;
+    viewerUtils.restoreColorThemingItems();
   } else {
-    viewerUtils.restoreColorThemingItems()
-    lastColorZone = null
-    lastColorItem = item
+    viewerUtils.restoreColorThemingItems();
+    lastColorZone = null;
+    lastColorItem = item;
     const lstByModel = await backEndTicket.getLstByModel(item);
     for (const { selection, model } of lstByModel) {
       viewerUtils.colorThemingItems(model, item.color, selection);
@@ -50,21 +51,18 @@ EventBus.$on('view-color-item', async (item) => {
   }
 });
 
-
 EventBus.$on('view-color-all', async (items, zone) => {
-  console.log("----items", items);
-  console.log("----zone", zone);
-
-
-  if (lastColorItem || (lastColorZone &&
-    lastColorZone.server_id === zone.server_id)) {
-    lastColorItem = null
-    lastColorZone = null
-    viewerUtils.restoreColorThemingItems()
+  if (
+    lastColorItem ||
+    (lastColorZone && lastColorZone.server_id === zone.server_id)
+  ) {
+    lastColorItem = null;
+    lastColorZone = null;
+    viewerUtils.restoreColorThemingItems();
   } else {
-    viewerUtils.restoreColorThemingItems()
-    lastColorZone = zone
-    lastColorItem = null
+    viewerUtils.restoreColorThemingItems();
+    lastColorZone = zone;
+    lastColorItem = null;
     for (const item of items) {
       const lstByModel = await backEndTicket.getLstByModel(item, true);
       for (const { selection, model } of lstByModel) {
@@ -86,7 +84,7 @@ EventBus.$on('view-isolate-item', async (item) => {
 });
 
 EventBus.$on('view-show-all', () => {
-  viewerUtils.showAll()
+  viewerUtils.showAll();
 });
 
 EventBus.$on('view-isolate-all', async (zone) => {

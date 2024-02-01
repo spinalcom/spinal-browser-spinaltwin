@@ -23,15 +23,13 @@ with this file. If not, see
 -->
 
 <template>
-  <div>
-    OperationCenter
-  </div>
+  <div> OperationCenter </div>
 </template>
 <script>
 export default {
-  name: "OperationCenter",
+  name: 'OperationCenter',
   data() {
     return {};
-  }
+  },
 };
 </script>

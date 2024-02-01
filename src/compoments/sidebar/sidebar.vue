@@ -46,12 +46,11 @@ with this file. If not, see
 </template>
 
 <script>
-import sidebarMenu from "./sidebarMenu.vue";
-import { EventBus } from "../../services/event";
-// import "./eventSideBar";
+import sidebarMenu from './sidebarMenu.vue';
+import { EventBus } from '../../services/event';
 
 export default {
-  name: "Sidebar",
+  name: 'Sidebar',
   components: { sidebarMenu },
   data() {
     return {
@@ -59,7 +58,7 @@ export default {
       selected: null,
       path: [],
       loading: true,
-      title: "",
+      title: '',
     };
   },
   computed: {
@@ -73,8 +72,8 @@ export default {
   mounted() {
     this.updateTitleButton();
     this.sideBarChangeBinded = this.sideBarChange.bind(this);
-    EventBus.$on("side-bar-change", this.sideBarChangeBinded);
-    EventBus.$emit("get-side-bar-floors-data");
+    EventBus.$on('side-bar-change', this.sideBarChangeBinded);
+    EventBus.$emit('get-side-bar-floors-data');
   },
   methods: {
     updateTitleButton() {
@@ -82,70 +81,49 @@ export default {
         if (this.building) {
           this.title = this.building.name;
         } else {
-          this.title = this.$t("sidebar.topButton.buildingNameDefault");
+          this.title = this.$t('sidebar.topButton.buildingNameDefault');
         }
       } else {
         this.title = this.selected.name;
       }
     },
-    // searchItemFromData(searchItem, data) {
-    //   for (const item of data) {
-    //     if (item.server_id === searchItem.server_id) return item;
-    //   }
-    //   for (const item of data) {
-    //     if (item.children) {
-    //       const child = this.searchItemFromData(searchItem, item.children);
-    //       if (child) return null;
-    //     }
-    //   }
-    //   return null;
-    // },
     sideBarChange(data, building) {
-      // console.log("sideBarChange", data);
-
       this.loading = false;
       this.data = data;
       this.building = building;
-      // if (this.selected) {
-      // const item = this.searchItemFromData(this.selected, this.data);
-      // console.log("this.selected", this.selected, item);
-      // sidebarmenu
-      // if (this.selected.children) {
-      // }
-      // }
       this.updateTitleButton();
     },
     onSelect(item) {
       if (!item.children) {
-        EventBus.$emit("sidebar-selected-item", item);
+        EventBus.$emit('sidebar-selected-item', item);
         return;
       }
       this.path.push(item);
       this.selected = item;
-      EventBus.$emit("sidebar-selected-item", item);
+      EventBus.$emit('sidebar-selected-item', item);
       this.updateTitleButton();
     },
     goBack() {
       this.path.pop();
       if (this.path.length === 0) {
-        EventBus.$emit("sidebar-selected-item", null);
+        EventBus.$emit('sidebar-selected-item', null);
         this.selected = null;
       } else {
         this.selected = this.path[this.path.length - 1];
-        EventBus.$emit("sidebar-selected-item", this.selected);
+        EventBus.$emit('sidebar-selected-item', this.selected);
       }
       this.updateTitleButton();
       this.homeSelect();
     },
     homeSelect() {
       if (this.selected) {
-        EventBus.$emit("sidebar-homeSelect", this.selected);
+        EventBus.$emit('sidebar-homeSelect', this.selected);
       } else {
-        EventBus.$emit("sidebar-homeSelect");
+        EventBus.$emit('sidebar-homeSelect');
       }
     },
     onMouseOver(item) {
-      EventBus.$emit("sidebar-mouseover-item", item);
+      EventBus.$emit('sidebar-mouseover-item', item);
     },
   },
 };

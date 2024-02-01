@@ -24,31 +24,39 @@ with this file. If not, see
 
 <template>
   <div>
-    <el-button type="primary"
-    icon="el-icon-circle-plus-outline"
-               circle
-               @click="dialogFormVisible = true">
+    <el-button
+      type="primary"
+      icon="el-icon-circle-plus-outline"
+      circle
+      @click="dialogFormVisible = true"
+    >
     </el-button>
 
-    <div class="div-dialog"
-         title="Adresse d'expédition"
-         v-if="dialogFormVisible">
+    <div
+      class="div-dialog"
+      title="Adresse d'expédition"
+      v-if="dialogFormVisible"
+    >
       <!-- ///////////////////////////////////////////////////////////////////////////////////-
        ////////////////////////////////// Tableau Categorie Ticket /////////////////////////////////////
      ////////////////////////////////////////////////////////////////////////////////////////-->
       <div class="radio-cas">
-        <el-cascader-panel v-on:change="cascaderSelection"
-                           :props="prop"></el-cascader-panel>
+        <el-cascader-panel
+          v-on:change="cascaderSelection"
+          :props="prop"
+        ></el-cascader-panel>
       </div>
-      <br>
+      <br />
 
       <!-- ///////////////////////////////////////////////////////////////////////////////////-
        ////////////////////////////////// Formulaire tickey /////////////////////////////////////
      ////////////////////////////////////////////////////////////////////////////////////////-->
-      <el-form :disabled="isFormDisable"
-               ref="form"
-               :model="form"
-               label-width="120px">
+      <el-form
+        :disabled="isFormDisable"
+        ref="form"
+        :model="form"
+        label-width="120px"
+      >
         <el-form-item label="Resources">
           <el-radio-group v-model="form.priority">
             <el-radio label="0">Occasionally</el-radio>
@@ -57,40 +65,37 @@ with this file. If not, see
           </el-radio-group>
         </el-form-item>
         <el-form-item label="Activity form">
-          <el-input type="textarea"
-                    v-model="form.description"></el-input>
+          <el-input type="textarea" v-model="form.description"></el-input>
         </el-form-item>
       </el-form>
 
-      <div slot="footer"
-           class="dialog-footer">
+      <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">Annuler</el-button>
-        <el-button type="primary"
-                   @click="confirmTicket">Confirmer</el-button>
+        <el-button type="primary" @click="confirmTicket">Confirmer</el-button>
       </div>
     </div>
 
-  <br>
+    <br />
   </div>
 </template>
 
 <script>
 // import SpinalBackend from "../../services/spinalBackend";
-import { serviceTicketPersonalized } from "spinal-service-ticket";
-import { SpinalGraphService } from "spinal-env-viewer-graph-service";
+import { serviceTicketPersonalized } from 'spinal-service-ticket';
+import { SpinalGraphService } from 'spinal-env-viewer-graph-service';
 
 export default {
   data() {
     return {
       dialogFormVisible: false,
       isFormDisable: true,
-      form: { description: "", priority: 0 },
+      form: { description: '', priority: 0 },
       prop: {
         lazy: true,
         async lazyLoad(node, resolve) {
           if (node.level === 0) {
             const contextList = await serviceTicketPersonalized.getContexts();
-            const res = contextList.map(itm => {
+            const res = contextList.map((itm) => {
               return { value: itm.id, label: itm.name, leaf: false };
             });
             resolve(res);
@@ -98,21 +103,20 @@ export default {
             const processLst = await serviceTicketPersonalized.getAllProcess(
               node.data.value
             );
-            console.log(processLst);
-            const res = processLst.map(itm => {
+            const res = processLst.map((itm) => {
               return {
                 value: itm.id.get(),
                 label: itm.name.get(),
-                leaf: false
+                leaf: false,
               };
             });
-            console.log(res);
             resolve(res);
           } else {
-            const CommonIncidentLst = await serviceTicketPersonalized.getCommonIncident(
-              node.data.value
-            );
-            const res = CommonIncidentLst.map(itm => {
+            const CommonIncidentLst =
+              await serviceTicketPersonalized.getCommonIncident(
+                node.data.value
+              );
+            const res = CommonIncidentLst.map((itm) => {
               return { value: itm.id, label: itm.name, leaf: true };
             });
             resolve(res);
@@ -127,12 +131,12 @@ export default {
           //   // Appelez le callback `resolve` pour renvoyer les données des noeuds enfants et indiquer que le chargement est terminé.
           //   resolve(nodes);
           // }, 1000);
-        }
-      }
+        },
+      },
     };
   },
   components: {},
-  props: ["nodeId"],
+  props: ['nodeId'],
   methods: {
     cascaderSelection(value) {
       this.ticketContextId = value[0];
@@ -145,7 +149,6 @@ export default {
       const commonName = SpinalGraphService.getInfo(this.ticketCommonId);
       this.form.name = commonName && commonName.name.get();
 
-console.log(this.form, this.ticketContextId, this.ticketProcessId)
       serviceTicketPersonalized
         .addTicket(
           this.form,
@@ -154,13 +157,13 @@ console.log(this.form, this.ticketContextId, this.ticketProcessId)
           this.nodeId
         )
         .then(() => {
-          this.$emit("reload");
+          this.$emit('reload');
         });
-    }
+    },
   },
   async mounted() {},
   watch: {},
-  beforeDestroy() {}
+  beforeDestroy() {},
 };
 </script>
 

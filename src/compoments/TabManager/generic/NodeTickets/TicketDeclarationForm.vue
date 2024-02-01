@@ -25,23 +25,25 @@ with this file. If not, see
 <template>
   <el-container>
     <el-header>
-      <h2>
+      <h5 class="ticket-declare-title">
         {{ $t('spinal-twin.TicketDeclare') }}
-      </h2>
+      </h5>
     </el-header>
+
     <el-main>
       <el-form
         ref="TicketDeclarationForm"
         :model="newTicket"
         label-width="80px"
       >
-
-        <el-form-item label="Context">
+        <el-form-item>
+          <label class="ticket-declare-subtitle">Context</label>
           <el-select
             v-model="newTicket.context"
-            placeholder="placeholder"
-            @change="getProcesses()"
+            @change="setProcesses()"
+            placeholder="---"
           >
+            <!-- :placeholder="$t('spinal-twin.SelectContext')" -->
             <el-option
               v-for="context in contexts"
               :key="context.id"
@@ -50,15 +52,15 @@ with this file. If not, see
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item
-          v-show="processes"
-          label="Process"
-        >
+
+        <el-form-item v-show="processes">
+          <label class="ticket-declare-subtitle">Process</label>
           <el-select
             v-model="newTicket.process"
-            placeholder="placeholder"
-            @change="getIncidents()"
+            placeholder="---"
+            @change="setIncidents()"
           >
+            <!-- :placeholder="$t('spinal-twin.SelectProcess')" -->
             <el-option
               v-for="process in processes"
               :key="process.id.get()"
@@ -67,42 +69,56 @@ with this file. If not, see
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item
-          v-show="incidents"
-          label="Incident"
-        >
-          <el-select
+
+        <el-form-item v-show="incidents">
+          <label class="ticket-declare-subtitle">Incident</label>
+          <el-autocomplete
             v-model="newTicket.incident"
-            placeholder="placeholder"
+            :fetch-suggestions="suggestIncidents"
+            @select="selected"
+            placeholder="---"
           >
-            <el-option
-              v-for="incident in incidents"
-              :key="incident.id"
-              :label="incident.name"
-              :value="incident"
-            ></el-option>
-          </el-select>
+            <!-- :placeholder="$t('spinal-twin.SelectIncident')" -->
+            <div slot-scope="{ item }">
+              <div>{{ item }}</div>
+            </div>
+          </el-autocomplete>
         </el-form-item>
+
         <el-form-item
-          v-show="newTicket.incident != ''"
-          :label="$t('spinal-twin.Priority')"
+          v-show="newTicket.incident != '' && newTicket.incident != undefined"
         >
-          <el-radio-group v-model="newTicket.priority">
+        <label class="ticket-declare-subtitle">{{$t('spinal-twin.Priority')}}</label>
+          <el-radio-group class="priority-radio-group" v-model="newTicket.priority">
             <el-radio label="Occasionally"></el-radio>
             <el-radio label="Normal"></el-radio>
             <el-radio label="Urgent"></el-radio>
           </el-radio-group>
         </el-form-item>
+        <el-form-item
+          v-show="newTicket.incident != '' && newTicket.incident != undefined"
+        >
+        <label class="ticket-declare-subtitle">{{$t('spinal-twin.Description')}}</label>
+          <el-input
+            v-model="newTicket.description"
+            autosize
+            placeholder="---"
+            type="textarea"
+          ></el-input>
+          <!-- :placeholder="$t('spinal-twin.Description')" -->
+        </el-form-item>
       </el-form>
     </el-main>
-    <el-footer style="position: absolute; bottom: 50px">
+
+    <!-- <el-footer style="position: absolute; bottom: 50px"> -->
+      <el-footer >
       <el-button @click="close()">
         {{ $t('Cancel') }}
       </el-button>
       <el-button
         @click="confirm()"
         type="primary"
-        :disabled="newTicket.priority == ''"
+        :disabled="newTicket.priority == '' || newTicket.incident == ''"
       >
         {{ $t('Confirm') }}
       </el-button>
@@ -111,10 +127,12 @@ with this file. If not, see
 </template>
 
 <script>
-import { spinalServiceTicket } from "spinal-service-ticket"
+import { spinalServiceTicket } from 'spinal-service-ticket';
+import { serviceDocumentation } from 'spinal-env-viewer-plugin-documentation-service';
+import { SpinalGraphService } from 'spinal-env-viewer-graph-service';
 
 export default {
-  name: "TicketDeclarationForm",
+  name: 'TicketDeclarationForm',
   props: {
     node: {
       required: true,
@@ -126,29 +144,28 @@ export default {
     },
   },
 
-  computed:
-  {
-    user()
-    {
+  computed: {
+    user() {
       return {
-        name: "admin",
-        id: FileSystem._userid
+        username: 'Administration',
+        id: FileSystem._userid,
       };
-    }
+    },
   },
-  
+
   data() {
     return {
       newTicket: {
-        context: "",
-        process: "",
-        incident: "",
-        priority: "",
+        context: '',
+        process: '',
+        incident: '',
+        priority: '',
+        description: '',
       },
       contexts: false,
       processes: false,
       incidents: false,
-    }
+    };
   },
 
   async mounted() {
@@ -156,45 +173,110 @@ export default {
   },
 
   methods: {
-    async getProcesses()
-    {
-      this.processes = await spinalServiceTicket.getAllProcess(this.newTicket.context);
+    async setProcesses() {
+      this.processes = await spinalServiceTicket.getAllProcess(
+        this.newTicket.context
+      );
     },
 
-    async getIncidents()
-    {
-      this.incidents = await spinalServiceTicket.getCommonIncident(this.newTicket.process);
+    async setIncidents() {
+      this.incidents = await spinalServiceTicket.getCommonIncident(
+        this.newTicket.process
+      );
     },
 
-    close()
-    {
-      this.$emit("close");
+    async suggestIncidents(query = '', callback) {
+      let res = [];
+      for (const incident of this.incidents) {
+        if (incident.name.toLowerCase().includes(query.toLowerCase())) {
+          res.push(incident.name);
+        }
+      }
+      callback(res);
     },
 
-    async confirm()
-    {
+    selected(item) {
+      this.newTicket.incident = item;
+    },
+
+    close() {
+      this.$emit('close');
+    },
+
+    async confirm() {
       let infos = {
         processId: this.newTicket.process,
-        name: this.newTicket.incident.name,
+        name: this.newTicket.incident,
         user: this.user,
-      }
-      switch (this.newTicket.priority)
-      {
-        case "Occasionally":
+        description: this.newTicket.description
+      };
+      switch (this.newTicket.priority) {
+        case 'Occasionally':
           infos.priority = 0;
           break;
-        case "Normal":
+        case 'Normal':
           infos.priority = 1;
           break;
-        case "Urgent":
+        case 'Urgent':
           infos.priority = 2;
           break;
         default:
           infos.priority = 0;
       }
-      await spinalServiceTicket.addTicket(infos, this.newTicket.process, this.newTicket.context, this.node.info.id.get())
-      this.$emit("update");
+      let ticketId = await spinalServiceTicket.addTicket(
+        infos,
+        this.newTicket.process,
+        this.newTicket.context,
+        this.node.info.id.get()
+      );
+      if (
+        this.newTicket.description != undefined &&
+        this.newTicket.description != ''
+      ) {
+        let ticketnode = await SpinalGraphService.getRealNode(ticketId);
+        await serviceDocumentation.addNote(
+          ticketnode,
+          this.user,
+          this.newTicket.description,
+          'text'
+        );
+      }
+      this.$emit('update');
     },
   },
-}
+};
 </script>
+<style scoped>
+.ticket-declare-title{
+  background-color: rgb(255, 255, 255);
+  text-align: left;
+  letter-spacing: 1px;
+  color: rgb(33, 67, 83);
+  opacity: 1;
+  height: fit-content;
+  margin:20px;
+}
+.ticket-declare-subtitle{
+  background-color: rgb(255, 255, 255);
+  text-align: left;
+  letter-spacing: 1px;
+  color: rgb(33, 67, 83);
+  opacity: 1;
+  height: fit-content;
+  margin-right: 20px
+}
+.el-radio{
+  background-color: rgb(255, 255, 255);
+  text-align: left;
+  letter-spacing: 1px;
+  color: rgb(33, 67, 83);
+  opacity: 1;
+  height: fit-content;
+}
+.priority-radio-group{
+  margin-top: 10px;
+}
+
+</style>
+<style>
+</style>

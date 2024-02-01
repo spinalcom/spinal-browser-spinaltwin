@@ -64,11 +64,11 @@ with this file. If not, see
       @mouseleave="hover = false"
     >
       <div class="text-image">
-        <div class="img_texte" style="float:right">{{ message }}</div>
+        <div class="img_texte" style="float: right">{{ message }}</div>
         <img
           :src="`/sceen/_?u=${image}`"
           alt="image"
-          style="width:200px;height:200px; border-radius: 10px; float:right"
+          style="width: 200px; height: 200px; border-radius: 10px; float: right"
         />
       </div>
 
@@ -96,11 +96,11 @@ with this file. If not, see
 </template>
 
 <script>
-import { MESSAGE_TYPES } from "spinal-models-documentation";
-import actionBtnVue from "./actionsBtn.vue";
+import { MESSAGE_TYPES } from 'spinal-models-documentation';
+import actionBtnVue from './actionsBtn.vue';
 
 export default {
-  name: "message",
+  name: 'message',
   props: {
     date: {},
     username: {},
@@ -110,7 +110,7 @@ export default {
     viewPoint: {},
   },
   components: {
-    "actions-btn": actionBtnVue,
+    'actions-btn': actionBtnVue,
   },
   data() {
     this.MESSAGE_TYPES = MESSAGE_TYPES;
@@ -138,9 +138,9 @@ export default {
     },
 
     download() {
-      var element = document.createElement("a");
-      element.setAttribute("href", "/sceen/_?u=" + this.image);
-      element.setAttribute("download", this.info.name.get());
+      var element = document.createElement('a');
+      element.setAttribute('href', '/sceen/_?u=' + this.image);
+      element.setAttribute('download', this.info.name.get());
       element.click();
     },
 
@@ -179,7 +179,7 @@ export default {
           bimObjectService.mappingModelIdBimFileId[el.modelId].bimFileId;
         const model = spinal.BimObjectService.getModelByBimfile(bimFileId);
 
-        model.selector.setSelection(el.selection, model, "selectOnly");
+        model.selector.setSelection(el.selection, model, 'selectOnly');
       });
     },
   },
@@ -241,7 +241,7 @@ li.clearfix {
     bottom: 100%;
     left: 7%;
     border: solid transparent;
-    content: " ";
+    content: ' ';
     height: 0;
     width: 0;
     position: absolute;
@@ -291,7 +291,7 @@ li.clearfix {
   visibility: hidden;
   display: block;
   font-size: 0;
-  content: " ";
+  content: ' ';
   clear: both;
   height: 0;
   img {

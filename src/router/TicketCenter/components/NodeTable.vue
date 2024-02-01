@@ -57,7 +57,7 @@ with this file. If not, see
       :label="$t(`TicketNumber`)"
       v-if="
         haveChildren &&
-          this.items[0].type !== 'SpinalSystemServiceTicketTypeStep'
+        this.items[0].type !== 'SpinalSystemServiceTicketTypeStep'
       "
     >
       <div slot-scope="scope">{{ ticketNumber(scope.row) }}</div>
@@ -112,17 +112,16 @@ with this file. If not, see
 </template>
 
 <script>
-import { ViewManager } from "../../../services/ViewManager/ViewManager";
-import { ColorGenerator } from "../../../services/utlils/ColorGenerator";
-import { EventBus } from "../backend/event";
-import excelManager from "spinal-env-viewer-plugin-excel-manager-service";
-import fileSaver from "file-saver";
-import { FileSystem } from "spinal-core-connectorjs_type";
-import moment from "moment";
-import TicketDetails from "./TicketDetails";
+import { ViewManager } from '../../../services/ViewManager/ViewManager';
+import { ColorGenerator } from '../../../services/utlils/ColorGenerator';
+import { EventBus } from '../backend/event';
+import excelManager from 'spinal-env-viewer-plugin-excel-manager-service';
+import fileSaver from 'file-saver';
+import { FileSystem } from 'spinal-core-connectorjs_type';
+import moment from 'moment';
 
 export default {
-  name: "NodeTable",
+  name: 'NodeTable',
   components: {},
   props: {
     viewKey: { required: true, type: String },
@@ -139,24 +138,24 @@ export default {
   },
   watch: {
     items: {
-      handler () {
+      handler() {
         this.update();
       },
       deep: true,
-    }
+    },
   },
   mounted() {
     this.update();
   },
   methods: {
     selectInView(item) {
-      EventBus.$emit("view-select-item", {
+      EventBus.$emit('view-select-item', {
         server_id: item.serverId,
         color: item.color,
       });
     },
     SeeEvent(item) {
-      EventBus.$emit("view-isolate-item", {
+      EventBus.$emit('view-isolate-item', {
         server_id: item.serverId,
         color: item.color,
       });
@@ -166,13 +165,13 @@ export default {
         return { server_id: item.serverId, color: item.color };
       });
 
-      EventBus.$emit("view-color-all", items, { server_id: zone });
+      EventBus.$emit('view-color-all', items, { server_id: zone });
     },
     ShowAll() {
-      EventBus.$emit("view-show-all");
+      EventBus.$emit('view-show-all');
     },
     isolateAll(zone) {
-      EventBus.$emit("view-isolate-all", { server_id: zone });
+      EventBus.$emit('view-isolate-all', { server_id: zone });
     },
     onSelectItem(item) {
       ViewManager.getInstance(this.viewKey).push(item.name, item.serverId);
@@ -180,26 +179,26 @@ export default {
     detailsTicket(item) {
       ViewManager.getInstance(this.viewKey).push(item.name, item.serverId);
       this.ticketSelected = item.serverId;
-      this.$emit("update", this.ticketSelected);
+      this.$emit('update', this.ticketSelected);
     },
     explorerDetailsTab() {
       for (const column of this.columns) {
-        if (column && column === "SpinalServiceTicketProcess")
-          return "Processes";
-        else if (column && column === "SpinalSystemServiceTicketTypeStep")
-          return "Steps";
-        else if (column && column === "SpinalSystemServiceTicketTypeTicket")
-          return "Tickets";
+        if (column && column === 'SpinalServiceTicketProcess')
+          return 'Processes';
+        else if (column && column === 'SpinalSystemServiceTicketTypeStep')
+          return 'Steps';
+        else if (column && column === 'SpinalSystemServiceTicketTypeTicket')
+          return 'Tickets';
       }
     },
     explorerTab() {
       for (const item of this.items) {
-        if (item.type === "SpinalSystemServiceTicket") return "Workflow";
-        else if (item.type === "SpinalServiceTicketProcess") return "Processes";
-        else if (item.type === "SpinalSystemServiceTicketTypeStep")
-          return "Steps";
-        else if (item.type === "SpinalSystemServiceTicketTypeTicket")
-          return "Tickets";
+        if (item.type === 'SpinalSystemServiceTicket') return 'Workflow';
+        else if (item.type === 'SpinalServiceTicketProcess') return 'Processes';
+        else if (item.type === 'SpinalSystemServiceTicketTypeStep')
+          return 'Steps';
+        else if (item.type === 'SpinalSystemServiceTicketTypeTicket')
+          return 'Tickets';
       }
     },
     update() {
@@ -249,7 +248,7 @@ export default {
       }
     },
     getColor(color) {
-      return { backgroundColor: color[0] === "#" ? color : `#${color}` };
+      return { backgroundColor: color[0] === '#' ? color : `#${color}` };
     },
     columnValue(item, key) {
       if (item[key]) return item[key];
@@ -267,7 +266,7 @@ export default {
         if (_item.serverId === item.serverId) {
           var realNode = FileSystem._objects[item.serverId];
           if (
-            realNode.getType().get() === "SpinalSystemServiceTicketTypeTicket"
+            realNode.getType().get() === 'SpinalSystemServiceTicketTypeTicket'
           ) {
             return moment(realNode.info.creationDate.get()).fromNow();
           }
@@ -279,7 +278,7 @@ export default {
         if (_item.serverId === item.serverId) {
           var realNode = FileSystem._objects[item.serverId];
           if (
-            realNode.getType().get() === "SpinalSystemServiceTicketTypeTicket"
+            realNode.getType().get() === 'SpinalSystemServiceTicketTypeTicket'
           ) {
             return realNode.info.user.name;
           }
@@ -289,8 +288,8 @@ export default {
     exportToExcel() {
       let headers = [
         {
-          key: "name",
-          header: this.$t("name"),
+          key: 'name',
+          header: this.$t('name'),
           width: 20,
         },
       ];
@@ -303,11 +302,11 @@ export default {
       }
       let excelData = [
         {
-          name: "Tableau",
-          author: "",
+          name: 'Tableau',
+          author: '',
           data: [
             {
-              name: "Tableau",
+              name: 'Tableau',
               header: headers,
               rows: this.data,
             },

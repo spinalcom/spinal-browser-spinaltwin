@@ -141,16 +141,31 @@ export default {
 
     async $_sendnote(text, type, file = undefined, state = undefined, contextID = undefined, groupID = undefined)
     {
-      return await serviceDocumentation.twinAddNote(
-        this.node,
-        this.user,
-        text,
-        type,
-        file,
-        state,
-        contextID,
-        groupID
-      );
+      if(file != undefined){
+        return await serviceDocumentation.twinAddNote(
+          this.node,
+          this.user,
+          text,
+          type,
+          file,
+          state,
+          contextID,
+          groupID
+        );
+      }
+      else{
+        return await serviceDocumentation.twinAddNote(
+          this.node,
+          this.user,
+          text,
+          type,
+          [undefined],
+          state,
+          contextID,
+          groupID
+        );
+      }
+      
     },
 
     async sendNote()

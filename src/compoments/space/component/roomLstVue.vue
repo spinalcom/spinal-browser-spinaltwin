@@ -22,36 +22,32 @@ with this file. If not, see
 <http://resources.spinalcom.com/licenses.pdf>.
 -->
 
-
 <template>
   <el-row>
-    <!-- v-if="TabRoom === false" -->
-    <el-table :data="rooms"
-              class="tab"
-              border
-              style="width: 100%"
-              :header-cell-style="{&quot;background-color&quot;: &quot;#f0f2f5&quot;}"
-              @row-click="SeeEvent">
-      <el-table-column prop="name"
-                       label="Nom"
-                       align="center">
+    <el-table
+      :data="rooms"
+      class="tab"
+      border
+      style="width: 100%"
+      :header-cell-style="{ 'background-color': '#f0f2f5' }"
+      @row-click="SeeEvent"
+    >
+      <el-table-column prop="name" label="Nom" align="center">
       </el-table-column>
 
-      <el-table-column prop="surface"
-                       label="Surface"
-                       align="center">
+      <el-table-column prop="surface" label="Surface (m²)" align="center">
         <template slot-scope="scope">
-          {{ scope.row.surface | roundSurface }} m²
+          {{ scope.row.surface | roundSurface }}
         </template>
       </el-table-column>
-      <el-table-column label=""
-                       width="65"
-                       align="center">
+      <el-table-column label="" width="65" align="center">
         <template slot-scope="scope">
-          <el-button v
-                     icon="el-icon-arrow-right"
-                     circle
-                     @click.stop="PaPie(scope.row)"></el-button>
+          <el-button
+            v
+            icon="el-icon-arrow-right"
+            circle
+            @click.stop="PaPie(scope.row)"
+          ></el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -62,21 +58,21 @@ with this file. If not, see
 
 <script>
 // import { EventBus } from "../../../services/event";
-import RoomData from "../component/RoomData.vue";
+import RoomData from '../component/RoomData.vue';
 export default {
-  components: { "room-data": RoomData },
-  props: ["rooms", "color"],
+  components: { 'room-data': RoomData },
+  props: ['rooms', 'color'],
   data() {
     return {
       contextLst: [],
       TabRoom: false,
-      nodeId: undefined
+      nodeId: undefined,
     };
   },
   filters: {
     roundSurface(surface) {
       return Math.round(surface * 100) / 100;
-    }
+    },
   },
   watch: {
     // roomSelected() {
@@ -89,27 +85,23 @@ export default {
   beforeDestroy() {},
   methods: {
     SeeEvent(data) {
-      console.log(data);
-      this.$emit("seeEvent", { rooms: [data], color: this.color });
+      this.$emit('seeEvent', { rooms: [data], color: this.color });
     },
     SeeAll() {
-      this.$emit("seeEvent", { rooms: this.rooms, color: this.color });
+      this.$emit('seeEvent', { rooms: this.rooms, color: this.color });
     },
     PaPie(roo) {
       this.TabRoom = true;
       this.nodeId = roo.id;
-      this.$emit("addBreadcrumb", {
+      this.$emit('addBreadcrumb', {
         name: roo.name,
         roomNodeId: roo.id,
-        click: () => {
-          console.log("cliquez");
-          // this.seeRoomTable(roomData);
-        }
+        click: () => {},
       });
     },
     resetTabRoom() {
       this.TabRoom = false;
-    }
-  }
+    },
+  },
 };
 </script>

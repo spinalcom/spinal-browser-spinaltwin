@@ -23,44 +23,54 @@ with this file. If not, see
 -->
 
 <template>
-  <div v-loading="loading"
-       class="side-bar-compomenet-container">
+  <div v-loading="loading" class="side-bar-compomenet-container">
     <div class="side-bar-header-container">
-      <el-button class="button-icon-building-focus"
-                 type="info"
-                 icon="el-icon-s-home"
-                 size="small">
+      <el-button
+        class="button-icon-building-focus"
+        type="info"
+        icon="el-icon-s-home"
+        size="small"
+      >
         {{ buildingName }}
       </el-button>
     </div>
-    <el-menu ref="sideBarMenu"
-             class="spinal-side-bar-menu spinal-scrollbar"
-             background-color="#303133"
-             :collapse="collapse"
-             text-color="#fff"
-             active-text-color="#ffd04b"
-             :unique-opened="uniqueOpened"
-             @select="onSelect"
-             @open="onOpen"
-             @close="onClose">
-      <el-popover v-for="floor in data"
-                  :key="floor.id"
-                  placement="right"
-                  trigger="hover"
-                  :content="floor.name">
-        <el-submenu slot="reference"
-                    :index="floor.id">
+    <el-menu
+      ref="sideBarMenu"
+      class="spinal-side-bar-menu spinal-scrollbar"
+      background-color="#303133"
+      :collapse="collapse"
+      text-color="#fff"
+      active-text-color="#ffd04b"
+      :unique-opened="uniqueOpened"
+      @select="onSelect"
+      @open="onOpen"
+      @close="onClose"
+    >
+      <el-popover
+        v-for="floor in data"
+        :key="floor.id"
+        placement="right"
+        trigger="hover"
+        :content="floor.name"
+      >
+        <el-submenu slot="reference" :index="floor.id">
           <template slot="title">
             <span>{{ floor.name }}</span>
           </template>
-          <el-popover v-for="room in floor.children"
-                      :key="room.id"
-                      placement="right"
-                      trigger="hover"
-                      :content="room.name">
-            <el-menu-item slot="reference"
-                          :class="{'side-bar-selected-room-item' : room.id === roomIdSelected}"
-                          :index="room.id">
+          <el-popover
+            v-for="room in floor.children"
+            :key="room.id"
+            placement="right"
+            trigger="hover"
+            :content="room.name"
+          >
+            <el-menu-item
+              slot="reference"
+              :class="{
+                'side-bar-selected-room-item': room.id === roomIdSelected,
+              }"
+              :index="room.id"
+            >
               <template slot="title">
                 <span>{{ room.name }}</span>
               </template>
@@ -72,21 +82,21 @@ with this file. If not, see
   </div>
 </template>
 
-<script lang="ts">
-import { EventBus } from "../../services/event";
+<script>
+import { EventBus } from '../../services/event';
 
 export default {
-  name: "SidebarFloorList",
+  name: 'SidebarFloorList',
   data() {
     return {
       loading: true,
-      activeName: "",
+      activeName: '',
       data: [],
       building: null,
       uniqueOpened: true,
-      floorIdSelected: "",
-      roomIdSelected: "",
-      collapse: false
+      floorIdSelected: '',
+      roomIdSelected: '',
+      collapse: false,
     };
   },
   computed: {
@@ -94,31 +104,31 @@ export default {
       if (this.building) {
         return this.building.name;
       } else {
-        return "Batiment";
+        return 'Batiment';
       }
-    }
+    },
   },
   mounted() {
     this.sideBarChangeBinded = this.sideBarChange.bind(this);
-    EventBus.$on("side-bar-change", this.sideBarChangeBinded);
-    EventBus.$emit("get-side-bar-floors-data");
+    EventBus.$on('side-bar-change', this.sideBarChangeBinded);
+    EventBus.$emit('get-side-bar-floors-data');
   },
   beforeDestroy() {
-    EventBus.$off("side-bar-change", this.sideBarChangeBinded);
+    EventBus.$off('side-bar-change', this.sideBarChangeBinded);
   },
   methods: {
     onSelect(a, [floorId, roomId]) {
       this.roomIdSelected = roomId;
       EventBus.$emit(
-        "sidebar-selected-floor",
+        'sidebar-selected-floor',
         this.getRoomFromFloorId(floorId, roomId)
       );
     },
     onOpen(floorId) {
-      EventBus.$emit("sidebar-selected-floor", this.getFloorById(floorId));
+      EventBus.$emit('sidebar-selected-floor', this.getFloorById(floorId));
     },
     onClose(floorId) {
-      EventBus.$emit("sidebar-selected-floor", this.getFloorById(floorId));
+      EventBus.$emit('sidebar-selected-floor', this.getFloorById(floorId));
     },
     sideBarChange(data, building) {
       this.loading = false;
@@ -129,7 +139,7 @@ export default {
       // this.$emit("selected-floor", floor);
       this.roomIdSelected = null;
       this.floorIdSelected = floor.id;
-      EventBus.$emit("sidebar-selected-floor", floor);
+      EventBus.$emit('sidebar-selected-floor', floor);
     },
     getFloorById(id) {
       for (const floor of this.data) {
@@ -141,8 +151,8 @@ export default {
       for (const room of floor.children) {
         if (room.id === roomId) return room;
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -221,7 +231,7 @@ export default {
 
 .spinal-side-bar-menu .el-submenu__title:hover,
 .spinal-side-bar-menu .el-menu-item:hover {
-  background-color: #606266 !important;
+  /* background-color: #606266 !important; */
   color: black !important;
 }
 .spinal-side-bar-menu .el-submenu__title:hover i,

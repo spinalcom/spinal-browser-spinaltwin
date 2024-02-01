@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 SpinalCom - www.spinalcom.com
+ * Copyright 2022 SpinalCom - www.spinalcom.com
  *
  * This file is part of SpinalCore.
  *
@@ -22,77 +22,34 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
-import q from "q";
+import q from 'q';
+import { FileSystem } from 'spinal-core-connectorjs_type';
 import {
-  EQUIPMENT_TYPE,
-} from "../../constants";
-
-import { AppItem } from "./AppItem"
-import { SpinalGraph, SpinalContext, SpinalNode, SpinalGraphService } from "spinal-env-viewer-graph-service";
-import { FileSystem } from 'spinal-core-connectorjs_type'
+  SpinalContext,
+  SpinalGraph,
+  SpinalGraphService,
+  SpinalNode,
+} from 'spinal-env-viewer-graph-service';
+import { AppItem } from './AppItem';
 // import { AttributeService } from "spinal-env-viewer-plugin-documentation-service/src/Models/AttributeService"
 
-type mapAppItem = Map<string, AppItem[]>
-
-async function findOneInContext(node: SpinalNode<any>, context: SpinalContext<any>,
-  predicate: (node: SpinalNode<any>) => boolean
-): Promise<SpinalNode<any>> {
-  if (typeof predicate !== 'function') {
-    throw new Error('The predicate function must be a function');
-  }
-
-  const seen: Set<SpinalNode<any>> = new Set([node]);
-  let promises: Promise<SpinalNode<any>[]>[] = [];
-  let nextGen: SpinalNode<any>[] = [node];
-  let currentGen: SpinalNode<any>[] = [];
-
-  while (nextGen.length) {
-    currentGen = nextGen;
-    promises = [];
-    nextGen = [];
-
-    for (const object of currentGen) {
-      if (predicate(object)) {
-        return object
-      }
-    }
-    promises = currentGen.map((object) => object.getChildrenInContext(context))
-
-
-    const childrenArrays: SpinalNode<any>[][] = await Promise.all(promises);
-
-    for (const children of childrenArrays) {
-      for (const child of children) {
-        if (!seen.has(child)) {
-          nextGen.push(child);
-          seen.add(child);
-        }
-      }
-    }
-  }
-
-  return undefined;
-}
-
-export { findOneInContext }
+type mapAppItem = Map<string, AppItem[]>;
 
 export class AppBack {
   initDefer = q.defer();
-  contexts: SpinalContext<any>[] = []
+  contexts: SpinalContext<any>[] = [];
   type: string;
-  static instance: AppBack
+  static instance: AppBack;
 
-  constructor() {
-  }
+  constructor() { }
 
   static getInstance(): AppBack {
-    if (!AppBack.instance)
-      AppBack.instance = new AppBack
-    return AppBack.instance
+    if (!AppBack.instance) AppBack.instance = new AppBack();
+    return AppBack.instance;
   }
 
-  async init(graph: SpinalGraph<any>, type: string){
-    this.contexts = []
+  async init(graph: SpinalGraph<any>, type: string) {
+    this.contexts = [];
     this.type = type;
     // const children = await graph.getChildren("BIMObjectGroupContext");
     const children = await graph.getChildren();
@@ -104,65 +61,90 @@ export class AppBack {
     this.initDefer.resolve(this.contexts);
   }
 
-  async getContexts(type:string): Promise<Map<string, AppItem[]>> {
-    const result: Map<string, AppItem[]> = new Map()
-
-      await Promise.all(this.contexts.map(async (item) => {
-      return this.getItemsInContext(item, item, type, true).then((map) => {
-        for (const [key, value] of map) {
-          if (!result.has(key)) result.set(key, []);
-          const arr = result.get(key);
-          arr.push(...value)
-        }
+  async getContexts(type: string): Promise<Map<string, AppItem[]>> {
+    const result: Map<string, AppItem[]> = new Map();
+    await Promise.all(
+      this.contexts.map(async (item) => {
+        return this.getItemsInContext(item, item, type, true).then((map) => {
+          for (const [key, value] of map) {
+            if (!result.has(key)) result.set(key, []);
+            const arr = result.get(key)!;
+            arr.push(...value);
+          }
+        });
       })
-    }))
+    );
     return result;
   }
 
-  getItems(serverId: number, contextServerId: number, type:string): Promise<mapAppItem> {
-    const node = <SpinalNode<any>>(FileSystem._objects[serverId]);
-    const context = <SpinalContext<any>>(FileSystem._objects[contextServerId]);
+  getItems(
+    serverId: number,
+    contextServerId: number,
+    type: string
+  ): Promise<mapAppItem> {
+    const node = <SpinalNode<any>>FileSystem._objects[serverId];
+    const context = <SpinalContext<any>>FileSystem._objects[contextServerId];
     if (!node || !context) return Promise.resolve(new Map());
-    return this.getItemsInContext(node, context, type)
+    return this.getItemsInContext(node, context, type);
   }
 
-  private async getItemsInContext(node: SpinalNode<any>,
+  private getChildrenAndItems(
+    n: SpinalNode,
+    context: SpinalContext,
+    itm: AppItem
+  ) {
+    // const itm = AppItem.getItemFromMap(allItems, n, type);
+
+    return n.getChildrenInContext(context).then((children) => {
+      
+      return { children, item: itm };
+    });
+  }
+
+  private async getItemsInContext(
+    node: SpinalNode<any>,
     context: SpinalContext<any>,
     type: string,
     giveSelf = false
   ): Promise<mapAppItem> {
     const seen: Set<SpinalNode<any>> = new Set([node]);
-    let promises: Promise<{ children: SpinalNode<any>[]; item: AppItem; }>[] = [];
+    let promises: Promise<{ children: SpinalNode<any>[]; item: AppItem }>[] =
+      [];
     let nextGen: SpinalNode<any>[] = [node];
     let currentGen: SpinalNode<any>[] = [];
-    const res: mapAppItem = new Map()
+    const res: mapAppItem = new Map();
     const allItems: Map<number, AppItem> = new Map();
     const nodeType: string = node.info.type.get();
     if (!res.has(nodeType)) {
       res.set(nodeType, []);
     }
-    const arr = res.get(nodeType);
+    const arr = res.get(nodeType)!;
     const item = AppItem.getItemFromMap(allItems, node, type);
-    arr.push(item)
+    // console.warn(item);
+    arr.push(item);
     let depth = 0;
     while (nextGen.length) {
       currentGen = nextGen;
       promises = [];
       nextGen = [];
-      depth += 1;
+      // depth += 1;
       for (const n of currentGen) {
-        if (depth <= 2 || (n.info.type && n.info.type.get() !== type)) {
-          const item = AppItem.getItemFromMap(allItems, n, type);
-          promises.push(n.getChildrenInContext(context).then((children) => {
-            return { children, item }
-          }));
+        // if (depth <= 2 || (n.info.type && n.info.type.get() !== type)) {
+        if (depth <= 1 /*|| (n.info.type && n.info.type.get() !== type)*/) {
+          promises.push(
+            this.getChildrenAndItems(
+              n,
+              context,
+              AppItem.getItemFromMap(allItems, n, type)
+            )
+          );
         }
       }
-      const childrenArrays: { children: SpinalNode<any>[]; item: AppItem; }[]
-        = await Promise.all(promises);
+      const childrenArrays: { children: SpinalNode<any>[]; item: AppItem }[] =
+        await Promise.all(promises);
       for (const children of childrenArrays) {
         for (const child of children.children) {
-          children.item.addChildrenInItem(allItems, child, type)
+          children.item.addChildrenInItem(allItems, child, type);
           if (!seen.has(child)) {
             nextGen.push(child);
             seen.add(child);
@@ -171,14 +153,13 @@ export class AppBack {
           }
         }
       }
+      depth+=1;
     }
     if (giveSelf) return res;
-    if (typeof item.children !== "undefined")
-    {
-      return item.children
+    if (typeof item.children !== 'undefined') {
+      return item.children;
     } else {
       return new Map();
     }
-    return typeof item.children !== "undefined" ? item.children : new Map();
   }
 }

@@ -22,7 +22,7 @@ with this file. If not, see
 <http://resources.spinalcom.com/licenses.pdf>.
 -->
 <template>
-  <el-container class="container-class ">
+  <el-container class="container-class">
     <div class="view">
       <div class="buttons">
         <div class="viewer-btn" :nodeId="nodeId">
@@ -60,17 +60,14 @@ with this file. If not, see
 </template>
 
 <script>
-import { SpinalGraphService } from "spinal-env-viewer-graph-service";
-import { FileExplorer } from "spinal-env-viewer-plugin-documentation-service/dist/Models/FileExplorer";
-import { FileSystem } from "spinal-core-connectorjs_type";
-import moment from "moment";
-import messageComponent from "./messageComponent";
-import viewerBtn from "./viewerBtn";
+import { FileSystem } from 'spinal-core-connectorjs_type';
+import messageComponent from './messageComponent';
+import viewerBtn from './viewerBtn';
 
 export default {
-  name: "Note",
-  components: { "message-component": messageComponent, viewerBtn },
-  props: ["nodeId"],
+  name: 'Note',
+  components: { 'message-component': messageComponent, viewerBtn },
+  props: ['nodeId'],
 
   data() {
     return {

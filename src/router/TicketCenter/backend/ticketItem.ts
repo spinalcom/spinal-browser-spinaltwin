@@ -22,53 +22,50 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
-import { SpinalNode } from "spinal-env-viewer-graph-service";
-import { FileSystem } from 'spinal-core-connectorjs_type'
+import { SpinalNode } from 'spinal-env-viewer-graph-service';
+import { FileSystem } from 'spinal-core-connectorjs_type';
 
 import {
-  TICKET_CONTEXT_NAME,
   TICKET_CONTEXT_TYPE,
-  TICKET_RELATION_CONTEXT_PROCESS,
   TICKET_PROCESS_TYPE,
-  TICKET_RELATION_PROCESS_STEP,
   TICKET_STEP_TYPE,
-  TICKET_RELATION_STEP_TICKET,
   TICKET_TICKET_TYPE,
-  TICKET_RELATION_PROCESS_OBJET,
-  TICKET_OBJECT_TYPE
+  TICKET_OBJECT_TYPE,
 } from '../../../constants';
 
 export class TicketItem {
-  name: string
-  type: string
+  name: string;
+  type: string;
   serverId: number;
   children?: Map<string, TicketItem[]>;
-  allTickets: Number
+  allTickets: Number;
 
   constructor(name: string, serverId: number) {
-    this.name = name
-    this.serverId = serverId
+    this.name = name;
+    this.serverId = serverId;
     try {
-      const node = typeof FileSystem._objects[this.serverId] === "undefined" ? FileSystem._tmp_objects[this.serverId] : FileSystem._objects[this.serverId]
+      const node =
+        typeof FileSystem._objects[this.serverId] === 'undefined'
+          ? FileSystem._tmp_objects[this.serverId]
+          : FileSystem._objects[this.serverId];
       this.type = node.info.type.get();
     } catch (error) {
-      this.type = "undefined"
+      this.type = 'undefined';
     }
-    this.allTickets = null
   }
 
   getType(): string {
     const node = FileSystem._objects[this.serverId];
-    if (!node || !node.info.type) return "";
+    if (!node || !node.info.type) return '';
     return node.info.type.get();
   }
   getId(): string {
     const node = FileSystem._objects[this.serverId];
-    if (!node || !node.info.id) return "";
+    if (!node || !node.info.id) return '';
     return node.info.id.get();
   }
 
-  getColor(): string {
+  getColor(): string | undefined {
     const node = FileSystem._objects[this.serverId];
     if (!node || !node.info.color) return undefined;
     return node.info.color.get();
@@ -77,17 +74,19 @@ export class TicketItem {
   setColor(color): void {
     const node = FileSystem._objects[this.serverId];
     if (!node) return;
-    if (!node.info.color) node.info.add_attr("color", color)
+    if (!node.info.color) node.info.add_attr('color', color);
     else node.info.color.set(color);
   }
 
   isLocationType(): boolean {
     const type = this.getType();
     return (
-      type === TICKET_CONTEXT_TYPE || type === TICKET_PROCESS_TYPE ||
-      type === TICKET_STEP_TYPE || type === TICKET_TICKET_TYPE ||
+      type === TICKET_CONTEXT_TYPE ||
+      type === TICKET_PROCESS_TYPE ||
+      type === TICKET_STEP_TYPE ||
+      type === TICKET_TICKET_TYPE ||
       type === TICKET_OBJECT_TYPE
-    )
+    );
   }
   // async getProcess() {
   //   const context = FileSystem._objects[this.serverId];
@@ -115,49 +114,50 @@ export class TicketItem {
 
   async getSteps(processObj) {
     const processNode = FileSystem._objects[processObj.server_id];
-
   }
 
-  addChildrenInItem(allItems: Map<number, TicketItem>, node: SpinalNode<any>): void {
-
-    if (typeof this.children === "undefined") {
-      Object.assign(this, { children: new Map() })
+  addChildrenInItem(
+    allItems: Map<number, TicketItem>,
+    node: SpinalNode<any>
+  ): void {
+    if (typeof this.children === 'undefined') {
+      Object.assign(this, { children: new Map() });
     }
     const nodeType = node.info.type.get();
-    if (!this.children.has(nodeType)) {
-      this.children.set(nodeType, [])
+    if (!this.children?.has(nodeType)) {
+      this.children?.set(nodeType, []);
     }
-    const arr = this.children.get(nodeType)
+    const arr = this.children?.get(nodeType)!;
     const child = TicketItem.getItemFromMap(allItems, node);
     arr.push(child);
   }
 
-
-  static getItemFromMap(allItems: Map<number, TicketItem>, node: SpinalNode<any>)
-    : TicketItem {
-    const server_id: number = node._server_id
+  static getItemFromMap(
+    allItems: Map<number, TicketItem>,
+    node: SpinalNode<any>
+  ): TicketItem {
+    const server_id: number = node._server_id!;
     if (allItems.has(server_id)) {
-      return allItems.get(server_id)
+      return allItems.get(server_id)!;
     }
-    const item: TicketItem = new TicketItem(node.info.name.get(), server_id)
+    const item: TicketItem = new TicketItem(node.info.name.get(), server_id);
     allItems.set(server_id, item);
-    return item
+    return item;
   }
   getCountTicket() {
     let count = 0;
     if (this.children) {
       for (const [childType, arrayTicket] of this.children) {
-        if (childType === "SpinalSystemServiceTicketTypeTicket") {
-          count += arrayTicket.length
-        }
-        else {
+        if (childType === 'SpinalSystemServiceTicketTypeTicket') {
+          count += arrayTicket.length;
+        } else {
           for (const ticket of arrayTicket) {
-            count += ticket.getCountTicket()
+            count += ticket.getCountTicket();
           }
         }
       }
     }
-    this.allTickets = count
-    return count
+    this.allTickets = count;
+    return count;
   }
 }

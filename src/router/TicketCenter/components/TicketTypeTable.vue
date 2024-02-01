@@ -81,17 +81,17 @@ with this file. If not, see
 </template>
 
 <script>
-import { ViewManager } from "../../../services/ViewManager/ViewManager";
-import { roundNumber } from "../../../services/utlils/roundNumber";
-import excelManager from "spinal-env-viewer-plugin-excel-manager-service";
-import fileSaver from "file-saver";
-import { ColorGenerator } from "../../../services/utlils/ColorGenerator";
-import { EventBus } from "../../../services/event";
+import { ViewManager } from '../../../services/ViewManager/ViewManager';
+import { roundNumber } from '../../../services/utlils/roundNumber';
+import excelManager from 'spinal-env-viewer-plugin-excel-manager-service';
+import fileSaver from 'file-saver';
+import { ColorGenerator } from '../../../services/utlils/ColorGenerator';
+import { EventBus } from '../../../services/event';
 
 export default {
-  name: "TicketTypeTable",
+  name: 'TicketTypeTable',
   props: {
-    viewKey: { require: true, type: String, default: "" },
+    viewKey: { require: true, type: String, default: '' },
     items: { required: true, type: Array },
     collums: { required: false, type: Array, default: () => [] },
     nodeType: { required: true, type: String },
@@ -116,13 +116,13 @@ export default {
   methods: {
     roundNumber,
     selectInView(item) {
-      EventBus.$emit("view-select-item", {
+      EventBus.$emit('view-select-item', {
         server_id: item.serverId,
         color: item.color,
       });
     },
     SeeEvent(item) {
-      EventBus.$emit("view-color-item", {
+      EventBus.$emit('view-color-item', {
         server_id: item.serverId,
         color: item.color,
       });
@@ -131,13 +131,10 @@ export default {
       let items = this.data.map((item) => {
         return { server_id: item.serverId, color: item.color };
       });
-      EventBus.$emit("view-color-all", items, { server_id: zone });
+      EventBus.$emit('view-color-all', items, { server_id: zone });
     },
     onSelectItem(item) {
       ViewManager.getInstance(this.viewKey).push(item.name, item.serverId);
-    },
-    debugNode(item) {
-      console.debug(item);
     },
     async update() {
       this.loading = true;
@@ -198,7 +195,7 @@ export default {
       }
     },
     getColor(color) {
-      return { backgroundColor: color[0] === "#" ? color : `#${color}` };
+      return { backgroundColor: color[0] === '#' ? color : `#${color}` };
     },
     collumValue(item, key) {
       if (item[key]) return item[key];
@@ -208,18 +205,18 @@ export default {
       let items = this.data.map((item) => {
         return { server_id: item.serverId, color: item.color };
       });
-      EventBus.$emit("view-color-all", items, { server_id: zone });
+      EventBus.$emit('view-color-all', items, { server_id: zone });
     },
     exportToExcel() {
       let headers = [
         {
-          key: "name",
-          header: this.$t("name"),
+          key: 'name',
+          header: this.$t('name'),
           width: 20,
         },
         {
-          key: "process",
-          header: this.$t("Process"),
+          key: 'process',
+          header: this.$t('Process'),
           width: 10,
         },
       ];
@@ -232,11 +229,11 @@ export default {
       }
       let excelData = [
         {
-          name: "Tableau",
-          author: "",
+          name: 'Tableau',
+          author: '',
           data: [
             {
-              name: "Tableau",
+              name: 'Tableau',
               header: headers,
               rows: this.data,
             },

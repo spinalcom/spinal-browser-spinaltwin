@@ -22,16 +22,14 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
-import Vue from "vue";
-
+import Vue from 'vue';
 
 const EventBus = new Vue();
-
 
 export const EVENT_TYPES = {
   CREATED: 'eventCreated',
   UPDATED: 'eventUpdated',
-  DELETED: 'eventDeleted'
-}
+  DELETED: 'eventDeleted',
+};
 
 export default EventBus;

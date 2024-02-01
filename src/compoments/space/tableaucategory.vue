@@ -25,48 +25,63 @@ with this file. If not, see
 <template>
   <el-row class="spinal-space-tableau-row">
     <el-tabs type="border-card" class="tabs-container">
-      <el-tab-pane label="Tableau"
-                   class="spinal-space-tab-container">
-        <header-bar :header="getHeader()"
-                    :content="getRow()"
-                    :data="categories"></header-bar>
+      <el-tab-pane label="Tableau" class="spinal-space-tab-container">
+        <header-bar
+          :header="getHeader()"
+          :content="getRow()"
+          :data="categories"
+        ></header-bar>
         <div class="spinal-space-table-content spinal-scrollbar">
-          <el-table :data="categories"
-                    border
-                    style="width: 100%"
-                    :header-row-style="{&quot;min-height&quot; : &quot;0px&quot;,&quot;height&quot; : &quot;50px&quot;, &quot;padding&quot; : &quot;0px&quot;}"
-                    :header-cell-style="{&quot;background-color&quot;: &quot;#f0f2f5&quot;}">
-            <el-table-column prop="name"
-                             :label="$t('SpaceManagement.Nom')"
-                             width="180">
+          <el-table
+            :data="categories"
+            border
+            style="width: 100%"
+            :header-row-style="{
+              'min-height': '0px',
+              height: '50px',
+              padding: '0px',
+            }"
+            :header-cell-style="{ 'background-color': '#f0f2f5' }"
+          >
+            <el-table-column
+              prop="name"
+              :label="$t('SpaceManagement.Nom')"
+              width="180"
+            >
             </el-table-column>
 
-            <el-table-column prop="groups.length"
-                             :label="$t('SpaceManagement.NombreTotalGroupe')"
-                             align="center">
+            <el-table-column
+              prop="groups.length"
+              :label="$t('SpaceManagement.NombreTotalGroupe')"
+              align="center"
+            >
             </el-table-column>
 
-            <el-table-column :label="$t('SpaceManagement.NombreTotalPiece')"
-                             align="center">
+            <el-table-column
+              :label="$t('SpaceManagement.NombreTotalPiece')"
+              align="center"
+            >
               <template slot-scope="scope">
                 {{ getRoomsCount(scope.row) }}
               </template>
             </el-table-column>
 
-            <el-table-column :label="$t('SpaceManagement.SurfaceTotale')"
-                             align="center">
+            <el-table-column
+              :label="$t('SpaceManagement.SurfaceTotale') + ' (m²)'"
+              align="center"
+            >
               <template slot-scope="scope">
-                {{ getSurfaceTotale(scope.row) }} m²
+                {{ getSurfaceTotale(scope.row) }}
               </template>
             </el-table-column>
-            <el-table-column label=""
-                             width="65"
-                             align="center">
+            <el-table-column label="" width="65" align="center">
               <template slot-scope="scope">
-                <el-button v
-                           icon="el-icon-arrow-right"
-                           circle
-                           @click="seeGroups(scope.row)"></el-button>
+                <el-button
+                  v
+                  icon="el-icon-arrow-right"
+                  circle
+                  @click="seeGroups(scope.row)"
+                ></el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -77,24 +92,23 @@ with this file. If not, see
 </template>
 
 <script>
-import SpinalBackend from "../../services/spinalBackend";
-import headerBarVue from "./component/headerBar.vue";
+import SpinalBackend from '../../services/spinalBackend';
+import headerBarVue from './component/headerBar.vue';
 
 export default {
   components: {
-    "header-bar": headerBarVue
+    'header-bar': headerBarVue,
   },
-  props: ["contextSelected"],
+  props: ['contextSelected'],
   data() {
     return {
-      categories: []
+      categories: [],
     };
   },
   watch: {
     contextSelected() {
       this.categories = this.contextSelected.categories;
-      console.log(this.categories);
-    }
+    },
   },
   async mounted() {
     this.categories = this.contextSelected.categories;
@@ -106,57 +120,55 @@ export default {
     },
 
     getSurfaceTotale(category) {
-      const surfaceTotal = SpinalBackend.spaceBack.getCategoriesSurface(
-        category
-      );
+      const surfaceTotal =
+        SpinalBackend.spaceBack.getCategoriesSurface(category);
       return Math.round(surfaceTotal * 100) / 100;
     },
 
     seeGroups(category) {
-      this.$emit("seeGroups", category);
+      this.$emit('seeGroups', category);
     },
 
     getHeader() {
       return [
         {
-          key: "name",
-          header: "name",
-          width: 10
+          key: 'name',
+          header: 'name',
+          width: 10,
         },
         {
-          key: "groups",
-          header: "Groupes",
-          width: 10
+          key: 'groups',
+          header: 'Groupes',
+          width: 10,
         },
         {
-          key: "rooms",
-          header: "Nombre de pièces",
-          width: 10
+          key: 'rooms',
+          header: 'Nombre de pièces',
+          width: 10,
         },
         {
-          key: "surface",
-          header: "Surface Totale",
-          width: 10
-        }
+          key: 'surface',
+          header: 'Surface Totale',
+          width: 10,
+        },
       ];
     },
 
     getRow() {
-      return this.categories.map(el => {
+      return this.categories.map((el) => {
         return {
           name: el.name,
           groups: el.groups.length,
           rooms: this.getRoomsCount(el),
-          surface: this.getSurfaceTotale(el)
+          surface: this.getSurfaceTotale(el),
         };
       });
-    }
-  }
+    },
+  },
 };
 </script>
 
 <style scoped>
-
 .boutton-barre {
   padding: 14px !important;
 }

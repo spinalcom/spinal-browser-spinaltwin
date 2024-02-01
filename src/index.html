@@ -23,7 +23,7 @@ with this file. If not, see
 -->
 
 <!DOCTYPE html>
-<html style="overflow: hidden;">
+<html style="overflow: hidden">
   <head>
     <base href="/html/spinaltwin/" />
     <title>Spinal Twin</title>
@@ -73,6 +73,18 @@ with this file. If not, see
       href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet"
     />
+    <link
+      href="https://fonts.googleapis.com/css?family=Material+Icons&display=block"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css"
+      rel="stylesheet"
+    />
+    
+
+<!-- <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet" /> -->
+    <!-- <link href="../node_modules/material-design-icons-iconfont/dist/material-design-icons.css" rel="stylesheet" /> -->
     <style>
       .start-spinner {
         position: absolute;
@@ -149,7 +161,7 @@ with this file. If not, see
 
   <body>
     <div class="start-spinner">
-      <div class=" atom-spinner">
+      <div class="atom-spinner">
         <div class="spinner-inner">
           <div class="spinner-line"></div>
           <div class="spinner-line"></div>
@@ -160,9 +172,9 @@ with this file. If not, see
     </div>
 
     <div id="app"></div>
-    <script src="https://unpkg.com/eva-icons"></script>
+    <script type="module" src="https://unpkg.com/eva-icons"></script>
     <script src="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/viewer3D.min.js"></script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    <script src="./index.ts"></script>
+    <script type="module" src="./index.ts"></script>
   </body>
 </html>

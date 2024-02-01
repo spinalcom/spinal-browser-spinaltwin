@@ -1,19 +1,19 @@
 /*
  * Copyright 2021 SpinalCom - www.spinalcom.com
- * 
+ *
  * This file is part of SpinalCore.
- * 
+ *
  * Please read all of the following terms and conditions
  * of the Free Software license Agreement ("Agreement")
  * carefully.
- * 
+ *
  * This Agreement is a legally binding contract between
  * the Licensee (as defined below) and SpinalCom that
  * sets forth the terms and conditions that govern your
  * use of the Program. By installing and/or using the
  * Program, you agree to abide by all the terms and
  * conditions stated or referenced herein.
- * 
+ *
  * If you do not agree to abide by these terms and
  * conditions, do not demonstrate your acceptance and do
  * not install or use the Program.
@@ -22,29 +22,31 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
-import { EventBus } from "../../event";
-import { viewerUtils } from "../viewerUtils";
-import { lastColor } from './lastColor'
+import { EventBus } from '../../event';
+import { viewerUtils } from '../viewerUtils';
+import { lastColor } from './lastColor';
 
-EventBus.$on("see", async (data: ColorData) => {
+EventBus.$on('see', async (data: ColorData) => {
   const item = {
     server_id: data.ids?.[0]?.dbid,
     color: data.color,
-  }
+  };
 
-  await viewerUtils.waitInitialized()
-  viewerUtils.clearSelection()
-  if (lastColor.inputType === "see" &&
-    lastColor.item?.server_id === data.ids?.[0]?.dbid) {
-    lastColor.item = null
-    lastColor.zone = null
-    lastColor.inputType = ""
-    viewerUtils.restoreColorThemingItems()
+  await viewerUtils.waitInitialized();
+  viewerUtils.clearSelection();
+  if (
+    lastColor.inputType === 'see' &&
+    lastColor.item?.server_id === data.ids?.[0]?.dbid
+  ) {
+    lastColor.item = null;
+    lastColor.zone = null;
+    lastColor.inputType = '';
+    viewerUtils.restoreColorThemingItems();
   } else {
-    viewerUtils.restoreColorThemingItems()
-    lastColor.zone = null
-    lastColor.item = item
-    lastColor.inputType = "see"
+    viewerUtils.restoreColorThemingItems();
+    lastColor.zone = null;
+    lastColor.item = item;
+    lastColor.inputType = 'see';
     const lstByModel = sortBIMObjectByModel(data.ids);
     for (const { selection, model } of lstByModel) {
       viewerUtils.colorThemingItems(model, item.color, selection);
@@ -55,28 +57,29 @@ EventBus.$on("see", async (data: ColorData) => {
   }
 });
 
-
-EventBus.$on("seeAll", async (datas: ColorData[]) => {
-  console.log(datas);
+EventBus.$on('seeAll', async (datas: ColorData[]) => {
   if (datas.length === 0) return;
-  await viewerUtils.waitInitialized()
+  await viewerUtils.waitInitialized();
   const item = {
     server_id: datas[0].id,
     color: datas[0].color,
-  }
-  viewerUtils.clearSelection()
-  if (lastColor.inputType === "seeAll" && lastColor.item &&
-    lastColor.item.server_id === datas[0].id) {
-    lastColor.inputType = ""
-    lastColor.item = null
-    lastColor.zone = null
-    viewerUtils.restoreColorThemingItems()
+  };
+  viewerUtils.clearSelection();
+  if (
+    lastColor.inputType === 'seeAll' &&
+    lastColor.item &&
+    lastColor.item.server_id === datas[0].id
+  ) {
+    lastColor.inputType = '';
+    lastColor.item = null;
+    lastColor.zone = null;
+    viewerUtils.restoreColorThemingItems();
   } else {
-    lastColor.inputType = "seeAll"
-    viewerUtils.restoreColorThemingItems()
-    lastColor.zone = null
-    lastColor.item = item
-    const lstByModel = []
+    lastColor.inputType = 'seeAll';
+    viewerUtils.restoreColorThemingItems();
+    lastColor.zone = null;
+    lastColor.item = item;
+    const lstByModel = [];
     for (const data of datas) {
       const lstByModelForColor = sortBIMObjectByModel(data.ids);
       for (const { selection, model } of lstByModelForColor) {
@@ -94,21 +97,23 @@ EventBus.$on("seeAll", async (datas: ColorData[]) => {
 });
 
 type BimObj = {
-  bimFileId: string
-  dbid: number
-  externalId: string
-  id: string
-  name: string
-  type: string
-}
+  bimFileId: string;
+  dbid: number;
+  externalId: string;
+  id: string;
+  name: string;
+  type: string;
+};
 
 type ColorData = {
-  id: string
-  color: string
-  ids: BimObj[]
-}
+  id: string;
+  color: string;
+  ids: BimObj[];
+};
 
-function sortBIMObjectByModel(bimObj: BimObj[]): { selection: number[], model }[] {
+function sortBIMObjectByModel(
+  bimObj: BimObj[]
+): { selection: number[]; model }[] {
   const anyWin: any = window;
   let arrayModel = [];
 
@@ -121,7 +126,7 @@ function sortBIMObjectByModel(bimObj: BimObj[]): { selection: number[], model }[
   }
   return arrayModel;
 }
-function getOrAddModelIfMissing(array, model): { selection: number[], model } {
+function getOrAddModelIfMissing(array, model): { selection: number[]; model } {
   for (const obj of array) {
     if (obj.model === model) {
       return obj;
@@ -129,7 +134,7 @@ function getOrAddModelIfMissing(array, model): { selection: number[], model } {
   }
   const obj = {
     selection: [],
-    model
+    model,
   };
   array.push(obj);
   return obj;

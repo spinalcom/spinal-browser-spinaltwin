@@ -126,26 +126,25 @@ with this file. If not, see
 </template>
 
 <script>
-import { SpinalGraphService } from "spinal-env-viewer-graph-service";
-import { FileExplorer } from "spinal-env-viewer-plugin-documentation-service/dist/Models/FileExplorer";
-import { serviceTicketPersonalized } from "spinal-service-ticket";
-import { FileSystem } from "spinal-core-connectorjs_type";
-import { EventBus } from "../../backend/event";
-import viewerBtn from "./viewerBtn";
-import moment from "moment";
-import fileSaver from "file-saver";
+import { SpinalGraphService } from 'spinal-env-viewer-graph-service';
+import { serviceTicketPersonalized } from 'spinal-service-ticket';
+import { FileSystem } from 'spinal-core-connectorjs_type';
+import { EventBus } from '../../backend/event';
+import viewerBtn from './viewerBtn';
+import moment from 'moment';
+import fileSaver from 'file-saver';
 
 export default {
-  name: "TicketDetailss",
+  name: 'TicketDetailss',
   components: { viewerBtn },
-  props: ["nodeId"],
+  props: ['nodeId'],
 
   data() {
     return {
       nodeInfo: { selectedNode: FileSystem._objects[this.nodeId] },
-      Room_Ticket: "",
-      Floor_Ticket: "",
-      Building_Ticket: "",
+      Room_Ticket: '',
+      Floor_Ticket: '',
+      Building_Ticket: '',
     };
   },
   watch: {
@@ -165,27 +164,21 @@ export default {
       ).fromNow();
     },
     ActualStep() {
-      console.log(this.nodeInfo.selectedNode.info.stepId.get());
       SpinalGraphService._addNode(this.nodeInfo.selectedNode);
-
-      const stepRealNode = SpinalGraphService.getRealNode(
-        this.nodeInfo.selectedNode.info.stepId.get()
-      );
-      // return stepRealNode.info.name.get();
-      return "";
+      return '';
     },
     async PassToPreviousStep() {
-      if (confirm("Pass To Previous Step!")) {
+      if (confirm('Pass To Previous Step!')) {
         const ticket = this.nodeInfo.selectedNode;
         const step = SpinalGraphService.getRealNode(ticket.info.stepId.get());
         const process = SpinalGraphService.getRealNode(
           step.info.processId.get()
         );
         const workflows = await process.getParents(
-          "SpinalSystemServiceTicketHasProcess"
+          'SpinalSystemServiceTicketHasProcess'
         );
         var user = {
-          username: "admin",
+          username: 'admin',
           userId: 0,
         };
         await serviceTicketPersonalized.moveTicketToPreviousStep(
@@ -198,14 +191,14 @@ export default {
       }
     },
     async PassToNextStep() {
-      if (confirm("Pass To Next Step!")) {
+      if (confirm('Pass To Next Step!')) {
         const ticket = this.nodeInfo.selectedNode;
         const step = SpinalGraphService.getRealNode(ticket.info.stepId.get());
         const process = SpinalGraphService.getRealNode(
           step.info.processId.get()
         );
         const workflows = await process.getParents(
-          "SpinalSystemServiceTicketHasProcess"
+          'SpinalSystemServiceTicketHasProcess'
         );
         var user = {
           username: window.spinal.spinalSystem.user.username,
@@ -223,29 +216,29 @@ export default {
       if (this.nodeInfo.selectedNode) {
         const ticket = this.nodeInfo.selectedNode;
         const Room_Ticket = await ticket
-          .getParents("SpinalSystemServiceTicketHasTicket")
+          .getParents('SpinalSystemServiceTicketHasTicket')
           .then((parents) => {
             for (const parent of parents) {
-              if (parent.getType().get() === "geographicRoom") {
+              if (parent.getType().get() === 'geographicRoom') {
                 return parent;
               }
             }
           });
         const Floor_Ticket = await Room_Ticket.getParents(
-          "hasGeographicRoom"
+          'hasGeographicRoom'
         ).then((parents) => {
           for (const parent of parents) {
-            if (parent.getType().get() === "geographicFloor") {
+            if (parent.getType().get() === 'geographicFloor') {
               return parent;
             }
           }
         });
 
         const Building_Ticket = await Floor_Ticket.getParents(
-          "hasGeographicFloor"
+          'hasGeographicFloor'
         ).then((parents) => {
           for (const parent of parents) {
-            if (parent.getType().get() === "geographicBuilding") {
+            if (parent.getType().get() === 'geographicBuilding') {
               return parent;
             }
           }
@@ -258,8 +251,8 @@ export default {
     exportToExcel() {
       let headers = [
         {
-          key: "name",
-          header: this.$t("name"),
+          key: 'name',
+          header: this.$t('name'),
           width: 20,
         },
       ];
@@ -272,11 +265,11 @@ export default {
       // }
       let excelData = [
         {
-          name: "Ticket Details",
-          author: "",
+          name: 'Ticket Details',
+          author: '',
           data: [
             {
-              name: "Ticket Details",
+              name: 'Ticket Details',
               header: headers,
               rows: deta,
             },
@@ -285,14 +278,13 @@ export default {
       ];
 
       let deta = [
-        { colA: "Hello", colB: "World" },
+        { colA: 'Hello', colB: 'World' },
         {
-          colA: "Multi-line",
+          colA: 'Multi-line',
           /* Multi-line value: */
-          colB:
-            "This is a long paragraph\nwith multiple lines\nthat should show in a single cell.",
+          colB: 'This is a long paragraph\nwith multiple lines\nthat should show in a single cell.',
         },
-        { colA: "Another", colB: "Regular cell" },
+        { colA: 'Another', colB: 'Regular cell' },
       ];
 
       excelManager.export(excelData).then((reponse) => {
@@ -302,29 +294,29 @@ export default {
     isoItem() {
       let item = {
         server_id: this.nodeId,
-        color: "blue",
+        color: 'blue',
       };
-      EventBus.$emit("view-isolate-item", item);
+      EventBus.$emit('view-isolate-item', item);
     },
     SeeItem() {
       let item = {
         server_id: this.nodeId,
-        color: "blue",
+        color: 'blue',
       };
-      EventBus.$emit("view-color-item", item);
+      EventBus.$emit('view-color-item', item);
     },
     SeeAll() {
       EventBus.$emit(
-        "view-color-all",
-        [{ server_id: this.nodeId, color: "blue" }],
+        'view-color-all',
+        [{ server_id: this.nodeId, color: 'blue' }],
         { server_id: this.nodeId }
       );
     },
     ShowAll() {
-      EventBus.$emit("view-show-all");
+      EventBus.$emit('view-show-all');
     },
     isolateAll(zone) {
-      EventBus.$emit("view-isolate-all", { server_id: zone });
+      EventBus.$emit('view-isolate-all', { server_id: zone });
     },
   },
 
@@ -381,7 +373,7 @@ export default {
   height: 100%;
   box-shadow: 0px 0px 10px #c5c5c5a8;
   font-size: 14px;
-  color: #606266;
+  /* color: #606266; */
 }
 .bouttons {
   float: right;
@@ -408,7 +400,7 @@ export default {
   padding: 1px;
   box-sizing: border-box;
   text-decoration: none;
-  font-family: "Roboto", sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-weight: 300;
   color: #ffffff;
   background-color: #4eb5f1;

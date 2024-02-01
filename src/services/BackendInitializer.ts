@@ -22,22 +22,20 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
-import { spinalIO } from './spinalIO';
+import q from 'q';
 import { SpinalGraph } from 'spinal-model-graph';
-import q from "q";
-
+import { spinalIO } from './spinalIO';
 
 export default class BackendInitializer {
-  static instance: BackendInitializer
-  graph: SpinalGraph<any> = null;
+  static instance: BackendInitializer;
+  graph: SpinalGraph<any>;
   initDefer = q.defer();
 
-  constructor() {
-  }
+  constructor() {}
   static getInstance(): BackendInitializer {
     if (!BackendInitializer.instance)
-      BackendInitializer.instance = new BackendInitializer
-    return BackendInitializer.instance
+      BackendInitializer.instance = new BackendInitializer();
+    return BackendInitializer.instance;
   }
 
   async init() {
@@ -49,15 +47,18 @@ export default class BackendInitializer {
     }
   }
   async initback(appBack) {
-    await this.initDefer.promise
-    await Promise.all([
-      appBack.init(this.graph),
-    ]);
+    await this.initDefer.promise;
+    await Promise.all([appBack.init(this.graph)]);
   }
   async getGraph() {
     const rootModel = await spinalIO.getModel();
-    if (rootModel instanceof SpinalGraph) { this.graph = rootModel; }
-    else if (typeof rootModel.graph !== 'undefined') { this.graph = rootModel.graph; }
+    if (rootModel instanceof SpinalGraph) {
+      this.graph = rootModel;
+      // @ts-ignore
+    } else if (typeof rootModel.graph !== 'undefined') {
+      // @ts-ignore
+      this.graph = rootModel.graph;
+    }
     return this.graph;
   }
   waitInit() {

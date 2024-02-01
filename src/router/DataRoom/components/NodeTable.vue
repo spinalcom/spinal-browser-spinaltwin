@@ -23,113 +23,106 @@ with this file. If not, see
 -->
 
 <template>
-  <el-table v-loading="loading"
-            :data="data"
-            border
-            class="spl-table spl-height-control"
-            :header-cell-style="{'background-color': '#f0f2f5'}"
-            @row-click="selectInView"
-            @row-dblclick="SeeEvent">
+  <el-table
+    v-loading="loading"
+    :data="data"
+    border
+    class="spl-table spl-height-control"
+    :header-cell-style="{ 'background-color': '#f0f2f5' }"
+    @row-click="selectInView"
+    @row-dblclick="SeeEvent"
+  >
     <el-table-column :label="$t('explorer.Name')">
       <div slot-scope="scope">
-        <div v-if="scope.row.color"
-             class="spinal-table-cell-color"
-             :style="getColor(scope.row.color)"></div>
+        <div
+          v-if="scope.row.color"
+          class="spinal-table-cell-color"
+          :style="getColor(scope.row.color)"
+        ></div>
         <div> {{ scope.row.name }} </div>
       </div>
     </el-table-column>
 
-    <el-table-column v-for="column in columns"
-                     :key="column"
-                     align="center"
-                     :label="$t(`node-type.${column}`)">
+    <el-table-column
+      v-for="column in columns"
+      :key="column"
+      align="center"
+      :label="$t(`node-type.${column}`)"
+    >
       <div slot-scope="scope">
         {{ columnValue(scope.row, column) }}
       </div>
     </el-table-column>
 
-    <el-table-column v-if="haveChildren"
-                     label=""
-                     width="65"
-                     align="center">
+    <el-table-column v-if="haveChildren" label="" width="65" align="center">
       <div slot-scope="scope">
-        <el-button v-if="scope.row.haveChild"
-                   icon="el-icon-arrow-right"
-                   circle
-                   @click="onSelectItem(scope.row)"></el-button>
+        <el-button
+          v-if="scope.row.haveChild"
+          icon="el-icon-arrow-right"
+          circle
+          @click="onSelectItem(scope.row)"
+        ></el-button>
       </div>
-      <!-- </el-table-column>
-    <el-table-column label=""
-                      width="65"
-                      align="center">
-      <div slot-scope="scope">
-        <el-button icon="el-icon-arrow-down"
-                    circle
-                    @click="debug(scope.row)"></el-button>
-      </div>
-    </el-table-column> -->
+    </el-table-column>
   </el-table>
 </template>
 
 <script>
-import { ViewManager } from "../../../services/ViewManager/ViewManager";
-import { ColorGenerator } from "../../../services/utlils/ColorGenerator";
-import { EventBus } from "../../../services/event";
-import excelManager from "spinal-env-viewer-plugin-excel-manager-service";
-import fileSaver from "file-saver";
+import { ViewManager } from '../../../services/ViewManager/ViewManager';
+import { ColorGenerator } from '../../../services/utlils/ColorGenerator';
+import { EventBus } from '../../../services/event';
+import excelManager from 'spinal-env-viewer-plugin-excel-manager-service';
+import fileSaver from 'file-saver';
 export default {
-  name: "NodeTable",
+  name: 'NodeTable',
   props: {
     viewKey: { required: true, type: String },
     items: { required: true, type: Array },
-    columns: { required: true, type: Array }
+    columns: { required: true, type: Array },
   },
   data() {
     return {
       data: [],
       loading: true,
       loadingArea: true,
-      haveChildren: false
+      haveChildren: false,
     };
   },
   watch: {
     items() {
       this.update();
-    }
+    },
   },
   mounted() {
     this.update();
   },
   methods: {
     selectInView(item) {
-      EventBus.$emit("view-select-item", {
+      EventBus.$emit('view-select-item', {
         server_id: item.serverId,
-        color: item.color
+        color: item.color,
       });
     },
     SeeEvent(item) {
-      EventBus.$emit("view-isolate-item", {
+      EventBus.$emit('view-isolate-item', {
         server_id: item.serverId,
-        color: item.color
+        color: item.color,
       });
     },
     SeeAll(zone) {
-      let items = this.data.map(item => {
+      let items = this.data.map((item) => {
         return { server_id: item.serverId, color: item.color };
       });
-      EventBus.$emit("view-color-all", items, { server_id: zone });
+      EventBus.$emit('view-color-all', items, { server_id: zone });
     },
     ShowAll() {
-      EventBus.$emit("view-show-all");
+      EventBus.$emit('view-show-all');
     },
     isolateAll(zone) {
-      EventBus.$emit("view-isolate-all", { server_id: zone });
+      EventBus.$emit('view-isolate-all', { server_id: zone });
     },
     onSelectItem(item) {
       ViewManager.getInstance(this.viewKey).push(item.name, item.serverId);
-    },
-    debug(item) {
-      console.debug(item)
     },
     update() {
       this.loading = true;
@@ -141,7 +134,7 @@ export default {
           name: item.name,
           serverId: item.serverId,
           haveChild: false,
-          color: item.getColor()
+          color: item.getColor(),
         };
         if (resItem.color) colorUsed.push(resItem.color);
         if (item.children) {
@@ -150,17 +143,13 @@ export default {
             resItem.haveChild = true;
             haveChild = true;
           }
-        }
-        // else {
-        //   console.debug(FileSystem._objects[item.serverId].children.PtrLst)
-        // }
-        else if (FileSystem._objects[item.serverId] !== undefined) {
-          let thisnode = FileSystem._objects[item.serverId]
+        } else if (FileSystem._objects[item.serverId] !== undefined) {
+          let thisnode = FileSystem._objects[item.serverId];
           if (thisnode.children.PtrLst !== undefined) {
-            for (const name of thisnode.children.PtrLst._attribute_names){
+            for (const name of thisnode.children.PtrLst._attribute_names) {
               resItem[name] = thisnode.children.PtrLst[name].length;
-              resItem.haveChild = true
-              this.haveObjects = true
+              resItem.haveChild = true;
+              this.haveObjects = true;
             }
             // for (const [childTypes, childItems] of FileSystem._objects[item.serverId].children.PtrLst ) {
             //   resItem[childTypes] = childItems.length;
@@ -195,7 +184,7 @@ export default {
       }
     },
     getColor(color) {
-      return { backgroundColor: color[0] === "#" ? color : `#${color}` };
+      return { backgroundColor: color[0] === '#' ? color : `#${color}` };
     },
     columnValue(item, key) {
       if (item[key]) return item[key];
@@ -204,36 +193,36 @@ export default {
     exportToExcel() {
       let headers = [
         {
-          key: "name",
-          header: this.$t("name"),
-          width: 20
-        }
+          key: 'name',
+          header: this.$t('name'),
+          width: 20,
+        },
       ];
       for (const column of this.columns) {
         headers.push({
           key: column,
           header: this.$t(column),
-          width: 10
+          width: 10,
         });
       }
       let excelData = [
         {
-          name: "Tableau",
-          author: "",
+          name: 'Tableau',
+          author: '',
           data: [
             {
-              name: "Tableau",
+              name: 'Tableau',
               header: headers,
-              rows: this.data
-            }
-          ]
-        }
+              rows: this.data,
+            },
+          ],
+        },
       ];
-      excelManager.export(excelData).then(reponse => {
+      excelManager.export(excelData).then((reponse) => {
         fileSaver.saveAs(new Blob(reponse), `Tableau.xlsx`);
       });
-    }
-  }
+    },
+  },
 };
 </script>
 

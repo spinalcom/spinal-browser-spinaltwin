@@ -22,37 +22,57 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
-import "babel-polyfill";
-import Vue from "vue";
+import Vue from 'vue';
 // @ts-ignore
-import App from "./app.vue";
+import BootstrapVue from 'bootstrap-vue';
+import 'bootstrap-vue/dist/bootstrap-vue.css';
+import 'bootstrap/dist/css/bootstrap.css';
 import ElementUI from 'element-ui';
 import VTooltip from 'v-tooltip';
-import { i18n } from "./services/i18n";
-import spinalBackend from './services/spinalBackend';
-import BackendInitializer from './services/BackendInitializer';
+import VueMaterial from 'vue-material';
+import 'vue-material/dist/theme/default.css';
+import 'vue-material/dist/vue-material.min.css';
+import App from './app.vue';
 import { router } from './router/router';
-import BootstrapVue from 'bootstrap-vue'
-import 'bootstrap/dist/css/bootstrap.css'
-import 'bootstrap-vue/dist/bootstrap-vue.css'
-import VueMaterial from 'vue-material'
-import 'vue-material/dist/vue-material.min.css'
-import 'vue-material/dist/theme/default.css'
-
-import Ripple from 'vue-ripple-directive'
+import BackendInitializer from './services/BackendInitializer';
+import { i18n } from './services/i18n';
+import spinalBackend from './services/spinalBackend';
+import Ripple from 'vue-ripple-directive';
 
 import 'element-ui/lib/theme-chalk/index.css';
 import './app.css';
-import './compoments/sidebar/eventSideBar'
+import './compoments/sidebar/eventSideBar';
 import './services/viewerUtils/viewerEventHandle';
+import 'material-design-icons-iconfont/dist/material-design-icons.css';
+import 'vuetify/dist/vuetify.min.css';
+
+import Vuetify from 'vuetify';
+// import { vuetifyInit, vuetify } from './plugins/vuetify';
+// import SpinalComponents from 'spinal-components';
+// import 'spinal-components/dist/spinal-components.css'
+
+// Vue.use(SpinalComponents, {})
+
+// const vuetify = new Vuetify({
+//   theme: {
+//     themes: {
+//       light: {
+//         primary: '#14202c', // #E53935
+//         secondary: '#14202c', // #FFCDD2
+//         accent: '#14202c', // #3F51B5
+//       },
+//     },
+//   },
+// });
+// Vue.use(Vuetify);
+
+// vuetifyInit(Vue);
 
 // @ts-ignore
 window.Autodesk.Viewing.Private.analytics.optOut();
 
-import VueApexCharts from 'vue-apexcharts'
-Vue.use(VueApexCharts)
-
-Vue.component('apexchart', VueApexCharts)
+// eslint-disable-next-line vue/multi-word-component-names
+// Vue.component('apexchart', VueApexCharts);
 
 Ripple.zIndex = 99999999;
 Vue.directive('ripple', Ripple);
@@ -61,14 +81,16 @@ Vue.use(ElementUI);
 Vue.use(VTooltip);
 Vue.use(BootstrapVue);
 Vue.use(VueMaterial);
+Vue.use(Vuetify);
 
 spinalBackend.init();
 BackendInitializer.getInstance().init();
 
 new Vue({
-  // @ts-ignore
   i18n,
-  // @ts-ignore
+  // vuetify,
   router,
-  render: h => h(App)
+  render: (h) => h(App),
 }).$mount('#app');
+
+Vue.config.devtools = true;

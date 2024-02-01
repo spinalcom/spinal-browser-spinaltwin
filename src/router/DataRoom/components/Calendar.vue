@@ -27,41 +27,22 @@ with this file. If not, see
     <div class="createEvent">
       <Create-Event v-bind:nodeId="nodeId" @reload="updateDate"></Create-Event>
     </div>
-    <div class="spinal-space-table-content spinal-scrollbar">
-      <!--<vueCal
-        class="calendar_container vuecal--full-height-delete"
-        ref="vuecal"
-        :time="true"
-        :dblclick-to-navigate="true"
-        events-count-on-year-view
-        events-on-month-view="short"
-        default-view="month"
-        active-view="month"
-        :editable-events="{
-          title: false,
-          drag: false,
-          resize: false,
-          delete: true,
-          create: false,
-        }"
-        :events="calendrier"
-      ></vueCal>-->
-    </div>
+    <div class="spinal-space-table-content spinal-scrollbar"> </div>
   </div>
 </template>
 <script>
-import { SpinalGraphService } from "spinal-env-viewer-graph-service";
-import { FileSystem } from "spinal-core-connectorjs_type";
-import { SpinalEventService } from "spinal-env-viewer-task-service";
-import VueCal from "vue-cal";
-import "vue-cal/dist/vuecal.css";
-import CreateEvent from "./CreateEvent";
-import moment from "moment";
+import { SpinalGraphService } from 'spinal-env-viewer-graph-service';
+import { FileSystem } from 'spinal-core-connectorjs_type';
+import { SpinalEventService } from 'spinal-env-viewer-task-service';
+import VueCal from 'vue-cal';
+import 'vue-cal/dist/vuecal.css';
+import CreateEvent from './CreateEvent';
+import moment from 'moment';
 
 export default {
-  name: "Calendar",
+  name: 'Calendar',
   components: { CreateEvent, VueCal },
-  props: ["nodeId"],
+  props: ['nodeId'],
 
   data() {
     return {
@@ -81,7 +62,7 @@ export default {
   },
   methods: {
     getEvents(Id) {
-      return SpinalGraphService.getChildren(Id, ["hasEvent"]);
+      return SpinalGraphService.getChildren(Id, ['hasEvent']);
     },
     async updateDate() {
       this.calendrier = await this.getEvents(this.nodeId);
@@ -104,8 +85,9 @@ export default {
     },
     _formatDate(argDate) {
       let date = new Date(argDate);
-      return `${date.getFullYear()}-${date.getMonth() +
-        1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}`;
+      return `${date.getFullYear()}-${
+        date.getMonth() + 1
+      }-${date.getDate()} ${date.getHours()}:${date.getMinutes()}`;
     },
   },
   beforeDestroy() {},
@@ -449,7 +431,7 @@ export default {
 .vuecal__today-btn--highlighted:before,
 .vuecal__view-btn--highlighted:after,
 .vuecal__view-btn--highlighted:before {
-  content: "";
+  content: '';
   background-color: inherit;
   -webkit-animation: sonar 0.8s ease-out infinite;
   animation: sonar 0.8s ease-out infinite;
@@ -648,7 +630,7 @@ export default {
   bottom: 0;
 }
 .vuecal--full-height-delete .vuecal__event-delete:before {
-  content: "";
+  content: '';
   width: 1.7em;
   height: 1.8em;
   display: block;
@@ -754,7 +736,7 @@ export default {
   display: flex;
 }
 .vuecal__cell:before {
-  content: "";
+  content: '';
   position: absolute;
   z-index: 0;
   top: 0;
@@ -871,7 +853,7 @@ export default {
   z-index: 1;
 }
 .vuecal__now-line:before {
-  content: "";
+  content: '';
   position: absolute;
   top: -6px;
   left: 0;
@@ -1097,7 +1079,7 @@ export default {
   font-size: 0.9em;
 }
 .vuecal__time-column .vuecal__time-cell-line:before {
-  content: "";
+  content: '';
   position: absolute;
   left: 0;
   right: 0;

@@ -111,14 +111,14 @@ with this file. If not, see
 import {
   SpinalNode,
   SpinalGraphService,
-} from "spinal-env-viewer-graph-service";
-import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
-import { NOTE_TYPE } from "spinal-env-viewer-plugin-documentation-service/dist/Models/constants";
-import moment from "moment";
-import messageVue from "./message.vue";
-import attachmentVue from "./attachment.vue";
+} from 'spinal-env-viewer-graph-service';
+import { serviceDocumentation } from 'spinal-env-viewer-plugin-documentation-service';
+import moment from 'moment';
+import messageVue from './message.vue';
+import attachmentVue from './attachment.vue';
+
 export default {
-  name: "messageComponent",
+  name: 'messageComponent',
   props: {
     nodeInfo: {},
     noteContextSelected: {
@@ -132,21 +132,21 @@ export default {
     },
   },
   components: {
-    "message-component": messageVue,
-    "attachment-component": attachmentVue,
+    'message-component': messageVue,
+    'attachment-component': attachmentVue,
   },
   data() {
     this.userConnected = {
-      username: "admin",
+      username: 'admin',
       userId: FileSystem._user_id,
     };
     return {
       messages: {
-        messageUser: "",
+        messageUser: '',
         pj: [],
       },
       // messageUser: "",
-      messageUserEdit: "",
+      messageUserEdit: '',
       notesDisplayList: [],
       editNodePopup: false,
       selectedNote: undefined,
@@ -178,8 +178,8 @@ export default {
         }
       }
     },
-    toDate: function(date) {
-      return moment(date).format("MMMM Do YYYY, h:mm:ss a");
+    toDate: function (date) {
+      return moment(date).format('MMMM Do YYYY, h:mm:ss a');
     },
     async addFilesNote() {
       if (this.messages.pj.length === 0) return;
@@ -203,7 +203,7 @@ export default {
       );
     },
     async addNote() {
-      if (typeof this.nodeInfo.selectedNode === "undefined") {
+      if (typeof this.nodeInfo.selectedNode === 'undefined') {
         this.nodeInfo.selectedNode = await this._createBimObjectNode(
           this.nodeInfo.model,
           this.nodeInfo.dbid
@@ -218,7 +218,7 @@ export default {
         this.nodeInfo.selectedNode,
         this.messages.messageUser
       );
-      this.messages.messageUser = "";
+      this.messages.messageUser = '';
       this.resetBind();
       this.updatedd();
     },
@@ -226,7 +226,7 @@ export default {
       return window.spinal.spinalSystem.getUser().username;
     },
     updatedd() {
-      var container = document.querySelector("#myList");
+      var container = document.querySelector('#myList');
       setTimeout(() => {
         container.scrollTop = container.scrollHeight;
       }, 300);
@@ -248,12 +248,12 @@ export default {
     },
     addPJ() {
       const maxSize = 25000000;
-      const input = document.createElement("input");
-      input.type = "file";
+      const input = document.createElement('input');
+      input.type = 'file';
       input.multiple = true;
       input.click();
       input.addEventListener(
-        "change",
+        'change',
         (event) => {
           const files = event.target.files;
           let filelist = [];
@@ -265,7 +265,7 @@ export default {
           const filesSize = sizes.reduce((a, b) => a + b);
           if (filesSize > maxSize) {
             alert(
-              "The selected file(s) is too large. The maximum size must not exceed 25 MB"
+              'The selected file(s) is too large. The maximum size must not exceed 25 MB'
             );
             return;
           }
@@ -297,11 +297,11 @@ export default {
             let file_name;
             if (!isViewPoint) {
               file_name = `screenshot of ${name} from ${moment().format(
-                "L"
+                'L'
               )}.png`;
             } else {
               file_name = `viewPoint of ${name} from ${moment().format(
-                "L"
+                'L'
               )}.png`;
             }
             let file = this.blobToFile(blob, file_name);
@@ -318,7 +318,7 @@ export default {
           });
         });
       }
-      return "";
+      return '';
     },
     blobToFile(theBlob, fileName) {
       theBlob.lastModifiedDate = new Date();
@@ -344,7 +344,7 @@ export default {
       const getCircularReplacer = () => {
         const seen = new WeakSet();
         return (key, value) => {
-          if (typeof value === "object" && value !== null) {
+          if (typeof value === 'object' && value !== null) {
             if (seen.has(value)) {
               return;
             }

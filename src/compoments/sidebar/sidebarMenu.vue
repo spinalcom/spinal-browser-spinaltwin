@@ -25,40 +25,47 @@ with this file. If not, see
 <template>
   <div class="side-bar-compomenet-container">
     <div class="side-bar-header-container">
-      <el-button v-ripple
-                 :disabled="!canGoBack"
-                 v-if="canGoBack"
-                 class="button-icon-go-back"
-                 icon="el-icon-arrow-left"
-                 circle
-                 @click="$emit('goBack')">
+      <el-button
+        v-ripple
+        :disabled="!canGoBack"
+        v-if="canGoBack"
+        class="button-icon-go-back"
+        icon="el-icon-arrow-left"
+        circle
+        @click="$emit('goBack')"
+      >
       </el-button>
       <div class="button-icon-building-focus-container">
-        <el-button v-ripple
-                   class="button-icon-building-focus"
-                   type="info"
-                   size="small"
-                   @click="$emit('homeSelect')">
-          {{title}}
+        <el-button
+          v-ripple
+          class="button-icon-building-focus"
+          type="info"
+          size="small"
+          @click="$emit('homeSelect')"
+        >
+          {{ title }}
         </el-button>
       </div>
     </div>
     <div class="spinal-side-bar-menu spinal-scrollbar">
-      <transition-group name="staggered-fade"
-                        tag="el-menu"
-                        v-bind:css="false"
-                        v-on:before-enter="beforeEnter"
-                        v-on:enter="enter"
-                        v-on:leave="leave"
-                        text-color="#fff">
-        <div v-ripple
-             v-for="item in items"
-             :key="item.id"
-             @mouseover="mouseover(item)"
-             @mouseleave="mouseleave(item)">
-          <el-menu-item :index="item.name"
-                        @click="$emit('selected', item)">
-            <span>{{item.name}}</span>
+      <transition-group
+        name="staggered-fade"
+        tag="el-menu"
+        v-bind:css="false"
+        v-on:before-enter="beforeEnter"
+        v-on:enter="enter"
+        v-on:leave="leave"
+        text-color="#fff"
+      >
+        <div
+          v-ripple
+          v-for="item in items"
+          :key="item.id"
+          @mouseover="mouseover(item)"
+          @mouseleave="mouseleave(item)"
+        >
+          <el-menu-item :index="item.name" @click="$emit('selected', item)">
+            <span>{{ item.name }}</span>
           </el-menu-item>
         </div>
       </transition-group>
@@ -67,26 +74,18 @@ with this file. If not, see
 </template>
 
 <script>
-import Velocity from "velocity-animate";
-import debounce from "lodash.debounce";
+import Velocity from 'velocity-animate';
+import debounce from 'lodash.debounce';
 
 export default {
-  name: "sidebarMenu",
-  props: ["title", "items", "canGoBack"],
+  name: 'sidebarMenu',
+  props: ['title', 'items', 'canGoBack'],
   data() {
     return {};
   },
-  watch: {
-    // items: {
-    //   deep: true,
-    //   handle: () => {
-    //     console.log("update data");
-    //   }
-    // }
-  },
   mounted() {
-    this.mouseoverEvent = debounce(item => {
-      this.$emit("onMouseOver", item);
+    this.mouseoverEvent = debounce((item) => {
+      this.$emit('onMouseOver', item);
     }, 500);
   },
   methods: {
@@ -96,23 +95,23 @@ export default {
     mouseleave(item) {
       this.mouseoverEvent.cancel();
     },
-    beforeEnter: function(el) {
+    beforeEnter: function (el) {
       el.style.opacity = 0;
       el.style.height = 0;
     },
-    enter: function(el, done) {
+    enter: function (el, done) {
       var delay = el.dataset.index * 150;
-      setTimeout(function() {
-        Velocity(el, { opacity: 1, height: "56px" }, { complete: done });
+      setTimeout(function () {
+        Velocity(el, { opacity: 1, height: '56px' }, { complete: done });
       }, delay);
     },
-    leave: function(el, done) {
+    leave: function (el, done) {
       var delay = el.dataset.index * 150;
-      setTimeout(function() {
+      setTimeout(function () {
         Velocity(el, { opacity: 0, height: 0 }, { complete: done });
       }, delay);
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -198,9 +197,9 @@ export default {
   color: #409eff;
 }
 
-.spinal-side-bar-menu .el-menu-item:hover {
+/* .spinal-side-bar-menu .el-menu-item:hover {
   background-color: #606266 !important;
-}
+} */
 .spinal-side-bar-menu li.el-menu-item:focus {
   outline: none;
   background-color: transparent;

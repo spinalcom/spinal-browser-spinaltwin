@@ -103,16 +103,15 @@ with this file. If not, see
 </template>
 
 <script>
-import { SpinalGraphService } from "spinal-env-viewer-graph-service";
-import { FileExplorer } from "spinal-env-viewer-plugin-documentation-service/dist/Models/FileExplorer";
-import { FileSystem } from "spinal-core-connectorjs_type";
-import documentCreate from "./documentcreate";
-import viewerBtn from "./viewerBtn";
+import { FileExplorer } from 'spinal-env-viewer-plugin-documentation-service/dist/Models/FileExplorer';
+import { FileSystem } from 'spinal-core-connectorjs_type';
+import documentCreate from './documentcreate';
+import viewerBtn from './viewerBtn';
 
 export default {
-  name: "Documentation",
-  components: { "document-create": documentCreate, viewerBtn },
-  props: ["nodeId"],
+  name: 'Documentation',
+  components: { 'document-create': documentCreate, viewerBtn },
+  props: ['nodeId'],
 
   data() {
     return {
@@ -135,26 +134,26 @@ export default {
   },
   methods: {
     exportFichier(file) {
-      if (file._info.model_type.get() != "Directory") {
+      if (file._info.model_type.get() != 'Directory') {
         file._ptr.load((path) => {
-          if (file._info.model_type.get() == "HttpPath") {
-            const element = document.createElement("a");
+          if (file._info.model_type.get() == 'HttpPath') {
+            const element = document.createElement('a');
             const _path =
               path.host.get() +
-              "/file/" +
+              '/file/' +
               encodeURIComponent(path.httpRootPath.get()) +
-              "/" +
+              '/' +
               encodeURIComponent(path.httpPath.get());
-            element.setAttribute("href", _path);
-            element.setAttribute("download", file.name.get());
-            element.style.display = "none";
+            element.setAttribute('href', _path);
+            element.setAttribute('download', file.name.get());
+            element.style.display = 'none';
             document.body.appendChild(element);
             element.click();
             document.body.removeChild(element);
           } else {
-            var element = document.createElement("a");
-            element.setAttribute("href", "/sceen/_?u=" + path._server_id);
-            element.setAttribute("download", file.name);
+            var element = document.createElement('a');
+            element.setAttribute('href', '/sceen/_?u=' + path._server_id);
+            element.setAttribute('download', file.name);
             element.click();
           }
         });
@@ -177,7 +176,7 @@ export default {
       );
     },
     async deleteDocument(index) {
-      if (confirm("Delete Document !")) {
+      if (confirm('Delete Document !')) {
         const directory = await FileExplorer.getDirectory(
           FileSystem._objects[this.nodeId]
         );

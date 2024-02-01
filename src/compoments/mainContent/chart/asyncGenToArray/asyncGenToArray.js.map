@@ -1,0 +1,1 @@
+{"version":3,"file":"asyncGenToArray.js","sourceRoot":"","sources":["../src/asyncGenToArray.ts"],"names":[],"mappings":";;;;;;;;;;;;;;;;;AACA,SAA8B,eAAe,CAAC,QAAoC;;;;QAEhF,MAAM,GAAG,GAAU,EAAE,CAAC;;YACtB,KAAyB,aAAA,cAAA,QAAQ,CAAA;gBAAtB,MAAM,IAAI,qBAAA,CAAA;gBACnB,GAAG,CAAC,IAAI,CAAC,IAAI,CAAC,CAAC;aAChB;;;;;;;;;QACD,OAAO,GAAG,CAAC;IACb,CAAC;CAAA;AAPD,kCAOC;AAEQ,0CAAe"}

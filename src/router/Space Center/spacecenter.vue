@@ -29,16 +29,14 @@ with this file. If not, see
 </template>
 
 <script>
-import Table from "../../compoments/space/table.vue";
+import Table from '../../compoments/space/table.vue';
 
 export default {
-  components : {
-    "table-vue" : Table
+  components: {
+    'table-vue': Table,
   },
   data() {
     return {};
-
-  }
+  },
 };
 </script>
-

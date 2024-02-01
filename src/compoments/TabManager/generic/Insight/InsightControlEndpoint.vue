@@ -23,49 +23,57 @@ with this file. If not, see
 -->
 
 <template>
-  <el-container>
-    <el-header>
-      Component Header
-    </el-header>
-    <el-main v-if="ctxNode">
-      <el-container
-        v-if="(
-          nodeInfo.selectedNode.info.type.get() == 'geographicRoom'
-          && equipmentEndpoints.length != 0
-        )"
-      >
-        <el-header>
-          Control Endpoints
-        </el-header>
-        <el-main>
-          <div v-for="eq of equipmentEndpoints" v-bind:key="eq.name">
-            {{ eq.name }}
-            <insight-control-endpoint
+  <!-- <el-container
+    v-if="
+      ctxNode &&
+      ctxNode.info.type.get() == 'geographicRoom' &&
+      typeof endpoints !== 'undefined' &&
+      endpoints.length != 0
+    "
+  > -->
+  <el-container v-if="ctxNode">
+    <div style="overflow: auto">
+      <h4 class="box-node-name">
+        {{ ctxNode.info.name.get() + " : " + $t('datas.current-value')}}
+      </h4>
+      <div>
+        <div v-for="eq of endpoints" :key="eq.name">
+          <div class="control-endpoint-grid">
+            <insight-control-endpoint-box
               v-for="end of eq.info"
-              v-bind:key="end.name"
+              :key="end.name"
               :name="end.name"
               :endpoint="end"
-            ></insight-control-endpoint>
+              :targetName="ctxNode.getName().get()"
+            ></insight-control-endpoint-box>
           </div>
-        </el-main>
-      </el-container>
-    </el-main>
+        </div>
+      </div>
+    </div>
   </el-container>
 </template>
 
 <script>
 // imports
-import InsightControlEndpointBox from './InsightControlEndpointBox.vue'
-import { SpinalGraphService } from 'spinal-env-viewer-graph-service'
-import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service"
+import InsightControlEndpointBox from "./InsightControlEndpointBox.vue";
+import { SpinalGraphService } from "spinal-env-viewer-graph-service";
+import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
+import { EventBus } from "../../../../services/event"
 
 export default {
   name: "InsightControlEndpoint",
   components: { InsightControlEndpointBox },
   props: {
     Properties: {
-      required: true,
       type: Object,
+      required: true,
+      default: undefined,
+      validator: function (value) {
+        if (!value.viewKey instanceof String) {
+          return false;
+        }
+        return true;
+      },
     },
   },
 
@@ -77,94 +85,122 @@ export default {
     };
   },
 
-  watch:
-  {
-    Properties:
-    {
-      handler: async function(oldProp, newProp)
-      {
-        if (newProp.view.serverId != 0)
-        {
-          await this.update(newProp.view.serverId);
-        }
-        else
-        {
+  watch: {
+    Properties: {
+      handler: async function (oldProp, newProp) {
+        if (newProp.view.serverId != 0) {
+          this.ctxNode = FileSystem._objects[newProp.view.serverId]
+          // await this.update(newProp.view.serverId);
+        } else {
           this.ctxNode = false;
         }
       },
       deep: true,
-    }
+    },
   },
 
   async mounted() {
-    this.update(this.Properties.view.serverId);
+    const promise = new Promise((res,rej)=>{
+      this.ctxNode=false;
+      this.endpoints=false;
+      this.controlEndpoints=false;
+      res();
+    })
+    promise.then(async ()=>{
+      this.ctxNode = FileSystem._objects[this.Properties.view.serverId]
+      EventBus.$on("insight-breadcrumb-click", async serverId => {
+      await this.update(serverId);
+    });
+    EventBus.$on("click-on_spinal-twin.ControlEndpoints", async () => {
+      await this.update(this.ctxNode._server_id);
+    });
+      // await this.update(this.Properties.view.serverId);
+    })
+    // EventBus.$on("insight-breadcrumb-click", async serverId => {
+    //   await this.update(serverId);
+    // });
+    // EventBus.$on("click-on_spinal-twin.ControlEndpoints", async () => {
+    //   await this.update(this.ctxNode._server_id);
+    // });
+    
   },
 
   methods: {
-    async update(id)
-    {
+    async update(id) {
       // update tab infos from current node
-      this.ctxNode = FileSystem._objects[id];
-      console.debug("node", this.ctxNode)
-      // this.controlEndpoints = await this.getNodeEndpointsInfo(this.ctxNode.info.id, "hasControlPoints");
-      this.endpoints = await this.getNodeEndpointsInfo(this.ctxNode.info.id, "hasEndPoint");
-      console.debug("endpoints", this.endpoints)
+      // this.ctxNode = FileSystem._objects[id];
+      this.endpoints = await this.getNodeEndpointsInfo(
+        this.ctxNode.info.id.get(),
+        "hasControlPoints"
+      );
+
+
     },
 
     // return infos from an endpointNodeId
-    async getEndpointInfo(endpointNodeId){
+    async getEndpointInfo(endpointNodeId) {
       const realnode = SpinalGraphService.getRealNode(endpointNodeId);
-      console.debug("real node:", realnode)
-      const attributesLstModels = await serviceDocumentation.getAllAttributes(realnode);
-      console.debug("attributesLstModels:", attributesLstModels)
-      const attributes = attributesLstModels.map(el => el.get());
-      console.debug("attributes:", attributes)
+      const attributesLstModels = await serviceDocumentation.getAllAttributes(
+        realnode
+      );
+      const attributes = attributesLstModels.map((el) => el.get());
       const endpointInfo = {};
       for (const attr of attributes) {
         endpointInfo[attr.label] = attr.value;
       }
+      endpointInfo.endpointNodeId = endpointNodeId;
       return endpointInfo;
     },
 
-    async getNodeEndpointsInfo(nodeId, endpointRelation){
-      const endpointProfilsModel = await SpinalGraphService.getChildren(nodeId, endpointRelation);
-      if (endpointProfilsModel.length == 0) return // si la node n'a pas d'endpoints on quitte la fonction
-      if (endpointRelation == 'hasControlPoints'){ // on cherche les control endpoints (onglet insight)
+    async getNodeEndpointsInfo(nodeId, endpointRelation) {
+      const endpointProfilsModel = await SpinalGraphService.getChildren(
+        nodeId,
+        endpointRelation
+      );
+      if (endpointProfilsModel && endpointProfilsModel.length == 0) return; // si la node n'a pas d'endpoints on quitte la fonction
+      if (endpointRelation == "hasControlPoints") {
+        // on cherche les control endpoints (onglet insight)
         const res = [];
-        for(const endpointProfil of endpointProfilsModel){ // pour chaque profil de control endpoint
+        for (const endpointProfil of endpointProfilsModel) {
+          // pour chaque profil de control endpoint
           /** on récupère la data */
-          const endpointsModels = await SpinalGraphService.getChildren(endpointProfil.id.get(), "hasBmsEndpoint");
-          const endpoints = endpointsModels.map(el => el.get());
+          const endpointsModels = await SpinalGraphService.getChildren(
+            endpointProfil.id.get(),
+            "hasBmsEndpoint"
+          );
+          const endpoints = endpointsModels.map((el) => el.get());
           const infos = [];
 
-          for (const endpoint of endpoints) { // pour chaque control endpoint
-          /** on récupère la data */
+          for (const endpoint of endpoints) {
+            // pour chaque control endpoint
+            /** on récupère la data */
             const info = await this.getEndpointInfo(endpoint.id);
+            info.controlpointNodeId = endpointProfil.id.get();
             infos.push(info);
           }
-        res.push({name: endpointProfil.name.get(), info:infos})
+          res.push({
+            name: endpointProfil.name.get(),
+            nodeId: endpointProfil.id.get(),
+            info: infos,
+          });
         }
         return res;
       }
-      //endpointRelation == 'hasEndpoint'
-      else { // on cherche les endpoints (onglet endpoint)
-        const res = [];
-        // premier automate associé ( à changer si besoin )
-        const endpointsModels = await SpinalGraphService.getChildren(endpointProfilsModel[0].id.get(), "hasBmsEndpoint");
-        const endpoints = endpointsModels.map(el => el.get());
-        
-        for (const endpoint of endpoints) { // pour chaque endpoint
-          const info = await this.getEndpointInfo(endpoint.id);
-          console.debug(info)
-          res.push(info);
-        }
-        return res;
-      }
-    },
-
-    async debug(what) {
-      console.debug("Debugging", what);
     },
   },
 };
 </script>
+
+<style scoped>
+.control-endpoint-grid {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  max-height: 70vh;
+  overflow: auto;
+}
+
+.box-node-name{
+  text-align: center;
+}
+</style>

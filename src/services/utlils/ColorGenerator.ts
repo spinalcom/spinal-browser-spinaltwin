@@ -23,23 +23,23 @@
  */
 
 export class ColorGenerator {
-  colors = []
+  colors: string[] = [];
   constructor(nbrColors: number, colorsUsed: string[]) {
-    const tmpNbrColors = nbrColors > 3 ? nbrColors : 10
+    const tmpNbrColors = nbrColors > 3 ? nbrColors : 10;
     for (let index = 0; index < tmpNbrColors; index++) {
-      this.colors.push(this.rainbow(tmpNbrColors, index))
+      this.colors.push(this.rainbow(tmpNbrColors, index));
     }
 
     for (const color of colorsUsed) {
-      const idx = this.colors.indexOf(color)
+      const idx = this.colors.indexOf(color);
       if (idx !== -1) this.colors.splice(idx, 1);
     }
-    this.shuffleColor()
-    this.shuffleColor()
+    this.shuffleColor();
+    this.shuffleColor();
   }
 
-  getColor(){
-    return this.colors.pop()
+  getColor() {
+    return this.colors.pop();
   }
   private shuffleColor() {
     for (let i = this.colors.length - 1; i > 0; i--) {
@@ -48,27 +48,49 @@ export class ColorGenerator {
     }
   }
 
-
-  private getColorStr(colorCompo: number) {
-    return ("00" + (~ ~(colorCompo * 255)).toString(16)).slice(-2)
+  private getColorStr(colorCompo: number): string {
+    return ('00' + (~~(colorCompo * 255)).toString(16)).slice(-2);
   }
-  private rainbow(numOfSteps, step) {
+  private rainbow(numOfSteps: number, step: number): string {
     let r, g, b;
     let h = step / numOfSteps;
     let i = ~~(h * 6);
     let f = h * 6 - i;
     let q = 1 - f;
     switch (i % 6) {
-      case 0: r = 1; g = f; b = 0; break;
-      case 1: r = q; g = 1; b = 0; break;
-      case 2: r = 0; g = 1; b = f; break;
-      case 3: r = 0; g = q; b = 1; break;
-      case 4: r = f; g = 0; b = 1; break;
-      case 5: r = 1; g = 0; b = q; break;
+      case 0:
+        r = 1;
+        g = f;
+        b = 0;
+        break;
+      case 1:
+        r = q;
+        g = 1;
+        b = 0;
+        break;
+      case 2:
+        r = 0;
+        g = 1;
+        b = f;
+        break;
+      case 3:
+        r = 0;
+        g = q;
+        b = 1;
+        break;
+      case 4:
+        r = f;
+        g = 0;
+        b = 1;
+        break;
+      case 5:
+        r = 1;
+        g = 0;
+        b = q;
+        break;
     }
-    return `#${this.getColorStr(r)}${this.getColorStr(g)}${this.getColorStr(b)}`
+    return `#${this.getColorStr(r)}${this.getColorStr(g)}${this.getColorStr(
+      b
+    )}`;
   }
-
-
-
 }

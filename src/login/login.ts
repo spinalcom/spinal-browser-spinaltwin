@@ -21,28 +21,47 @@
  * with this file. If not, see
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
-import Axios from "axios";
+import axios from 'axios';
+import { spinalCore, FileSystem } from 'spinal-core-connectorjs';
+import { USE_REMOTE_CONNECT } from '../constants';
 
-function saveLogin(login, password) {
+function saveLogin(login: string, password: string) {
   const encryptedHex = JSON.stringify({ username: login, password });
   window.localStorage.setItem('spinalhome_cfg', btoa(encryptedHex));
 }
+function saveToken(token: string, expieredToken: string, userName:string): void {
+  window.localStorage.setItem('tokenKey', token);
+  window.localStorage.setItem('expires_in', expieredToken);
+  window.localStorage.setItem('userName', userName);
+}
 
-export function login(login, password) {
+export async function login(login: string, password: string): Promise<void> {
+  FileSystem.CONNECTOR_TYPE = 'Browser';
   const serverHost = window.location.origin;
-  return Axios.get(`${serverHost}/get_user_id`, {
-    params: {
-      u: login,
-      p: password
+  if (USE_REMOTE_CONNECT === true) {
+    try {
+      const res = await spinalCore.auth(serverHost, login, password);
+      saveToken(res.token, res.expieredToken.toString(), res.userInfo.userName);
+      // @ts-ignore
+      window.location = '/html/spinaltwin' + location.hash + location.search;
+    } catch (error) {
+      console.error(error);
+      throw new Error('Identifiant ou mot de passe incorrect');
     }
-  })
-    .then(response => {
-      let id = parseInt(response.data);
-      if (id !== -1) {
-        saveLogin(login, password);
-        window.location = "/html/spinaltwin" + location.hash + location.search;
-        return;
-      }
-      throw new Error("Identifiant ou mot de passe incorrect");
+  } else {
+    const response = await axios.get(`${serverHost}/get_user_id`, {
+      params: {
+        u: login,
+        p: password,
+      },
     });
+    let id = parseInt(response.data);
+    if (id !== -1) {
+      saveLogin(login, password);
+      // @ts-ignore
+      window.location = '/html/spinaltwin' + location.hash + location.search;
+      return;
+    }
+    throw new Error('Identifiant ou mot de passe incorrect');
+  }
 }

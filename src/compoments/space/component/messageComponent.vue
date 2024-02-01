@@ -112,22 +112,22 @@ with this file. If not, see
 </template>
 
 <script>
-import viewerComponent from "../../mainContent/viewer/viewer.vue";
-import { MESSAGE_TYPES } from "spinal-models-documentation";
+import viewerComponent from '../../mainContent/viewer/viewer.vue';
+import { MESSAGE_TYPES } from 'spinal-models-documentation';
 
 import {
   SpinalNode,
   SpinalGraphService,
-} from "spinal-env-viewer-graph-service";
-import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
-import { NOTE_TYPE } from "spinal-env-viewer-plugin-documentation-service/dist/Models/constants";
+} from 'spinal-env-viewer-graph-service';
+import { serviceDocumentation } from 'spinal-env-viewer-plugin-documentation-service';
+import { NOTE_TYPE } from 'spinal-env-viewer-plugin-documentation-service/dist/Models/constants';
 
-import moment from "moment";
-import messageVue from "./message.vue";
-import attachmentVue from "./attachment.vue";
+import moment from 'moment';
+import messageVue from './message.vue';
+import attachmentVue from './attachment.vue';
 
 export default {
-  name: "messageComponent",
+  name: 'messageComponent',
 
   props: {
     nodeInfo: {},
@@ -143,22 +143,22 @@ export default {
   },
 
   components: {
-    "message-component": messageVue,
-    "attachment-component": attachmentVue,
+    'message-component': messageVue,
+    'attachment-component': attachmentVue,
   },
 
   data() {
     this.userConnected = {
-      username: "admin",
+      username: 'admin',
       userId: FileSystem._user_id,
     };
     return {
       messages: {
-        messageUser: "",
+        messageUser: '',
         pj: [],
       },
       // messageUser: "",
-      messageUserEdit: "",
+      messageUserEdit: '',
       notesDisplayList: [],
       editNodePopup: false,
       selectedNote: undefined,
@@ -194,8 +194,8 @@ export default {
       }
     },
 
-    toDate: function(date) {
-      return moment(date).format("MMMM Do YYYY, h:mm:ss a");
+    toDate: function (date) {
+      return moment(date).format('MMMM Do YYYY, h:mm:ss a');
     },
 
     async addFilesNote() {
@@ -223,7 +223,7 @@ export default {
     },
 
     async addNote() {
-      if (typeof this.nodeInfo.selectedNode === "undefined") {
+      if (typeof this.nodeInfo.selectedNode === 'undefined') {
         this.nodeInfo.selectedNode = await this._createBimObjectNode(
           this.nodeInfo.model,
           this.nodeInfo.dbid
@@ -242,7 +242,7 @@ export default {
         this.nodeInfo.selectedNode,
         this.messages.messageUser
       );
-      this.messages.messageUser = "";
+      this.messages.messageUser = '';
       this.resetBind();
       this.updatedd();
     },
@@ -252,7 +252,7 @@ export default {
     },
 
     updatedd() {
-      var container = document.querySelector("#myList");
+      var container = document.querySelector('#myList');
       setTimeout(() => {
         container.scrollTop = container.scrollHeight;
       }, 300);
@@ -276,14 +276,14 @@ export default {
 
     addPJ() {
       const maxSize = 25000000;
-      const input = document.createElement("input");
-      input.type = "file";
+      const input = document.createElement('input');
+      input.type = 'file';
       input.multiple = true;
 
       input.click();
 
       input.addEventListener(
-        "change",
+        'change',
         (event) => {
           const files = event.target.files;
 
@@ -300,7 +300,7 @@ export default {
 
           if (filesSize > maxSize) {
             alert(
-              "The selected file(s) is too large. The maximum size must not exceed 25 MB"
+              'The selected file(s) is too large. The maximum size must not exceed 25 MB'
             );
             return;
           }
@@ -339,11 +339,11 @@ export default {
 
             if (!isViewPoint) {
               file_name = `screenshot of ${name} from ${moment().format(
-                "L"
+                'L'
               )}.png`;
             } else {
               file_name = `viewPoint of ${name} from ${moment().format(
-                "L"
+                'L'
               )}.png`;
             }
 
@@ -359,12 +359,11 @@ export default {
       if (model && dbid) {
         return new Promise((resolve) => {
           model.getProperties(dbid, async (res) => {
-            console.log(res.name);
             resolve(res.name);
           });
         });
       }
-      return "";
+      return '';
     },
 
     blobToFile(theBlob, fileName) {
@@ -394,7 +393,7 @@ export default {
       const getCircularReplacer = () => {
         const seen = new WeakSet();
         return (key, value) => {
-          if (typeof value === "object" && value !== null) {
+          if (typeof value === 'object' && value !== null) {
             if (seen.has(value)) {
               return;
             }

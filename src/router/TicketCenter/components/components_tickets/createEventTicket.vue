@@ -96,14 +96,11 @@ with this file. If not, see
 </template>
 
 <script>
-// import SpinalBackend from "../../services/spinalBackend";
-import { serviceTicketPersonalized } from "spinal-service-ticket";
-import { SpinalEventService } from "spinal-env-viewer-task-service";
-import { FileSystem } from "spinal-core-connectorjs_type";
-import { SpinalGraphService } from "spinal-env-viewer-graph-service";
+import { SpinalEventService } from 'spinal-env-viewer-task-service';
+import { FileSystem } from 'spinal-core-connectorjs_type';
 
 export default {
-  name: "CreateEvent",
+  name: 'CreateEvent',
 
   data() {
     return {
@@ -111,18 +108,18 @@ export default {
       dialogFormVisible: false,
       isFormDisable: true,
       form: {
-        name: "",
-        value1: "",
-        value2: "",
+        name: '',
+        value1: '',
+        value2: '',
       },
       EventInterface: {
-        contextId: "",
-        groupId: "",
-        categoryId: "",
+        contextId: '',
+        groupId: '',
+        categoryId: '',
         nodeId: FileSystem._objects[this.nodeId].getId().get(),
-        startDate: "",
-        endDate: "",
-        name: "",
+        startDate: '',
+        endDate: '',
+        name: '',
       },
       props: {
         lazy: true,
@@ -173,7 +170,7 @@ export default {
     };
   },
   components: {},
-  props: ["nodeId"],
+  props: ['nodeId'],
   methods: {
     cascaderSelection(value) {
       this.EventInterface.contextId = value[0];
@@ -187,7 +184,6 @@ export default {
       this.EventInterface.startDate = new Date(this.form.value1).getTime();
       this.EventInterface.endDate = new Date(this.form.value2).getTime();
       this.EventInterface.name = this.form.name;
-      console.log("EventInterface", this.EventInterface);
       SpinalEventService.createEvent(
         this.EventInterface.contextId,
         this.EventInterface.groupId,
@@ -195,9 +191,7 @@ export default {
         this.EventInterface,
         {}
       ).then((result) => {
-        console.log("result", result);
-
-        this.$emit("reload");
+        this.$emit('reload');
       });
     },
   },

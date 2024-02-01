@@ -22,24 +22,21 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
-import q from "q";
+import q from 'q';
 import {
   SCENE_RELATION_CONTEXT_TYPE,
-  SCENE_RELATION_NAME
-  // PART_RELATION_NAME
-} from "../../constants";
-// import { spinalIO } from '../spinalIO';
+  SCENE_RELATION_NAME,
+} from '../../constants';
 export default class BackEndViewer {
   initDefer = q.defer();
-  context
-  
-  constructor() {
-  }
+  context;
+
+  constructor() {}
   async getContext(graph) {
     const children = await graph.getChildren();
     for (const context of children) {
       if (context.info.type.get() === SCENE_RELATION_CONTEXT_TYPE) {
-        return this.context = context;
+        return (this.context = context);
       }
     }
   }
@@ -114,5 +111,4 @@ export default class BackEndViewer {
   //   });
   //   return Promise.all(prom);
   // }
-
 }

@@ -49,13 +49,12 @@ with this file. If not, see
 </template>
 
 <script>
-import { ViewManager } from "../../../../services/ViewManager/ViewManager";
-import "../../backend/EventHandler";
-import { EventBus } from "../../backend/event";
+import '../../backend/EventHandler';
+
 export default {
-  name: "viewerBtn",
+  name: 'viewerBtn',
   components: {},
-  props: ["nodeId"],
+  props: ['nodeId'],
 
   data() {
     return {
@@ -64,41 +63,8 @@ export default {
   },
   mounted() {},
   methods: {
-    exportToExcel() {
-      console.log("hello");
-      let headers = [
-        {
-          key: "name",
-          header: this.$t("name"),
-          width: 20,
-        },
-      ];
-      // for (const column of this.columns) {
-      //   headers.push({
-      //     key: column,
-      //     header: this.$t(column),
-      //     width: 10,
-      //   });
-      // }
-      // let excelData = [
-      //   {
-      //     name: "Tableau",
-      //     author: "",
-      //     data: [
-      //       {
-      //         name: "Tableau",
-      //         header: headers,
-      //         rows: this.data,
-      //       },
-      //     ],
-      //   },
-      // ];
-      // excelManager.export(excelData).then((reponse) => {
-      //   fileSaver.saveAs(new Blob(reponse), `Tableau.xlsx`);
-      // });
-    },
+    exportToExcel() {},
   },
-  watch: {},
 };
 </script>
 

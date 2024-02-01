@@ -25,56 +25,52 @@ with this file. If not, see
 <template>
   <div class="ticket-center">
     <SpinalBreadcrumb :view-key="viewKey"> </SpinalBreadcrumb>
-    <tab-manager class="tab-manager"
-                 :tabsprop="tabs" />
+    <tab-manager class="tab-manager" :tabsprop="tabs" />
   </div>
 </template>
 
 <script>
-// Script & tools
-// import { ViewManager } from "../../services/ViewManager/ViewManager";
-
 // Generic components
-import SpinalBreadcrumb from "../../compoments/SpinalBreadcrumb/SpinalBreadcrumb.vue";
-import TabManager from "../../compoments/TabManager/TabManager.vue";
+import SpinalBreadcrumb from '../../compoments/SpinalBreadcrumb/SpinalBreadcrumb.vue';
+import TabManager from '../../compoments/TabManager/TabManager.vue';
 
 // Specific components
-import Explorer from "./components/Explorer.vue";
-import Visualizer from "./components/Visualizer.vue";
+import Explorer from './components/Explorer.vue';
+import Visualizer from './components/Visualizer.vue';
 
-const VIEW_KEY = "Ticket Center";
+const VIEW_KEY = 'Ticket Center';
 
 // Component exports
 export default {
-  name: "TicketCenter",
+  name: 'TicketCenter',
   components: {
     SpinalBreadcrumb,
-    TabManager
+    TabManager,
   },
   data() {
     return {
       viewKey: VIEW_KEY,
       tabs: [
         {
-          name: "Explorer",
+          name: 'Explorer',
           content: Explorer,
           props: {
-            viewKey: VIEW_KEY
+            viewKey: VIEW_KEY,
           },
-          optional: false
+          optional: false,
         },
         {
-          name: "Visualizer",
+          name: 'Visualizer',
           content: Visualizer,
           props: {
-            viewKey: VIEW_KEY
+            viewKey: VIEW_KEY,
           },
-          optional: false
-        }
-      ]
+          optional: false,
+        },
+      ],
     };
   },
-  methods: {}
+  methods: {},
 };
 </script>
 

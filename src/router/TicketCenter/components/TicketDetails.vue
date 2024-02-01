@@ -59,20 +59,17 @@ with this file. If not, see
 </template>
 
 <script>
-import { SpinalGraphService } from "spinal-env-viewer-graph-service";
-import { FileExplorer } from "spinal-env-viewer-plugin-documentation-service/dist/Models/FileExplorer";
-import { FileSystem } from "spinal-core-connectorjs_type";
-import moment from "moment";
-import Documentation from "./components_tickets/Documentation";
-import TicketDetailss from "./components_tickets/TicketDetailss";
-import Note from "./components_tickets/Note";
-import Log from "./components_tickets/Log";
-import Calendar from "./components_tickets/CalendarTicket";
+import { FileSystem } from 'spinal-core-connectorjs_type';
+import Documentation from './components_tickets/Documentation';
+import TicketDetailss from './components_tickets/TicketDetailss';
+import Note from './components_tickets/Note';
+import Log from './components_tickets/Log';
+import Calendar from './components_tickets/CalendarTicket';
 
 export default {
-  name: "TicketDetails",
+  name: 'TicketDetails',
   components: { Documentation, TicketDetailss, Note, Log, Calendar },
-  props: ["nodeId"],
+  props: ['nodeId'],
 
   data() {
     return {

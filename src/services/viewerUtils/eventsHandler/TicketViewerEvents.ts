@@ -22,42 +22,72 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
-import { EventBus } from "../../event";
-import { viewerUtils } from "../viewerUtils";
+import { EventBus } from '../../event';
 import { spinalBackEnd } from '../../spinalBackend';
-import addObjectToTicket from "../../../router/TicketApp/ViewerTicketContextSetup";
+import { viewerUtils } from '../viewerUtils';
+import {
+  SPINAL_TICKET_SERVICE_TICKET_RELATION_NAME,
+  // SPINAL_TICKET_SERVICE_PROCESS_RELATION_NAME
+} from "spinal-service-ticket" 
+import { EQUIPMENT_RELATION_LIST, GEO_RELATIONS } from '../../../constants';
 
-EventBus.$on('ticket-viewer-zoom', async (root, relation) => {
-  const items = await spinalBackEnd.spatialBack.getLstByModelAndRelation(root, relation);
-  await viewerUtils.rotateTo('front,top,right');
+EventBus.$on('ticket-viewer-zoom', async (items) => {
+  await viewerUtils.waitInitialized();
   viewerUtils.fitToView(items);
 });
 
-EventBus.$on('ticket-viewer-isolate', async (root, relation) => {
-  const items = await spinalBackEnd.spatialBack.getLstByModelAndRelation(root, relation);
+EventBus.$on('ticket-viewer-isolate', async (items) => {
+  await viewerUtils.waitInitialized();
   viewerUtils.isolateObjects(items);
 });
 
-EventBus.$on('ticket-viewer-select', async (root) => {
-  // spinal.spinalGraphService.getContextWithType("geographicContext")
-  // const items = await spinalBackEnd.spatialBack.getObjectByTicket(root);
-  addObjectToTicket(root);
-  
-  // const items = await spinalBackEnd.spatialBack.getObjectsByTicketGroup(root);
-  // console.debug("items :", items)
-  // viewerUtils.selectObjects(items);
+EventBus.$on('ticket-viewer-select', async (items) => {
+  await viewerUtils.waitInitialized();
+  viewerUtils.selectObjects(items);
 });
 
-EventBus.$on('ticket-viewer-reset-color', () => {
+EventBus.$on('ticket-viewer-reset-color', async () => {
+  await viewerUtils.waitInitialized();
   viewerUtils.restoreColorThemingItems();
 });
 
 EventBus.$on('ticket-viewer-color', async (items, relation) => {
-  viewerUtils.restoreColorThemingItems()
-  items.map( async (item) => {
-    const list = await spinalBackEnd.spatialBack.getLstByModelAndRelation({ server_id: item.serverId }, relation, true);
-    for (const { selection, model } of list) {
-      viewerUtils.colorThemingItems(model, item.color, selection);
+  
+  await viewerUtils.waitInitialized();
+  viewerUtils.restoreColorThemingItems();
+
+
+  for(let item of items){
+
+    let ticket = FileSystem._objects[item.serverId];
+    const bimParent = await ticket.find(SPINAL_TICKET_SERVICE_TICKET_RELATION_NAME, (p) => {
+      return p.getType().get() !== 'SpinalSystemServiceTicketTypeStep';
+    });
+    const bimParents = await ticket.getParents(SPINAL_TICKET_SERVICE_TICKET_RELATION_NAME);
+    if(bimParents.length != 0){
+      for(let bimParent of bimParents){
+        if(bimParent.getType().get() != 'SpinalSystemServiceTicketTypeStep'){
+
+
+
+          const list2 = await spinalBackEnd.spatialBack.getLstByModelAndRelation(
+            // { server_id: item.serverId },
+            { server_id: bimParent._server_id },
+            [...EQUIPMENT_RELATION_LIST, ...GEO_RELATIONS],
+            true
+          );
+
+          for (const { selection, model } of list2) {
+            viewerUtils.colorThemingItems(model, item.color, selection);
+          }
+        }
+
+      }
     }
-  });
+    
+  }
+      
+  
+  
+  
 });

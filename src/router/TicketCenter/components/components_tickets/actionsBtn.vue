@@ -41,23 +41,23 @@ with this file. If not, see
 
 <script>
 export default {
-  name: "actionsBtn",
-  props: ["hover", "viewPoint"],
+  name: 'actionsBtn',
+  props: ['hover', 'viewPoint'],
   methods: {
     displayBtn() {
       if (
         this.viewPoint &&
-        this.viewPoint.hasOwnProperty("viewState") &&
-        this.viewPoint.hasOwnProperty("objectState")
+        this.viewPoint.hasOwnProperty('viewState') &&
+        this.viewPoint.hasOwnProperty('objectState')
       )
         return true;
       return false;
     },
     download() {
-      this.$emit("download");
+      this.$emit('download');
     },
     restoreState() {
-      this.$emit("restoreState");
+      this.$emit('restoreState');
     },
   },
 };

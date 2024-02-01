@@ -19,37 +19,35 @@ with this file. If not, see
 -->
 
 <template>
-  <div
-    style="height:100%"
-  >
+  <div>
     <div class="spl-button-bar">
-      <el-button
-        @click.stop="Color()"
-        class="spl-el-button"
-        icon="el-icon-picture-outline-round"
-        circle
-      >
-      </el-button>
-      <el-button
-        @click.stop="exportToExcel()"
-        class="spl-el-button"
-        icon="el-icon-download"
-        circle
-      >
-      </el-button>
+      <el-tooltip :content="$t('spinal-twin.ColorSwitch')">
+        <button-switch
+          :active="colored"
+          @click.native="Color"
+          class="spl-el-button"
+          icon="el-icon-picture-outline-round"
+        ></button-switch>
+      </el-tooltip>
+      <el-tooltip :content="$t('spinal-twin.DownloadList')">
+        <el-button
+          @click.stop="exportToExcel()"
+          class="spl-el-button"
+          icon="el-icon-download"
+          circle
+        ></el-button>
+      </el-tooltip>
     </div>
-    <div
-      v-if="Properties.items !== false"
-      style="height:calc(100% - 52px)"
-    >
+
+    <div v-if="Properties.items !== false" style="height: calc(100% - 52px)">
       <context-explorer-node-table
         :ref="'Explorer-table'"
         :view-key="Properties.viewKey"
         :items="itemsComputed"
         :columns="cols"
         :relation="Properties.relation"
-        :colored="colored"
-        style="height:100%"
+        :depth="Properties.depth"
+        :context="Properties.context"
         @select="Select"
         @isolate="Isolate"
       >
@@ -59,23 +57,25 @@ with this file. If not, see
 </template>
 
 <script>
-import { ViewManager } from "../../../../services/ViewManager/ViewManager";
-// import { spinalBackEnd } from "../../../services/spinalBackend";
-import { AppBack } from "../../../../services/backend/AppBack";
-import BackendInitializer from "../../../../services/BackendInitializer";
-import { EventBus } from "../../../../services/event";
-import ColorState from "./colorState"
+// Tools
+import { EventBus } from '../../../../services/event';
+import { viewerState } from './viewerState';
 
-import ContextExplorerNodeTable from "../ContextExplorer/ContextExplorerNodeTable.vue";
+// Components
+import ButtonSwitch from '../../../../compoments/ButtonSwitch';
+import ContextExplorerNodeTable from '../ContextExplorer/ContextExplorerNodeTable.vue';
 
 export default {
-  name: "ContextExplorer",
-  components: { ContextExplorerNodeTable },
+  name: 'ContextExplorer',
+  components: {
+    ContextExplorerNodeTable,
+    ButtonSwitch,
+  },
   props: {
     Properties: {
-      required: true,
       type: Object,
-      validator: function(value) {
+      required: true,
+      validator: function (value) {
         if (!value.viewKey instanceof String) {
           return false;
         }
@@ -87,8 +87,7 @@ export default {
   data() {
     return {
       items: false,
-      contextServId: 0,
-      currentView: null,
+      colored: viewerState.colored(),
     };
   },
 
@@ -98,43 +97,50 @@ export default {
         this.Properties &&
         this.Properties.items &&
         this.Properties.items.items
-      )
+      ){
         return this.Properties.items.items;
+      }
+        
       return [];
     },
     cols() {
-      if (this.Properties && this.Properties.cols) return this.Properties.cols;
+      if (
+        this.Properties &&
+        this.Properties.items &&
+        this.Properties.items.cols
+      ){
+        return this.Properties.items.cols;
+      }
       return [];
     },
-    colored() {
-      return ColorState.colored();
-    }
   },
-
   methods: {
     Color() {
-      ColorState.changeState();
-      EventBus.$emit("viewer-reset-color")
-      if (ColorState.colored())
-        this.$refs["Explorer-table"].Color(this.Properties.relation);
+      viewerState.changeColoration();
+      EventBus.$emit('viewer-reset-color');
+      this.$refs['Explorer-table'].isColored = false;
+      if (viewerState.colored()) {
+        this.$refs['Explorer-table'].Color();
+      }
+      this.colored = viewerState.colored();
     },
 
-    Select(item)
-    {
-      EventBus.$emit("viewer-select", item, this.Properties.relation);
+    Select(item) {
+      EventBus.$emit('viewer-select', item, this.Properties.relation);
     },
 
-    Isolate(item)
-    {
-      EventBus.$emit("viewer-isolate", item, this.Properties.relation);
+    Isolate(item) {
+      viewerState.changeIsolation();
+      EventBus.$emit('viewer-reset-isolate');
+      if (viewerState.isolated()) this.$refs['Explorer-table'].Isolate();
     },
 
     exportToExcel() {
-      this.$refs["Explorer-table"].exportToExcel();
+      this.$refs['Explorer-table'].exportToExcel();
     },
-    
+
     async debug(what) {
-      console.debug("Debugging", what);
+      console.debug('Debugging', what);
     },
   },
 };
@@ -144,6 +150,11 @@ export default {
 .spl-el-button {
   margin: 0 0 0 10px;
 }
+
+.button-switch{
+  border: 1px solid #dcdfe6;
+}
+
 .spl-button-bar {
   overflow: hidden;
   display: flex;
@@ -153,5 +164,25 @@ export default {
 
 .spinal-height-control {
   height: auto;
+  /* overflow:scroll; */
 }
+
+.primary {
+  background: 'blue';
+  color: blue;
+}
+</style>
+
+<style>
+.el-button--primary:focus, .el-button--primary:hover {
+    color: #409eff;
+    background-color: #ecf5ff;
+    border-color: #c6e2ff;
+}
+.el-button--primary{
+    color: #409eff;
+    background-color: #ecf5ff;
+    border-color: #409eff;
+}
+
 </style>

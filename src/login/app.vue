@@ -25,14 +25,15 @@ with this file. If not, see
 <template>
   <el-container class="body-container">
     <el-card class="box-card">
-      <div slot="header"
-           class="header">
+      <div slot="header" class="header">
         <h4>Connexion</h4>
       </div>
-      <el-form ref="ruleForm"
-               :rules="rules"
-               :model="ruleForm"
-               label-width="24px">
+      <el-form
+        ref="ruleForm"
+        :rules="rules"
+        :model="ruleForm"
+        label-width="24px"
+      >
         <el-form-item prop="login">
           <template slot="label">
             <i class="el-icon-user"></i>
@@ -44,14 +45,15 @@ with this file. If not, see
           <template slot="label">
             <i class="el-icon-lock"></i>
           </template>
-          <el-input v-model="ruleForm.pass"
-                    type="password"
-                    show-password></el-input>
+          <el-input
+            v-model="ruleForm.pass"
+            type="password"
+            show-password
+          ></el-input>
         </el-form-item>
 
         <el-form-item>
-          <el-button type="primary"
-                     @click="submitForm('ruleForm')">
+          <el-button type="primary" @click="submitForm('ruleForm')">
             Submit
           </el-button>
         </el-form-item>
@@ -61,41 +63,43 @@ with this file. If not, see
 </template>
 
 <script>
-import { login } from "./login";
+import { login } from './login';
 export default {
-  name: "App",
+  name: 'App',
   data() {
     return {
       ruleForm: {
-        login: "",
-        pass: ""
+        login: '',
+        pass: '',
       },
       rules: {
-        login: [{ min: 1, message: "Please input an login", trigger: "blur" }],
-        pass: [{ min: 1, message: "Please input an password", trigger: "blur" }]
-      }
+        login: [{ min: 1, message: 'Please input an login', trigger: 'blur' }],
+        pass: [
+          { min: 1, message: 'Please input an password', trigger: 'blur' },
+        ],
+      },
     };
   },
   methods: {
     submitForm(formName) {
-      this.$refs[formName].validate(async valid => {
+      this.$refs[formName].validate(async (valid) => {
         if (valid) {
           try {
             await login(this.ruleForm.login, this.ruleForm.pass);
           } catch (e) {
             this.$notify.error({
-              title: "Error",
-              message: e
+              title: 'Error',
+              message: e,
             });
           }
           // Identifiant ou mot de passe incorrect
         } else {
-          console.log("error submit!!");
+          console.log('error submit!!');
           return false;
         }
       });
-    }
-  }
+    },
+  },
 };
 </script>
 

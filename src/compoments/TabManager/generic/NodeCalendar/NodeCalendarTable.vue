@@ -45,34 +45,27 @@ with this file. If not, see
   </el-container>
 </template>
 <script>
-import { SpinalGraphService } from "spinal-env-viewer-graph-service";
-import { FileSystem } from "spinal-core-connectorjs_type";
-import { SpinalEventService } from "spinal-env-viewer-task-service";
-import VueCal from "vue-cal";
-import "vue-cal/dist/vuecal.css";
-import moment from "moment";
+import VueCal from 'vue-cal';
+import 'vue-cal/dist/vuecal.css';
 
 export default {
-  name: "NodeCalendarTable",
+  name: 'NodeCalendarTable',
   components: { VueCal },
   props: {
     events: {
       type: Array,
       required: true,
-    }
+    },
   },
 
   data() {
-    return {
-    };
+    return {};
   },
 
-  async mounted() {
-  },
+  async mounted() {},
   methods: {
-    focus(event, e)
-    {
-      this.$emit("select", event)
+    focus(event, e) {
+      this.$emit('select', event);
       e.stopPropagation();
     },
   },

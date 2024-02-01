@@ -29,23 +29,19 @@ with this file. If not, see
 </template>
 
 <script>
-import { ForgeViewer } from "spinal-forge-viewer";
-import { spinalBackEnd } from "../../../services/spinalBackend";
-import { viewerUtils } from "../../../services/viewerUtils/viewerUtils";
-// import { EventBus } from "../../../services/event";
-import { SpinalGraphService } from "spinal-env-viewer-graph-service";
-import { DISABLE_VIEWER } from "../../../constants";
+import { ForgeViewer } from 'spinal-forge-viewer';
+import { spinalBackEnd } from '../../../services/spinalBackend';
+import { viewerUtils } from '../../../services/viewerUtils/viewerUtils';
+import { SpinalGraphService } from 'spinal-env-viewer-graph-service';
+import { DISABLE_VIEWER } from '../../../constants';
 
-import HeatmapLegendContainer from "../../insight/heatmap-legends/container.vue";
+import HeatmapLegendContainer from '../../insight/heatmap-legends/container.vue';
 
-import "spinal-env-viewer-plugin-forge";
+import 'spinal-env-viewer-plugin-forge';
 export default {
-  name: "AppViewer",
-  props: {
-    // : { required: false, type: "Boolean" }
-  },
+  name: 'AppViewer',
   components: {
-    "heatmap-legend": HeatmapLegendContainer
+    'heatmap-legend': HeatmapLegendContainer,
   },
   data() {
     this.elementColored = new Map();
@@ -53,47 +49,28 @@ export default {
       viewer: null,
       ticketToZoom: [],
       colors: {},
-      materials: {}
+      materials: {},
     };
   },
   mounted() {
-    // EventBus.$on("see", data => {
-    //   console.log("on see", data);
-    //   this.isoLate(data.ids);
-    //   this.restoreAllColor();
-    //   this.colorsRooms(data.ids, data.color, data.id);
-    // });
-
-    // EventBus.$on("seeAll", data => {
-    //   if (this.allElementAreColored(data)) {
-    //     this.restoreAllColor();
-    //   } else {
-    //     let ids = [];
-    //     this.restoreAllColor();
-    //     data.forEach(element => {
-    //       ids.push(...element.ids);
-    //       this.colorsRooms(element.ids, element.color, element.id);
-    //     });
-    //     this.isoLate(ids);
-    //   }
-    // });
     return this.createViewer();
   },
   methods: {
     handleMinized(toShowUI) {
       if (this.viewer) {
         if (toShowUI === false) {
-          if (this.viewer.toolbar) this.viewer.toolbar.setDisplay("none");
+          if (this.viewer.toolbar) this.viewer.toolbar.setDisplay('none'); //// MASQUER DE LA TOOLBAR FORGE
           viewerUtils.setCubeVisible(false);
         } else {
-          if (this.viewer.toolbar) this.viewer.toolbar.setDisplay("");
+          if (this.viewer.toolbar) this.viewer.toolbar.setDisplay('none'); // MASQUER DE LA TOOLBAR FORGE
           viewerUtils.setCubeVisible(true);
         }
         setTimeout(this.viewer.resize.bind(this.viewer), 400);
       }
     },
     async createViewer() {
-      const container = document.getElementById("autodesk_forge_viewer");
+      
+      const container = document.getElementById('autodesk_forge_viewer');
       this.forgeViewer = new ForgeViewer(container, false);
       await this.forgeViewer.start();
       //   "/models/Resource/3D View/{3D} 341878/{3D}.svf",
@@ -119,19 +96,20 @@ export default {
             scenes[0].info.id.get()
           );
       }
-      this.$emit("onModelLoadEnd");
+      this.$emit('onModelLoadEnd');
       await spinalBackEnd.waitInit();
       // const scenes = await spinalBackEnd.viewerBack.getScenes();
       // await spinalBackEnd.viewerBack.loadScene(scenes[0], this.forgeViewer);
       this.viewer.fitToView();
       viewerUtils.initViewer(this.viewer);
+      // document.getElementById('guiviewer3d-toolbar').style.display = "none";
     },
 
     colorsRooms(roomsList, argColor, id) {
       this.elementColored.set(id, roomsList);
       const color = this.convertHewToRGB(argColor);
 
-      roomsList.forEach(child => {
+      roomsList.forEach((child) => {
         let model = window.spinal.BimObjectService.getModelByBimfile(
           child.bimFileId
         );
@@ -146,7 +124,7 @@ export default {
 
     restorColor(roomsList, id) {
       this.elementColored.delete(id);
-      roomsList.forEach(child => {
+      roomsList.forEach((child) => {
         let model = window.spinal.BimObjectService.getModelByBimfile(
           child.bimFileId
         );
@@ -188,7 +166,7 @@ export default {
       }
       targetArray.push({
         model,
-        selection: idSet
+        selection: idSet,
       });
     },
 
@@ -200,7 +178,7 @@ export default {
         );
         this.pushToModel(data, [room.dbid], model);
       }
-      return data.map(it => {
+      return data.map((it) => {
         return { model: it.model, selection: Array.from(it.selection) };
       });
     },
@@ -215,7 +193,7 @@ export default {
         ? {
             r: parseInt(result[1], 16),
             g: parseInt(result[2], 16),
-            b: parseInt(result[3], 16)
+            b: parseInt(result[3], 16),
           }
         : null;
     },
@@ -231,8 +209,8 @@ export default {
         }
       }
       return true;
-    }
-  }
+    },
+  },
 };
 </script>
 

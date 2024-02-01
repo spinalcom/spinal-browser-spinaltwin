@@ -54,11 +54,11 @@ with this file. If not, see
       </div>
       <div class="table">
         <el-table
-          class=" overflow-auto"
+          class="overflow-auto"
           id="style-scroll"
           :data="logs"
           border
-          style="width: 100% ;height: 780px"
+          style="width: 100%; height: 780px"
           :header-cell-style="{ 'background-color': '#f0f2f5' }"
         >
           <el-table-column :label="$t(`Date`)" prop="date" align="center">
@@ -71,25 +71,22 @@ with this file. If not, see
           </el-table-column>
           <el-table-column :label="$t(`Event`)" prop="event" align="center">
           </el-table-column>
-        </el-table>
-      </div></div
+        </el-table> </div></div
   ></el-container>
 </template>
 
 <script>
-import { SpinalGraphService } from "spinal-env-viewer-graph-service";
-import { FileExplorer } from "spinal-env-viewer-plugin-documentation-service/dist/Models/FileExplorer";
-import { FileSystem } from "spinal-core-connectorjs_type";
-import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
-import { serviceTicketPersonalized } from "spinal-service-ticket";
-import { LOGS_EVENTS } from "spinal-service-ticket/dist/Constants";
-import moment from "moment";
-import viewerBtn from "./viewerBtn";
+import { SpinalGraphService } from 'spinal-env-viewer-graph-service';
+import { FileSystem } from 'spinal-core-connectorjs_type';
+import { serviceTicketPersonalized } from 'spinal-service-ticket';
+import { LOGS_EVENTS } from 'spinal-service-ticket/dist/Constants';
+import moment from 'moment';
+import viewerBtn from './viewerBtn';
 
 export default {
-  name: "Log",
+  name: 'Log',
   components: { viewerBtn },
-  props: ["nodeId"],
+  props: ['nodeId'],
 
   data() {
     return {
@@ -110,13 +107,13 @@ export default {
   },
   methods: {
     async formatEvent(log) {
-      var texte = "";
+      var texte = '';
       if (log.event == LOGS_EVENTS.creation) {
-        texte = "created";
+        texte = 'created';
       } else if (log.event == LOGS_EVENTS.archived) {
-        texte = "archived";
+        texte = 'archived';
       } else if (log.event == LOGS_EVENTS.unarchive) {
-        texte = "unarchived";
+        texte = 'unarchived';
       } else {
         const promises = log.steps.map((el) =>
           SpinalGraphService.getNodeAsync(el)

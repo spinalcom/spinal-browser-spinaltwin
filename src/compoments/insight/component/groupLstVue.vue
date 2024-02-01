@@ -23,74 +23,100 @@ with this file. If not, see
 -->
 
 <template>
-
   <el-row>
     <el-tabs type="border-card">
       <!-- Onglet Tableau -->
-      <el-tab-pane label="Tableau">
-
-        <el-button class="boutton-barre"
-               icon="el-icon-arrow-left"
-               circle
-               style ="position: fixed; z-index: 1;"
-               @click="goBack()"></el-button>
+      <el-tab-pane :label="$t('Table')">
+        <el-button
+          class="boutton-barre"
+          icon="el-icon-arrow-left"
+          circle
+          style="position: fixed; z-index: 1"
+          @click="goBack()"
+        ></el-button>
 
         <el-row class="barre">
-          <el-button class="boutton-barre"
-                     icon="el-icon-download"
-                     circle
-                     @click="exportData"></el-button>
-          <el-button class="boutton-barre"
-                     icon="el-icon-view"
-                     circle
-                     @click="SeeAll"></el-button>
-
-        </el-row> 
-
+          <el-button
+            class="boutton-barre"
+            icon="el-icon-download"
+            circle
+            @click="exportData"
+          ></el-button>
+        </el-row>
         <!-- Si on a pas encore selectionné de Groupe on affiche une table avec la liste des groupes-->
-        <el-table v-if="!groupSelected"
-                  :data="data"
-                  class="tab"
-                  border
-                  style="width: 100%"
-                  :header-cell-style='{"background-color": "#f0f2f5"}'>
-                  <!-- @row-click="SeeEvent"> -->
+        <!-- <el-table
+          v-if="!groupSelected"
+          :data="data"
+          class="tab"
+          border
+          style="width: 100%"
+          :header-cell-style="{ 'background-color': '#f0f2f5' }"
+        > -->
+        <el-table
+          v-if="!groupSelected"
+          :data="data"
+          class="tab"
+          border
+          style="width: 100%, overflow: auto; height: inherit"
+          :header-cell-style="{
+            'background-color': '#ffffff',
+            'text-align': 'left',
+            'letter-spacing': '1px',
+            'color': '#214353',
+            'opacity': '1',
+            'height': 'fit-content',
+          }"
+          :row-style="{
+            'background': '#ffffff 0% 0% no-repeat padding-box',
+            'border': '1px solid #F8F8F8',
+            'border-radius': '5px',
+            'opacity': '1',
+            'text-align': 'left',
+            'letter-spacing': '0.9px',
+            'color': '#214353',
+            'opacity': '1',
+          }"
+        >
+          <!-- @row-click="SeeEvent"> -->
           <el-table-column :label="$t('HeatmapCenter.Groupe')">
             <template slot-scope="scope">
               <div>
-                <div class="spinal-table-cell-color"
-                     :style="{'background-color': scope.row.color}"></div>
+                <div
+                  class="spinal-table-cell-color"
+                  :style="{ 'background-color': scope.row.color }"
+                ></div>
                 <div> {{ scope.row.name }} </div>
               </div>
             </template>
           </el-table-column>
-          <el-table-column prop="rooms.length"
-                           :label="$t('HeatmapCenter.Nb_profils')"
-                           align="center">
+          <el-table-column
+            prop="rooms.length"
+            :label="$t('HeatmapCenter.Nb_profils')"
+            align="center"
+          >
           </el-table-column>
-          <el-table-column width="65"
-                           align="center">
+          <el-table-column width="65" align="center">
             <template slot-scope="scope">
-              <el-button @click="SelectGroup(scope.row)"
-                         icon="el-icon-arrow-right"
-                         circle></el-button>
+              <el-button
+                @click="SelectGroup(scope.row)"
+                icon="el-icon-arrow-right"
+                circle
+              ></el-button>
             </template>
           </el-table-column>
         </el-table>
       </el-tab-pane>
     </el-tabs>
-
   </el-row>
 </template>
 
 <script>
-import profilLstVue from "./profilLstVue";
-import SpinalBackend from "../../../services/spinalBackend";
-import { EventBus } from "../../../services/event";
-import excelManager from "spinal-env-viewer-plugin-excel-manager-service";
-import fileSaver from "file-saver";
+import profilLstVue from './profilLstVue';
+import { EventBus } from '../../../services/event';
+import excelManager from 'spinal-env-viewer-plugin-excel-manager-service';
+import fileSaver from 'file-saver';
 
-import groupManagerUtilities from "spinal-env-viewer-room-manager/js/utilities";
+import groupManagerUtilities from 'spinal-env-viewer-room-manager/js/utilities';
 
 export default {
   data() {
@@ -98,84 +124,84 @@ export default {
       categoryLst: [],
       fields: [],
       items: [],
-      groupSelected: null
+      groupSelected: null,
     };
   },
   components: { profilLstVue },
-  props: ["selectCategorie"],
+  props: ['selectCategorie'],
   methods: {
     getColor(color) {
-      return { backgroundColor: color[0] === "#" ? color : `#${color}` };
+      return { backgroundColor: color[0] === '#' ? color : `#${color}` };
     },
     async SeeEvent(data) {
-      console.log("SEEEEEEE");
       const allBimObjects = await this.getAllBimObjects(data.id);
-      EventBus.$emit("see", {
+      EventBus.$emit('see', {
         id: data.id,
         ids: allBimObjects,
-        color: data.color
+        color: data.color,
       });
     },
 
     async getAllBimObjects(id) {
       const allBimObjects = await groupManagerUtilities.getBimObjects(id);
 
-      return allBimObjects.map(el => el.get());
+      return allBimObjects.map((el) => el.get());
     },
     async SeeAll() {
-      let promises = this.data.map(async el => {
+      let promises = this.data.map(async (el) => {
         return {
           id: el.id,
           ids: await this.getAllBimObjects(el.id),
-          color: el.color
+          color: el.color,
         };
       });
 
       let allBimObjects = await Promise.all(promises);
 
-      EventBus.$emit("seeAll", allBimObjects);
+      EventBus.$emit('seeAll', allBimObjects);
     },
     exportData() {
-
       let headers = this.getHeader();
       let excelData = [
         {
-          name: "Tableau",
-          author: "",
+          name: 'Tableau',
+          author: '',
           data: [
             {
-              name: "Tableau",
+              name: 'Tableau',
               header: headers,
-              rows: this.getRow()
-            }
-          ]
-        }
+              rows: this.getRow(),
+            },
+          ],
+        },
       ];
-      excelManager.export(excelData).then(reponse => {
+      
+      excelManager.export(excelData).then((reponse) => {
         fileSaver.saveAs(new Blob(reponse), `Tableau.xlsx`);
       });
-      console.log("expoooooooooooort", this.data);
     },
 
-    goBack(){
-      this.$emit("goBackCategory");
+    goBack() {
+      this.$emit('goBackCategory');
     },
     //Selecting a group
     seeProfilsTable(profilData) {
-      this.groupSelected = { profils: profilData.rooms, color: profilData.color }
-      this.$emit("addbreadcrumb", {
+      this.groupSelected = {
+        profils: profilData.rooms,
+        color: profilData.color,
+      };
+      this.$emit('addbreadcrumb', {
         name: profilData.name,
         click: () => {
           this.$parent.breadcrumbs.slice(1);
-          this.groupSelected=null;
-          this.$parent.profilSelected=null;
-          
-        }
+          this.groupSelected = null;
+          this.$parent.profilSelected = null;
+        },
       });
     },
 
-    SelectGroup(group){
-      this.$emit("selectgroup",group);
+    SelectGroup(group) {
+      this.$emit('selectgroup', group);
     },
 
     resetgroupSelected() {
@@ -185,33 +211,33 @@ export default {
       if (this.groupSelected) {
         return [
           {
-            key: "name",
-            header: "name",
-            width: 10
+            key: 'name',
+            header: 'name',
+            width: 10,
           },
           {
-            key: "surface",
-            header: "Surface",
-            width: 10
-          }
+            key: 'surface',
+            header: 'Surface',
+            width: 10,
+          },
         ];
       } else {
         return [
           {
-            key: "name",
-            header: "name",
-            width: 10
+            key: 'name',
+            header: 'name',
+            width: 10,
           },
           {
-            key: "rooms",
-            header: "Nombre de pièces",
-            width: 10
+            key: 'rooms',
+            header: 'Nombre de pièces',
+            width: 10,
           },
           {
-            key: "surface",
-            header: "Surface",
-            width: 10
-          }
+            key: 'surface',
+            header: 'Surface',
+            width: 10,
+          },
         ];
       }
     },
@@ -219,38 +245,37 @@ export default {
       if (this.groupSelected) {
         return this.groupSelected.profils;
       } else {
-        return this.data.map(gitu => {
+        return this.data.map((gitu) => {
           let excelRows = Object.assign({}, gitu);
           excelRows.rooms = gitu.rooms.length;
           return excelRows;
         });
       }
-    }
+    },
   },
 
   computed: {
-    data: function() {
-      return this.selectCategorie.groups.map(obj => {
+    data: function () {
+      return this.selectCategorie.groups.map((obj) => {
         return {
           id: obj.id,
           name: obj.name,
           color: obj.color,
-          rooms: obj.rooms
+          rooms: obj.rooms,
         };
       });
-    }
+    },
   },
   watch: {},
   filters: {
     roundSurface(surface) {
       return Math.round(surface * 100) / 100;
-    }
+    },
   },
   beforeDestroy() {},
   async mounted() {
-    //console.log("tttttttttt", this.data);
     this.groupSelected = null;
-  }
+  },
 };
 </script>
 
@@ -280,4 +305,3 @@ export default {
   top: 0;
 }
 </style>
-

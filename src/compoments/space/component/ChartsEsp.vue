@@ -23,9 +23,7 @@ with this file. If not, see
 -->
 <template>
   <div>
-    <div ref="charts">
-
-    </div>
+    <div ref="charts"> </div>
   </div>
 </template>
 
@@ -38,16 +36,16 @@ export default {
           values: [],
           labels: [],
           marker: {
-            colors: []
+            colors: [],
           },
-          textinfo: "value",
-          type: "pie"
-        }
-      ]
+          textinfo: 'value',
+          type: 'pie',
+        },
+      ],
     };
   },
   components: {},
-  props: ["entreprise"],
+  props: ['entreprise'],
   methods: {
     updateEntreprise() {
       this.data[0].values = [];
@@ -60,18 +58,17 @@ export default {
         this.data[0].marker.colors.push(oneEntreprise.color);
       }
       Plotly.redraw(this.$refs.charts, this.data);
-    }
+    },
   },
   mounted() {
     Plotly.newPlot(this.$refs.charts, this.data);
     this.updateEntreprise();
   },
   watch: {
-    entreprise: function() {
+    entreprise: function () {
       this.updateEntreprise();
-    }
+    },
   },
-  beforeDestroy() {}
+  beforeDestroy() {},
 };
 </script>
-

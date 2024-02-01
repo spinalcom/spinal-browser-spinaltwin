@@ -72,26 +72,25 @@ with this file. If not, see
 </template>
 
 <script>
-import { ViewManager } from "../../../services/ViewManager/ViewManager";
-import BackEndTicket from "../backend/ticket";
-import BackendInitializer from "../../../services/BackendInitializer";
-import NodeTable from "./NodeTable.vue";
-import "../backend/EventHandler";
-import TicketDetails from "./TicketDetails";
-import { EventBus } from "../backend/event";
+import { ViewManager } from '../../../services/ViewManager/ViewManager';
+import BackEndTicket from '../backend/ticket';
+import BackendInitializer from '../../../services/BackendInitializer';
+import NodeTable from './NodeTable.vue';
+import '../backend/EventHandler';
+import TicketDetails from './TicketDetails';
 
 export default {
-  name: "Explorer",
+  name: 'Explorer',
   components: { NodeTable, TicketDetails },
   props: {
     Properties: {
       required: true,
       type: Object,
-      validator: function(value) {
-        if (value.viewKey == "") {
-          return "danger";
+      validator: function (value) {
+        if (value.viewKey == '') {
+          return 'danger';
         }
-        return "success";
+        return 'success';
       },
     },
   },
@@ -164,17 +163,13 @@ export default {
       );
     },
     SeeAll(index) {
-      this.$refs["Explorer-table"][index].SeeAll(this.currentView.serverId);
+      this.$refs['Explorer-table'][index].SeeAll(this.currentView.serverId);
     },
     isolateAll(index) {
-      this.$refs["Explorer-table"][index].isolateAll(this.currentView.serverId);
+      this.$refs['Explorer-table'][index].isolateAll(this.currentView.serverId);
     },
     exportToExcel(index) {
-      this.$refs["Explorer-table"][index].exportToExcel();
-    },
-
-    async debug() {
-      console.debug("");
+      this.$refs['Explorer-table'][index].exportToExcel();
     },
   },
 };

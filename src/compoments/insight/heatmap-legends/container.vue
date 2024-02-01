@@ -1,157 +1,118 @@
-<template>
-   <div
-      class="md-scrollbar heatmap_legends_container"
-      v-if="seeLegend"
-   >
-      <div class="legend">
-         <heatmap-legend
-            :gradients="gradients"
-            :endpoints="endpoints"
-            :profil="profil"
-         ></heatmap-legend>
-      </div>
+<!--
+Copyright 2022 SpinalCom - www.spinalcom.com
 
-   </div>
+This file is part of SpinalCore.
+
+Please read all of the following terms and conditions
+of the Free Software license Agreement ("Agreement")
+carefully.
+
+This Agreement is a legally binding contract between
+the Licensee (as defined below) and SpinalCom that
+sets forth the terms and conditions that govern your
+use of the Program. By installing and/or using the
+Program, you agree to abide by all the terms and
+conditions stated or referenced herein.
+
+If you do not agree to abide by these terms and
+conditions, do not demonstrate your acceptance and do
+not install or use the Program.
+You should have received a copy of the license along
+with this file. If not, see
+<http://resources.spinalcom.com/licenses.pdf>.
+-->
+
+<template>
+  <div class="md-scrollbar heatmap_legends_container" v-if="seeLegend">
+    <div class="legend">
+      <heatmap-legend
+        :gradients="gradients"
+        :endpoints="endpoints"
+        :profil="profil"
+      ></heatmap-legend>
+    </div>
+  </div>
 </template>
 
 <script>
-import HeatmapLegend from "./legend.vue";
-import { EventBus } from "../../../services/event";
+import HeatmapLegend from './legend.vue';
+import { EventBus } from '../../../services/event';
 
 export default {
-   name: "heatmapPanel",
-   components: {
-      "heatmap-legend": HeatmapLegend,
-   },
-   data() {
-      this.button;
-      return {
-         seeLegend: false,
-         profil: {},
-         gradients: [],
-         endpoints: [],
-      };
-   },
-   mounted() {
-      this.openEvent();
-      this.getUpdateEvent();
-      this.destroyLegend();
-   },
-   methods: {
-      closeLegend(groupId) {
-         // if (this.data[groupId]) {
-         //    this.destroyLegend(groupId);
-         //    const res = Object.assign({}, this.data);
-         //    delete res[groupId];
-         //    this.data = Object.assign({}, res);
-         //    this.legendLength = Object.keys(this.data).length;
-         //    itemColoredMap.delete(groupId);
-         //    if (this.button) this.button.fontColor = "#FFFFFF";
-         //    return;
-         // }
-      },
+  name: 'heatmapPanel',
+  components: {
+    'heatmap-legend': HeatmapLegend,
+  },
+  data() {
+    this.button;
+    return {
+      seeLegend: false,
+      profil: {},
+      gradients: [],
+      endpoints: [],
+    };
+  },
+  mounted() {
+    this.openEvent();
+    this.getUpdateEvent();
+    this.destroyLegend();
+  },
+  methods: {
+    closeLegend() {},
 
-      destroyLegend(id) {
-         EventBus.$on("hide-heatmap", (data) => {
-            this.seeLegend = false;
-         });
-         // if (typeof this.$refs[id] !== "undefined") {
-         //    this.$refs[id][0].$destroy();
-         // }
-      },
+    destroyLegend(id) {
+      EventBus.$on('hide-heatmap', (data) => {
+        this.seeLegend = false;
+      });
+    },
 
-      closed() {},
+    closed() {},
 
-      openEvent() {
-         EventBus.$on("seeHeatMap",  (option) => {
-            this.seeLegend = true;
-            //console.log("heatmap-legends/ ",option);
-            this.gradients = option.gradients;
-            this.endpoints = option.endpoints;
-            this.profil = option.profil;
+    openEvent() {
+      EventBus.$on('seeHeatMap', (option) => {
+        this.seeLegend = true;
+        this.gradients = option.gradients;
+        this.endpoints = option.endpoints;
+        this.profil = option.profil;
+      });
+    },
 
-            // const groupId = option.selectedNode.id;
-            // this.button = option.button;
-            // if (this.data[groupId]) {
-            //    this.destroyLegend(groupId);
-            //    const res = Object.assign({}, this.data);
-            //    delete res[groupId];
-            //    this.data = Object.assign({}, res);
-            //    this.legendLength = Object.keys(this.data).length;
-            //    return;
-            // }
-            // const data = await this.getAllData(groupId);
-            // if (data.length === 0) {
-            //    alert("No controlpoint Linked");
-            //    if (this.button) this.button.fontColor = "#FFFFFF";
-            //    return;
-            // }
-            // this.data = Object.assign({}, this.data, { [groupId]: data });
-            // this.legendLength = Object.keys(this.data).length;
-         });
-      },
+    getUpdateEvent() {
+      EventBus.$on('update-controlPoint', (option) => {});
+    },
+  },
 
-      getUpdateEvent() {
-         EventBus.$on("update-controlPoint", (option) => {
-            // Object.keys(this.data).map(async (groupId) => {
-            //    const data = await this.getAllData(groupId);
-            //    this.data[groupId] = data;
-            // });
-         });
-      },
-   },
-
-   beforeDestroy() {
-      console.log("destroy container");
-   },
-
+  beforeDestroy() {},
 };
 </script>
 
 <style scoped>
-/* {
-   padding-top: 30px;
-   cursor: all-scroll;
-} */
-
 .heatmap_legends_container {
-   /* width: 100%;
-  height: calc(100% - 15px);
+  max-width: 200px;
+  height: calc(40%);
+  overflow-x: auto;
+  position: absolute;
+  left: 0px;
+  top: calc(20%);
+  padding: 10px;
   display: flex;
-  flex-direction: column;
-  align-items: center; */
-   /* background: red; */
-   /* width: 200px; */
-   max-width: 200px;
-   height: calc(40%);
-   /* background: #393939 !important; */
-   /* border: 1px solid black; */
-   overflow-x: auto;
-   position: absolute;
-   left: 0px;
-   top: calc(20%);
-   padding: 10px;
-   display: flex;
-   justify-content: space-around;
-   flex-direction: row;
-   flex-wrap: wrap;
-   z-index: 999;
+  justify-content: space-around;
+  flex-direction: row;
+  flex-wrap: wrap;
+  z-index: 998;
 }
 
 .heatmap_legends_container .legend {
-   width: 60px;
-   height: calc(98% - 20px);
-   /* color: white; */
-   color: #000000;
-   padding: 5px;
-   display: inline-block;
-   /* margin-right: 20px; */
-   font-weight: bold;
-   margin: 10px 10px 10px 0;
-   /* border: 1px solid gray; */
+  width: 60px;
+  height: calc(98% - 20px);
+  color: #000000;
+  padding: 5px;
+  display: inline-block;
+  font-weight: bold;
+  margin: 10px 10px 10px 0;
 }
 
 .heatmap_legends_container:last-child {
-   margin-right: 0px;
+  margin-right: 0px;
 }
 </style>

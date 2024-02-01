@@ -84,6 +84,7 @@ import { SpinalGraphService } from 'spinal-env-viewer-graph-service'
 import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service";
 import NodeNotesMessage from "./NodeNotesMessage.vue";
 import NodeNotesCreate from './NodeNotesCreate.vue';
+import { EventBus } from "../../../../services/event"
 
 export default {
   name: "NodeNotes",
@@ -112,7 +113,7 @@ export default {
       {
         if (newProp.view.serverId != 0)
         {
-          await this.update(newProp.view.serverId);
+          // await this.update(newProp.view.serverId);
         }
         else
         {
@@ -124,16 +125,17 @@ export default {
   },
 
   mounted() {
-    this.update(this.Properties.view.serverId);
+    // this.update(this.Properties.view.serverId);
+    EventBus.$on("click-on_spinal-twin.Notes", () => this.update(this.Properties.view.serverId));
   },
 
   methods: {
     async update(id)
     {
-      console.debug("NOTE start")
+      // console.debug("NOTE start")
       // this.ctxNode = await SpinalGraphService.getInfo(id);
       this.ctxNode = FileSystem._objects[id];
-      console.debug("NOTE end")
+      // console.debug("NOTE end")
       this.notes = [];
       this.notes = await serviceDocumentation.getNotes(this.ctxNode);
       this.new_note = "";

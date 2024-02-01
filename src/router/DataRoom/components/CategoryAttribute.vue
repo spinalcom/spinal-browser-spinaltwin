@@ -27,14 +27,12 @@ with this file. If not, see
     <el-main>
       <el-collapse v-for="category in Categories" :key="category.nameCat">
         <el-collapse-item :name="category.name">
-        <template slot="title">
-        {{ category.name }}
-        </template>
+          <template slot="title">
+            {{ category.name }}
+          </template>
           <el-table :data="category.attributes">
-            <el-table-column label="Name" prop="label">
-            </el-table-column>
-            <el-table-column label="Value" prop="value">
-            </el-table-column>
+            <el-table-column label="Name" prop="label"> </el-table-column>
+            <el-table-column label="Value" prop="value"> </el-table-column>
           </el-table>
         </el-collapse-item>
       </el-collapse>
@@ -43,26 +41,20 @@ with this file. If not, see
 </template>
 
 <script>
-import { ViewManager } from "../../../services/ViewManager/ViewManager";
-// import { spinalBackEnd } from "../../../services/spinalBackend";
-import { EquipmentBack } from "../backend/EquipmentBack";
-import BackendInitializer from "../../../services/BackendInitializer";
-import { EventBus } from "../../../services/event";
-import { serviceDocumentation } from "spinal-env-viewer-plugin-documentation-service"
-import { FileSystem } from 'spinal-core-connectorjs_type'
-// import "../../../services/viewerUtils/eventsHandler/GlobalData";
+import { serviceDocumentation } from 'spinal-env-viewer-plugin-documentation-service';
+import { FileSystem } from 'spinal-core-connectorjs_type';
 
 export default {
-  name: "Explorer",
+  name: 'Explorer',
   props: {
     Properties: {
       required: true,
       type: Object,
-      validator: function(value) {
-        if (value.viewKey == "") {
-          return "danger";
+      validator: function (value) {
+        if (value.viewKey == '') {
+          return 'danger';
         }
-        return "success";
+        return 'success';
       },
     },
   },
@@ -72,92 +64,52 @@ export default {
       Categories: [],
     };
   },
-  watch:
-  {
-    /*async Properties ()
-    {
-        if (this.Properties.view.serverId != 0)
-        {
-          console.log("start");
-          this.ctxNode = await FileSystem._objects[this.Properties.view.serverId];
-          console.debug("File system :", FileSystem);
-          serviceDocumentation.getCategory(this.ctxNode).then((Categories) => {
-            console.debug("test");
-            this.Categories = [];
-            for(const category of Categories)
-            {
-              serviceDocumentation.getAttributesByCategory(this.ctxNode, category.nameCat).then((attributes) =>
-              {
-                let attrs = [];
-                for (const attribute of attributes)
-                {
-                  attrs.push({
-                    label: attribute.label._data,
-                    value: attribute.value._data
-                    });
-                }
-                let cat = {
-                  name: category.nameCat,
-                  attributes: attrs
-                }
-                this.Categories.push(cat);
-              })
-            }
-          })
-          console.debug("Wait ...", this.Categories);
-          console.debug("end");
-        }
-    }*/
-  },
   created: function () {
-    if (this.Properties.view.serverId != 0)
-        {
-          console.log("start");
-          this.ctxNode = FileSystem._objects[this.Properties.view.serverId];
-          console.debug("File system :", FileSystem);
-          serviceDocumentation.getCategory(this.ctxNode).then((Categories) => {
-            console.debug("test");
-            this.Categories = [];
-            for(const category of Categories)
-            {
-              serviceDocumentation.getAttributesByCategory(this.ctxNode, category.nameCat).then((attributes) =>
-              {
-                let attrs = [];
-                for (const attribute of attributes)
-                {
-                  attrs.push({
-                    label: attribute.label._data,
-                    value: attribute.value._data
-                    });
-                }
-                let cat = {
-                  name: category.nameCat,
-                  attributes: attrs
-                }
-                this.Categories.push(cat);
-              })
-            }
-          })
-          console.debug("Wait ...", this.Categories);
-          console.debug("end");
+    if (this.Properties.view.serverId != 0) {
+      this.ctxNode = FileSystem._objects[this.Properties.view.serverId];
+      serviceDocumentation.getCategory(this.ctxNode).then((Categories) => {
+        this.Categories = [];
+        for (const category of Categories) {
+          serviceDocumentation
+            .getAttributesByCategory(this.ctxNode, category.nameCat)
+            .then((attributes) => {
+              let attrs = [];
+              for (const attribute of attributes) {
+                attrs.push({
+                  label: attribute.label._data,
+                  value: attribute.value._data,
+                });
+              }
+              let cat = {
+                name: category.nameCat,
+                attributes: attrs,
+              };
+              this.Categories.push(cat);
+            });
         }
+      });
+    }
   },
   methods: {
     exportToExcel() {
-      this.$refs["Explorer-table"].exportToExcel();
+      this.$refs['Explorer-table'].exportToExcel();
     },
-    async getAttributes(category)
-    {
-      let result = await serviceDocumentation.getAttributesByCategory(this.ctxNode, category.nameCat);
-      console.debug("result : ", result[0]["value"])
+    async getAttributes(category) {
+      let result = await serviceDocumentation.getAttributesByCategory(
+        this.ctxNode,
+        category.nameCat
+      );
       return result;
     },
-    async addAttribute(category){
-      console.debug(category)
-      await serviceDocumentation.addAttributeByCategoryName(this.ctxNode, category.nameCat, "newAttribute", "newValue", "", "");
-    },
-    async debug(what) {
-      console.debug("Debugging", what);
+    async addAttribute(category) {
+      await serviceDocumentation.addAttributeByCategoryName(
+        this.ctxNode,
+        category.nameCat,
+        'newAttribute',
+        'newValue',
+        '',
+        ''
+      );
     },
   },
 };

@@ -24,12 +24,8 @@ with this file. If not, see
 
 <template>
   <el-container>
-    <el-header>
-      Component Header
-    </el-header>
-    <el-main>
-      Component Content
-    </el-main>
+    <el-header> Component Header </el-header>
+    <el-main> Component Content </el-main>
   </el-container>
 </template>
 
@@ -37,8 +33,8 @@ with this file. If not, see
 // imports
 
 export default {
-  name: "TabTemplate",
-  components: {  },
+  name: 'TabTemplate',
+  components: {},
   props: {
     Properties: {
       required: true,
@@ -52,23 +48,17 @@ export default {
     };
   },
 
-  watch:
-  {
-    Properties:
-    {
-      handler: async function(oldProp, newProp)
-      {
-        if (newProp.view.serverId != 0)
-        {
+  watch: {
+    Properties: {
+      handler: async function (oldProp, newProp) {
+        if (newProp.view.serverId != 0) {
           await this.update(newProp.view.serverId);
-        }
-        else
-        {
+        } else {
           this.ctxNode = false;
         }
       },
       deep: true,
-    }
+    },
   },
 
   async mounted() {
@@ -76,13 +66,8 @@ export default {
   },
 
   methods: {
-    async update(id)
-    {
+    async update(id) {
       // update tab infos from current node
-    },
-  
-    async debug(what) {
-      console.debug("Debugging", what);
     },
   },
 };

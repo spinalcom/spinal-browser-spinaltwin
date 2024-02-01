@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="250px" height="100px" viewBox="0 0 250 100">
+
+  
+
+  <!-- Dessine le contour de l'image -->
+  <rect x="0" y="0" width="300" height="100"
+        fill="#ffffff" stroke-width="2" />
+    <text x="10" y="90"
+        font-size="100px"
+        letter-spacing="7px"
+        font-weight= "1000"
+        opacity="1000">
+    25°C
+  </text>
+  
+</svg>

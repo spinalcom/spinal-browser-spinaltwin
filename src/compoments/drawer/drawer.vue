@@ -25,14 +25,14 @@ with this file. If not, see
 <template>
   <div class="drawer-content">
     <div class="drawer-main-header">
-      <div v-ripple
-           class="menu-icon-header-container"
-           @click="$emit('close')">
-        <i data-eva="arrow-ios-back-outline"
-           data-eva-animation="zoom"
-           data-eva-fill="#fff"
-           data-eva-height="24"
-           data-eva-width="24"></i>
+      <div v-ripple class="menu-icon-header-container" @click="$emit('close')">
+        <i
+          data-eva="arrow-ios-back-outline"
+          data-eva-animation="zoom"
+          data-eva-fill="#fff"
+          data-eva-height="24"
+          data-eva-width="24"
+        ></i>
       </div>
       <langSelector></langSelector>
     </div>
@@ -46,23 +46,22 @@ with this file. If not, see
              src="../../assets/imgs/spinaltwin_logo_fond_phto_RVB.png" />
       </a>
     </div> -->
-
   </div>
 </template>
 
 <script>
-import langSelector from "./langSelector/langSelector.vue";
-import appList from "./appList/appList.vue";
+import langSelector from './langSelector/langSelector.vue';
+import appList from './appList/appList.vue';
 
 export default {
   data() {
     return {};
   },
-  name: "drawer",
+  name: 'drawer',
   components: { langSelector, appList },
   mounted() {
     eva.replace();
-  }
+  },
 };
 </script>
 

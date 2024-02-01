@@ -24,33 +24,29 @@ with this file. If not, see
 
 <template>
   <el-row class="spinal-space-tableau-row">
-
-    <el-tabs class="tabs-container"
-             type="border-card">
-
+    <el-tabs class="tabs-container" type="border-card">
       <!-- ///////////////////////////////////////////////////////////////////////////////////-
        ////////////////////////////////// Équipements /////////////////////////////////////
      ////////////////////////////////////////////////////////////////////////////////////////-->
 
-      <el-tab-pane label="Equipement"
-                   class="spinal-space-tab-container">
-        <!-- <header-bar :header="getHeader()"
-                  :content="getRow()"
-                  :data="categories"></header-bar> -->
+      <el-tab-pane label="Equipement" class="spinal-space-tab-container">
         <div class="spinal-space-table-content spinal-scrollbar">
-          <el-table :data="equipement"
-                    border
-                    style="width: 100%"
-                    :header-row-style="{&quot;min-height&quot; : &quot;0px&quot;,&quot;height&quot; : &quot;50px&quot;, &quot;padding&quot; : &quot;0px&quot;}"
-                    :header-cell-style="{&quot;background-color&quot;: &quot;#f0f2f5&quot;}">
-            <el-table-column prop="name"
-                             :label="$t('SpaceManagement.Nom')">
+          <el-table
+            :data="equipement"
+            border
+            style="width: 100%"
+            :header-row-style="{
+              'min-height': '0px',
+              height: '50px',
+              padding: '0px',
+            }"
+            :header-cell-style="{ 'background-color': '#f0f2f5' }"
+          >
+            <el-table-column prop="name" :label="$t('SpaceManagement.Nom')">
             </el-table-column>
-            <el-table-column align="center"
-                             width="65">
+            <el-table-column align="center" width="65">
               <template>
-                <el-button icon="el-icon-arrow-right"
-                           circle></el-button>
+                <el-button icon="el-icon-arrow-right" circle></el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -60,94 +56,102 @@ with this file. If not, see
       <!-- ///////////////////////////////////////////////////////////////////////////////////-
        ////////////////////////////////// TICKET /////////////////////////////////////
      ////////////////////////////////////////////////////////////////////////////////////////-->
-      <el-tab-pane class="spinal-space-tab-container"
-                   label="Tickets">
+      <el-tab-pane class="spinal-space-tab-container" label="Tickets">
         <div class="barre">
-          <ticket-create v-bind:nodeId="nodeId"
-                         @reload="updateticket"></ticket-create>
-          <header-bar :header="ticketHeader"
-                      :content="ticketContent"
-                      :data="ticketData"></header-bar>
-
+          <ticket-create
+            v-bind:nodeId="nodeId"
+            @reload="updateticket"
+          ></ticket-create>
+          <header-bar
+            :header="ticketHeader"
+            :content="ticketContent"
+            :data="ticketData"
+          ></header-bar>
         </div>
         <div class="spinal-space-table-content spinal-scrollbar">
-
-          <el-table :data="tickets"
-                    border
-                    style="width: 100%"
-                    :header-row-style="{&quot;min-height&quot; : &quot;0px&quot;,&quot;height&quot; : &quot;50px&quot;, &quot;padding&quot; : &quot;0px&quot;}"
-                    :header-cell-style="{&quot;background-color&quot;: &quot;#f0f2f5&quot;}">
-            <el-table-column prop="name"
-                             :label="$t('SpaceManagement.Nom')"
-                             width="180">
+          <el-table
+            :data="tickets"
+            border
+            style="width: 100%"
+            :header-row-style="{
+              'min-height': '0px',
+              height: '50px',
+              padding: '0px',
+            }"
+            :header-cell-style="{ 'background-color': '#f0f2f5' }"
+          >
+            <el-table-column
+              prop="name"
+              :label="$t('SpaceManagement.Nom')"
+              width="180"
+            >
             </el-table-column>
 
-            <el-table-column prop="priority"
-                             label="Priorités"
-                             align="center">
+            <el-table-column prop="priority" label="Priorités" align="center">
             </el-table-column>
 
-            <el-table-column label="utilisateur"
-                             align="center">
-              <template slot-scope="scope">
-                <!-- {{ scope.row.user.name }} -->
-              </template>
+            <el-table-column label="utilisateur" align="center">
             </el-table-column>
 
-            <el-table-column label="Date de création"
-                             align="center">
+            <el-table-column label="Date de création" align="center">
               <template slot-scope="scope">
                 {{ scope.row.creationDate | formatDate }}
               </template>
             </el-table-column>
           </el-table>
         </div>
-
       </el-tab-pane>
       <!-- ///////////////////////////////////////////////////////////////////////////////////-
        ////////////////////////////////// DOCUMENTATION /////////////////////////////////////
      ////////////////////////////////////////////////////////////////////////////////////////-->
-      <el-tab-pane class="spinal-space-tab-container"
-                   label="Documentation">
+      <el-tab-pane class="spinal-space-tab-container" label="Documentation">
         <div class="barre">
-          <document-create v-bind:nodeId="nodeId"
-                           @reload="updateDocument"></document-create>
-          <header-bar :header="ticketHeader"
-                      :content="ticketContent"
-                      :data="ticketData"></header-bar>
+          <document-create
+            v-bind:nodeId="nodeId"
+            @reload="updateDocument"
+          ></document-create>
+          <header-bar
+            :header="ticketHeader"
+            :content="ticketContent"
+            :data="ticketData"
+          ></header-bar>
         </div>
         <div class="spinal-space-table-content spinal-scrollbar">
-          <el-table :data="documents"
-                    border
-                    style="width: 100%"
-                    :header-row-style="{&quot;min-height&quot; : &quot;0px&quot;,&quot;height&quot; : &quot;50px&quot;, &quot;padding&quot; : &quot;0px&quot;}"
-                    :header-cell-style="{&quot;background-color&quot;: &quot;#f0f2f5&quot;}">
+          <el-table
+            :data="documents"
+            border
+            style="width: 100%"
+            :header-row-style="{
+              'min-height': '0px',
+              height: '50px',
+              padding: '0px',
+            }"
+            :header-cell-style="{ 'background-color': '#f0f2f5' }"
+          >
             <el-table-column :label="$t('SpaceManagement.Nom')">
               <template slot-scope="scope">
                 {{ scope.row.name.get() }}
               </template>
             </el-table-column>
 
-            <el-table-column label=""
-                             width="70"
-                             align="center">
+            <el-table-column label="" width="70" align="center">
               <template slot-scope="scope">
-                <el-button v
-                           icon="el-icon-download"
-                           circle
-                           @click="exportFichier(scope.row)"></el-button>
+                <el-button
+                  v
+                  icon="el-icon-download"
+                  circle
+                  @click="exportFichier(scope.row)"
+                ></el-button>
               </template>
             </el-table-column>
           </el-table>
         </div>
-
       </el-tab-pane>
 
       <!-- ///////////////////////////////////////////////////////////////////////////////////-
        ////////////////////////////////// NOTATION //////////////////////////////////////////
      ////////////////////////////////////////////////////////////////////////////////////////-->
-      <el-tab-pane class="spinal-space-tab-container tab-class"
-                   label="Notes">
+      <el-tab-pane class="spinal-space-tab-container tab-class" label="Notes">
         <el-container class="container-class">
           <message-component :node-info="nodeInfo"></message-component>
         </el-container>
@@ -156,27 +160,32 @@ with this file. If not, see
       <!-- ///////////////////////////////////////////////////////////////////////////////////-
        ////////////////////////////////// Calendrier /////////////////////////////////////
      ////////////////////////////////////////////////////////////////////////////////////////-->
-      <el-tab-pane class="spinal-space-tab-container"
-                   label="Calendrier">
+      <el-tab-pane class="spinal-space-tab-container" label="Calendrier">
         <div class="barre">
-          <create-date v-bind:nodeId="nodeId"
-                       @reload="updateDate"></create-date>
-          <header-bar :header="ticketHeader"
-                      :content="ticketContent"
-                      :data="ticketData"></header-bar>
+          <create-date
+            v-bind:nodeId="nodeId"
+            @reload="updateDate"
+          ></create-date>
+          <header-bar
+            :header="ticketHeader"
+            :content="ticketContent"
+            :data="ticketData"
+          ></header-bar>
         </div>
 
         <div class="spinal-space-table-content spinal-scrollbar">
+          <vueCal
+            :events="calendrier"
+            :on-event-click="onEventClick"
+            v-if="!showDialog"
+          ></vueCal>
 
-          <vueCal :events="calendrier"
-                  :on-event-click="onEventClick"
-                  v-if="!showDialog"></vueCal>
-
-          <el-form v-if="showDialog"
-                   ref="form"
-                   :model="form"
-                   label-width="120px">
-
+          <el-form
+            v-if="showDialog"
+            ref="form"
+            :model="form"
+            label-width="120px"
+          >
             <el-form-item label="Name">
               <el-input v-model="form.name"></el-input>
             </el-form-item>
@@ -184,9 +193,11 @@ with this file. If not, see
             <el-form-item label="Start date">
               <div class="block">
                 <span class="demonstration"></span>
-                <el-date-picker v-model="form.value1"
-                                type="datetime"
-                                placeholder="Select date and time">
+                <el-date-picker
+                  v-model="form.value1"
+                  type="datetime"
+                  placeholder="Select date and time"
+                >
                 </el-date-picker>
               </div>
             </el-form-item>
@@ -194,24 +205,24 @@ with this file. If not, see
             <el-form-item label="End date">
               <div class="block">
                 <span class="demonstration"></span>
-                <el-date-picker v-model="form.value2"
-                                type="datetime"
-                                placeholder="Select date and time">
+                <el-date-picker
+                  v-model="form.value2"
+                  type="datetime"
+                  placeholder="Select date and time"
+                >
                 </el-date-picker>
               </div>
             </el-form-item>
             <!-- slot="footer" -->
             <el-form-item class="dialog-footer">
               <el-button @click="showDialog = false">Annuler</el-button>
-              <el-button type="danger"
-                         @click="deleteDate">Supprimer</el-button>
-              <el-button type="primary"
-                         @click="confirmDate">Confirmer</el-button>
+              <el-button type="danger" @click="deleteDate">Supprimer</el-button>
+              <el-button type="primary" @click="confirmDate"
+                >Confirmer</el-button
+              >
             </el-form-item>
           </el-form>
-
         </div>
-
       </el-tab-pane>
     </el-tabs>
   </el-row>
@@ -219,35 +230,36 @@ with this file. If not, see
 
 <script>
 // import SpinalBackend from "../../services/spinalBackend";
-import { serviceTicketPersonalized } from "spinal-service-ticket";
-import { FileExplorer } from "spinal-env-viewer-plugin-documentation-service/dist/Models/FileExplorer";
-import { SpinalGraphService } from "spinal-env-viewer-graph-service";
-import messageComponent from "./messageComponent.vue";
-import VueCal from "vue-cal";
-import "vue-cal/dist/vuecal.css";
-import { SpinalEventService } from "spinal-env-viewer-task-service";
-import GeographicContext from "spinal-env-viewer-context-geographic-service";
-import ticketcreate from "./ticketcreate.vue";
-import headerBarVue from "./headerBar.vue";
-import documentcreateVue from "./documentcreate.vue";
-import createDate from "./createDate.vue";
+import { serviceTicketPersonalized } from 'spinal-service-ticket';
+import { FileExplorer } from 'spinal-env-viewer-plugin-documentation-service/dist/Models/FileExplorer';
+import { SpinalGraphService } from 'spinal-env-viewer-graph-service';
+import messageComponent from './messageComponent.vue';
+import VueCal from 'vue-cal';
+import 'vue-cal/dist/vuecal.css';
+import { SpinalEventService } from 'spinal-env-viewer-task-service';
+import GeographicContext from 'spinal-env-viewer-context-geographic-service';
+import ticketcreate from './ticketcreate.vue';
+import headerBarVue from './headerBar.vue';
+import documentcreateVue from './documentcreate.vue';
+import createDate from './createDate.vue';
 export default {
   components: {
-    "message-component": messageComponent,
+    'message-component': messageComponent,
     VueCal,
-    "ticket-create": ticketcreate,
-    "header-bar": headerBarVue,
-    "document-create": documentcreateVue,
-    "create-date": createDate
+    'ticket-create': ticketcreate,
+    'header-bar': headerBarVue,
+    'document-create': documentcreateVue,
+    'create-date': createDate,
   },
   filters: {
-    formatDate: function(date) {
+    formatDate: function (date) {
       const newDate = new Date(date);
-      return `${newDate.getDate()}/${newDate.getMonth() +
-        1}/${newDate.getFullYear()}`;
-    }
+      return `${newDate.getDate()}/${
+        newDate.getMonth() + 1
+      }/${newDate.getFullYear()}`;
+    },
   },
-  props: ["nodeId"],
+  props: ['nodeId'],
   data() {
     return {
       tickets: [],
@@ -261,41 +273,26 @@ export default {
       selectedEvent: {},
       showDialog: false,
       form: {
-        name: "",
-        value1: "",
-        value2: ""
+        name: '',
+        value1: '',
+        value2: '',
       },
       EventInterface: {
         nodeId: this.nodeId,
-        startDate: "",
-        endDate: "",
-        name: ""
-      }
+        startDate: '',
+        endDate: '',
+        name: '',
+      },
     };
   },
   watch: {
     nodeId() {
       this.nodeInfo = {
-        selectedNode: SpinalGraphService.getRealNode(this.nodeId)
+        selectedNode: SpinalGraphService.getRealNode(this.nodeId),
       };
-    }
+    },
   },
   async mounted() {
-    // this.calendrier = await SpinalEventService.getEvents(this.nodeId).then(
-    //   rest => {
-    //     return rest.map(el => {
-    //       const event = el.get();
-    //       return {
-    //         title: event.name,
-    //         start: this._formatDate(event.startDate),
-    //         end: this._formatDate(event.endDate),
-    //         class: event.id
-    //         // backgroundColor : group && group.color
-    //       };
-    //     });
-    //   }
-    // );
-    // console.log("caaaaaaalendrier________", this.nodeId, this.calendrier);
     this.calendrier = await this.getEvents();
 
     this.tickets = await serviceTicketPersonalized.getTicketsFromNode(
@@ -303,17 +300,17 @@ export default {
     );
 
     this.ticketHeader = [
-      { key: "name", header: "name", width: 15 },
-      { key: "priority", header: "priority", width: 15 },
-      { key: "user", header: "utilisateur", width: 15 },
-      { key: "creationDate", header: "date de création", width: 15 }
+      { key: 'name', header: 'name', width: 15 },
+      { key: 'priority', header: 'priority', width: 15 },
+      { key: 'user', header: 'utilisateur', width: 15 },
+      { key: 'creationDate', header: 'date de création', width: 15 },
     ];
 
-    this.ticketContent = this.tickets.map(el => ({
+    this.ticketContent = this.tickets.map((el) => ({
       name: el.name,
       priority: el.priority,
-      user: el.user ? el.user.name : "unknow",
-      creationDate: this._formatDate(el.creationDate)
+      user: el.user ? el.user.name : 'unknow',
+      creationDate: this._formatDate(el.creationDate),
     }));
 
     const salle = SpinalGraphService.getInfo(this.nodeId).get();
@@ -322,7 +319,7 @@ export default {
      * Pas une bonne idée de parcourir tout le tableau pour la même salle
      * ajouter une condition dans headerBar.vue pour regler ce probleme
      */
-    this.ticketData = this.tickets.map(el => {
+    this.ticketData = this.tickets.map((el) => {
       el.rooms = [salle];
       return el;
     });
@@ -332,33 +329,33 @@ export default {
       this.nodeId,
       GeographicContext.constants.EQUIPMENT_RELATION
     );
-    this.equipement = varEquipement.map(item => {
+    this.equipement = varEquipement.map((item) => {
       return item.get();
     });
   },
   beforeDestroy() {},
   methods: {
     exportFichier(file) {
-      if (file._info.model_type.get() != "Directory") {
-        file._ptr.load(path => {
-          if (file._info.model_type.get() == "HttpPath") {
-            const element = document.createElement("a");
+      if (file._info.model_type.get() != 'Directory') {
+        file._ptr.load((path) => {
+          if (file._info.model_type.get() == 'HttpPath') {
+            const element = document.createElement('a');
             const _path =
               path.host.get() +
-              "/file/" +
+              '/file/' +
               encodeURIComponent(path.httpRootPath.get()) +
-              "/" +
+              '/' +
               encodeURIComponent(path.httpPath.get());
-            element.setAttribute("href", _path);
-            element.setAttribute("download", file.name.get());
-            element.style.display = "none";
+            element.setAttribute('href', _path);
+            element.setAttribute('download', file.name.get());
+            element.style.display = 'none';
             document.body.appendChild(element);
             element.click();
             document.body.removeChild(element);
           } else {
-            var element = document.createElement("a");
-            element.setAttribute("href", "/sceen/_?u=" + path._server_id);
-            element.setAttribute("download", file.name);
+            var element = document.createElement('a');
+            element.setAttribute('href', '/sceen/_?u=' + path._server_id);
+            element.setAttribute('download', file.name);
             element.click();
           }
         });
@@ -379,7 +376,7 @@ export default {
     getDocuments() {
       return FileExplorer.getDirectory(
         SpinalGraphService.getRealNode(this.nodeId)
-      ).then(directory => {
+      ).then((directory) => {
         let res = [];
         for (let index = 0; index < directory.length; index++) {
           const element = directory[index];
@@ -393,7 +390,7 @@ export default {
     },
     async getEvents() {
       const events = await SpinalEventService.getEvents(this.nodeId);
-      const promises = events.map(el => this._formatEvent(el.get()));
+      const promises = events.map((el) => this._formatEvent(el.get()));
       return Promise.all(promises);
     },
     _formatEvent(event) {
@@ -413,8 +410,9 @@ export default {
 
     _formatDate(argDate) {
       let date = new Date(argDate);
-      return `${date.getFullYear()}-${date.getMonth() +
-        1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}`;
+      return `${date.getFullYear()}-${
+        date.getMonth() + 1
+      }-${date.getDate()} ${date.getHours()}:${date.getMinutes()}`;
     },
 
     async updateDate() {
@@ -422,38 +420,29 @@ export default {
     },
     onEventClick(event, e) {
       this.selectedEvent = event;
-      console.log("idEventSelectid", this.selectedEvent.class, this.nodeId);
       this.showDialog = true;
-
       // Prevent navigating to narrower view (default vue-cal behavior).
       e.stopPropagation();
     },
     confirmDate() {
-      console.log("inside confirm date");
       this.showDialog = false;
       this.EventInterface.startDate = new Date(this.form.value1).getTime();
       this.EventInterface.endDate = new Date(this.form.value2).getTime();
       this.EventInterface.name = this.form.name;
-      console.log("llllkkkkkkkkkkk", this.form);
-      console.log("this.selectedEvent", this.selectedEvent);
       SpinalEventService.updateEvent(
         this.selectedEvent.class,
         this.EventInterface
-      ).then(async result => {
-        // console.log("result", result);
-
-        // this.$emit("reload");
+      ).then(async (result) => {
         this.calendrier = await this.getEvents();
       });
     },
     async deleteDate() {
-      console.log("lllllllllllllllllkk", this.selectedEvent.class);
       await SpinalEventService.removeEvent(this.selectedEvent.class);
 
       this.calendrier = await this.getEvents();
       this.showDialog = false;
-    }
-  }
+    },
+  },
 };
 </script>
 

@@ -24,61 +24,74 @@ with this file. If not, see
 
 <template>
   <el-row class="spinal-space-tableau-row">
-    <el-tabs class="tabs-container"
-             type="border-card">
+    <el-tabs class="tabs-container" type="border-card">
       <el-tab-pane label="Tableau" class="spinal-space-tab-container">
-        <header-bar :header="getHeader()"
-                    :content="getRow()"
-                    :data="contextLst"></header-bar>
+        <header-bar
+          :header="getHeader()"
+          :content="getRow()"
+          :data="contextLst"
+        ></header-bar>
         <div class="spinal-space-table-content spinal-scrollbar">
-          <el-table :data="contextLst"
-                    border
-                    style="width: 100%"
-                    :header-cell-style="{'background-color': '#f0f2f5'}">
+          <el-table
+            :data="contextLst"
+            border
+            style="width: 100%"
+            :header-cell-style="{ 'background-color': '#f0f2f5' }"
+          >
             <el-table-column :label="$t('SpaceManagement.Nom')">
               <template slot-scope="scope">
                 <div>
-                  <div v-if="scope.row.color"
-                       class="spinal-table-cell-color"
-                       :style="getColor(scope.row.color)"></div>
-                  <div> {{ scope.row.name }} </div>
+                  <div
+                    v-if="scope.row.color"
+                    class="spinal-table-cell-color"
+                    :style="getColor(scope.row.color)"
+                  ></div>
+                  <div class="word-break"> {{ scope.row.name }} </div>
                 </div>
               </template>
             </el-table-column>
 
-            <el-table-column prop="categories.length"
-                             :label="$t('SpaceManagement.Categories')"
-                             align="center">
+            <el-table-column
+              prop="categories.length"
+              :label="$t('SpaceManagement.Categories')"
+              align="center"
+            >
             </el-table-column>
 
-            <el-table-column :label="$t('SpaceManagement.Groupe')"
-                             align="center">
+            <el-table-column
+              :label="$t('SpaceManagement.Groupe')"
+              align="center"
+            >
               <template slot-scope="scope">
                 {{ getContextGroup(scope.row) }}
               </template>
             </el-table-column>
 
-            <el-table-column :label="$t('SpaceManagement.NombreTotalPiece')"
-                             align="center">
+            <el-table-column
+              :label="$t('SpaceManagement.NombreTotalPiece')"
+              align="center"
+            >
               <template slot-scope="scope">
                 {{ getRoomsCount(scope.row) }}
               </template>
             </el-table-column>
 
-            <el-table-column :label="$t('SpaceManagement.SurfaceTotale')"
-                             align="center">
+            <el-table-column
+              :label="$t('SpaceManagement.SurfaceTotale') + ' (m²)'"
+            >
+              align="center">
               <template slot-scope="scope">
-                {{ getSurfaceTotale(scope.row) }} m²
+                {{ getSurfaceTotale(scope.row) }}
               </template>
             </el-table-column>
 
-            <el-table-column label=""
-                             width="65"
-                             align="center">
+            <el-table-column label="" width="65" align="center">
               <template slot-scope="scope">
-                <el-button icon="el-icon-arrow-right"
-                           circle
-                           @click="SelectContext(scope.row)"></el-button>
+                <el-button
+                  icon="el-icon-arrow-right"
+                  circle
+                  @click="SelectContext(scope.row)"
+                ></el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -89,27 +102,25 @@ with this file. If not, see
 </template>
 
 <script>
-import SpinalBackend from "../../services/spinalBackend";
-import headerBar from "./component/headerBar.vue";
+import SpinalBackend from '../../services/spinalBackend';
+import headerBar from './component/headerBar.vue';
 
 export default {
   components: {
-    "header-bar": headerBar
+    'header-bar': headerBar,
   },
-  props: ["contextLst"],
+  props: ['contextLst'],
   data() {
     return {};
   },
   watch: {
-    contextLst() {
-      console.log("context", this.contextLst);
-    }
+    contextLst() {},
   },
   async mounted() {},
   beforeDestroy() {},
   methods: {
     getColor(color) {
-      return { backgroundColor: color[0] === "#" ? color : `#${color}` };
+      return { backgroundColor: color[0] === '#' ? color : `#${color}` };
     },
     getRoomsCount(context) {
       return SpinalBackend.spaceBack.getContextRoomCount(context);
@@ -128,65 +139,64 @@ export default {
     },
 
     SelectContext(context) {
-      console.log(context)
-      this.$emit("select", context);
+      this.$emit('select', context);
     },
     async SeeAll() {
-      let promises = this.data.map(async el => {
+      let promises = this.data.map(async (el) => {
         return {
           id: el.id,
           ids: await this.getAllBimObjects(el.id),
-          color: el.color
+          color: el.color,
         };
       });
 
       let allBimObjects = await Promise.all(promises);
 
-      EventBus.$emit("seeAll", allBimObjects);
+      EventBus.$emit('seeAll', allBimObjects);
     },
 
     getHeader() {
       return [
         {
-          key: "name",
-          header: "name",
-          width: 10
+          key: 'name',
+          header: 'name',
+          width: 10,
         },
         {
-          key: "categories",
-          header: "Categories",
-          width: 10
+          key: 'categories',
+          header: 'Categories',
+          width: 10,
         },
         {
-          key: "groups",
-          header: "Groupes",
-          width: 10
+          key: 'groups',
+          header: 'Groupes',
+          width: 10,
         },
         {
-          key: "rooms",
-          header: "Nombre de pièces",
-          width: 10
+          key: 'rooms',
+          header: 'Nombre de pièces',
+          width: 10,
         },
         {
-          key: "surface",
-          header: "Surface Totale",
-          width: 10
-        }
+          key: 'surface',
+          header: 'Surface Totale',
+          width: 10,
+        },
       ];
     },
 
     getRow() {
-      return this.contextLst.map(el => {
+      return this.contextLst.map((el) => {
         return {
           name: el.name,
           categories: el.categories.length,
           groups: this.getContextGroup(el),
           rooms: this.getRoomsCount(el),
-          surface: this.getSurfaceTotale(el)
+          surface: this.getSurfaceTotale(el),
         };
       });
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -200,5 +210,8 @@ export default {
 .el-icon-download {
   width: 30px;
 }
-</style>
 
+.word-break {
+  word-break: normal;
+}
+</style>

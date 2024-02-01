@@ -29,6 +29,7 @@ with this file. If not, see
         {{ $t('spinal-twin.EventAdd') }}
       </h2>
     </el-header>
+
     <el-main>
       <el-cascader-panel
         v-on:change="cascaderSelection"
@@ -70,20 +71,25 @@ with this file. If not, see
         </el-form-item>
       </el-form>
     </el-main>
+
     <el-footer>
-      <el-button @click="cancel"> {{ $t('Cancel') }} </el-button>
-      <el-button type="primary" @click="confirmDate"> {{ $t('Confirm') }} </el-button>
+      <el-button @click="cancel">
+        {{ $t('Cancel') }}
+      </el-button>
+      <el-button type="primary" @click="confirmDate">
+        {{ $t('Confirm') }}
+      </el-button>
     </el-footer>
   </el-container>
 </template>
 
 <script>
 // import SpinalBackend from "../../services/spinalBackend";
-import { SpinalEventService } from "spinal-env-viewer-task-service";
-import { FileSystem } from "spinal-core-connectorjs_type";
+import { SpinalEventService } from 'spinal-env-viewer-task-service';
+import { FileSystem } from 'spinal-core-connectorjs_type';
 
 export default {
-  name: "NodeCalendarEventCreate",
+  name: 'NodeCalendarEventCreate',
   components: {},
   props: {
     nodeId: {
@@ -100,18 +106,18 @@ export default {
       dialogFormVisible: false,
       isFormDisable: true,
       form: {
-        name: "",
-        value1: "",
-        value2: "",
+        name: '',
+        value1: '',
+        value2: '',
       },
       EventInterface: {
-        contextId: "",
-        groupId: "",
-        categoryId: "",
+        contextId: '',
+        groupId: '',
+        categoryId: '',
         nodeId: FileSystem._objects[this.nodeId].getId().get(),
-        startDate: "",
-        endDate: "",
-        name: "",
+        startDate: '',
+        endDate: '',
+        name: '',
       },
       props: {
         lazy: true,
@@ -147,16 +153,6 @@ export default {
             });
             resolve(res);
           }
-          // const { level } = node;
-          // setTimeout(() => {
-          //   const nodes = Array.from({ length: level + 1 }).map(item => ({
-          //     value: ++id,
-          //     label: `Option - ${id}`,
-          //     leaf: level >= 2
-          //   }));
-          //   // Appelez le callback `resolve` pour renvoyer les données des noeuds enfants et indiquer que le chargement est terminé.
-          //   resolve(nodes);
-          // }, 1000);
         },
       },
     };
@@ -174,7 +170,6 @@ export default {
       this.EventInterface.startDate = new Date(this.form.value1).getTime();
       this.EventInterface.endDate = new Date(this.form.value2).getTime();
       this.EventInterface.name = this.form.name;
-      console.log("EventInterface", this.EventInterface);
       SpinalEventService.createEvent(
         this.EventInterface.contextId,
         this.EventInterface.groupId,
@@ -182,16 +177,13 @@ export default {
         this.EventInterface,
         {}
       ).then((result) => {
-        console.log("result", result);
-
-        this.$emit("reload");
+        this.$emit('reload');
       });
     },
 
     cancel() {
-      this.$emit("cancel");
-    }
+      this.$emit('cancel');
+    },
   },
 };
 </script>
-

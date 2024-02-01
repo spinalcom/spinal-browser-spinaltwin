@@ -24,59 +24,54 @@ with this file. If not, see
 
 <template>
   <div>
-    <el-button icon="el-icon-circle-plus-outline"
-               circle
-               @click="addPJ">
+    <el-button icon="el-icon-circle-plus-outline" circle @click="addPJ">
     </el-button>
-
   </div>
 </template>
 
 <script>
-import { FileExplorer } from "spinal-env-viewer-plugin-documentation-service/dist/Models/FileExplorer";
-import { SpinalGraphService } from "spinal-env-viewer-graph-service";
+import { FileExplorer } from 'spinal-env-viewer-plugin-documentation-service/dist/Models/FileExplorer';
+import { SpinalGraphService } from 'spinal-env-viewer-graph-service';
 
 export default {
   data() {
     return {
       contextLst: [],
-      documents: []
+      documents: [],
     };
   },
   components: {},
-  props: ["nodeId"],
+  props: ['nodeId'],
   methods: {
     addPJ() {
       const maxSize = 25000000;
-      const input = document.createElement("input");
-      input.type = "file";
+      const input = document.createElement('input');
+      input.type = 'file';
       input.multiple = true;
       input.click();
       input.addEventListener(
-        "change",
-        event => {
+        'change',
+        (event) => {
           const files = event.target.files;
           let filelist = [];
           for (const file of files) {
             filelist.push(file);
           }
           // filelist.push(...this.messages.pj);
-          const sizes = filelist.map(el => el.size);
+          const sizes = filelist.map((el) => el.size);
           const filesSize = sizes.reduce((a, b) => a + b);
           if (filesSize > maxSize) {
             alert(
-              "The selected file(s) is too large. The maximum size must not exceed 25 MB"
+              'The selected file(s) is too large. The maximum size must not exceed 25 MB'
             );
             return;
           }
-          // this.messages.pj = filelist;
-          console.log(filelist);
           FileExplorer.addFileUpload(this.documents, filelist);
-          this.$emit("reload");
+          this.$emit('reload');
         },
         false
       );
-    }
+    },
   },
   async mounted() {
     this.documents = await FileExplorer.createDirectory(
@@ -85,7 +80,6 @@ export default {
   },
 
   watch: {},
-  beforeDestroy() {}
+  beforeDestroy() {},
 };
 </script>
-

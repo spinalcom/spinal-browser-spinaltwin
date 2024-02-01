@@ -22,9 +22,9 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
-import  './eventsHandler/DataRoom'
-import  './eventsHandler/GlobalData'
-import  './eventsHandler/Space'
-import  './eventsHandler/Insight'
-import  './eventsHandler/ViewerEvents'
-import  './eventsHandler/TicketViewerEvents'
+import './eventsHandler/DataRoom';
+import './eventsHandler/GlobalData';
+import './eventsHandler/Insight';
+import './eventsHandler/Space';
+import './eventsHandler/TicketViewerEvents';
+import './eventsHandler/ViewerEvents';

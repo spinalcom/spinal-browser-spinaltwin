@@ -26,7 +26,7 @@
 // but you can modify the last line of this function to pass in a different object or method name
 // if you want to put them in a different namespace and those will be used instead of
 // window.docReady(...)
-var readyList = [];
+var readyList: any[] = [];
 var readyFired = false;
 var readyEventHandlersInstalled = false;
 
@@ -51,14 +51,14 @@ function ready() {
 }
 
 function readyStateChange() {
-  if (document.readyState === "complete") {
+  if (document.readyState === 'complete') {
     ready();
   }
 }
 
 function DocumentReady(callback, context?) {
-  if (typeof callback !== "function") {
-    throw new TypeError("callback for docReady(fn) must be a function");
+  if (typeof callback !== 'function') {
+    throw new TypeError('callback for docReady(fn) must be a function');
   }
   // if ready has already fired, then just schedule the callback
   // to fire asynchronously, but right away
@@ -71,30 +71,30 @@ function DocumentReady(callback, context?) {
     // add the function and context to the list
     readyList.push({
       fn: callback,
-      ctx: context
+      ctx: context,
     });
   }
   // if document already ready to go, schedule the ready function to run
   // IE only safe when readyState is "complete", others safe when readyState is "interactive"
   if (
-    document.readyState === "complete" ||
-      // @ts-ignore
-      (!document.attachEvent && document.readyState === "interactive")
+    document.readyState === 'complete' ||
+    // @ts-ignore
+    (!document.attachEvent && document.readyState === 'interactive')
   ) {
     setTimeout(ready, 1);
   } else if (!readyEventHandlersInstalled) {
     // otherwise if we don't have event handlers installed, install them
     if (document.addEventListener) {
       // first choice is DOMContentLoaded event
-      document.addEventListener("DOMContentLoaded", ready, false);
+      document.addEventListener('DOMContentLoaded', ready, false);
       // backup is window load event
-      window.addEventListener("load", ready, false);
+      window.addEventListener('load', ready, false);
     } else {
       // must be IE
       // @ts-ignore
-      document.attachEvent("onreadystatechange", readyStateChange);
+      document.attachEvent('onreadystatechange', readyStateChange);
       // @ts-ignore
-      window.attachEvent("onload", ready);
+      window.attachEvent('onload', ready);
     }
     readyEventHandlersInstalled = true;
   }

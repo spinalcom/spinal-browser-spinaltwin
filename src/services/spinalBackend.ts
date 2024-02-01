@@ -22,18 +22,18 @@
  * <http://resources.spinalcom.com/licenses.pdf>.
  */
 
-import { spinalIO } from './spinalIO';
+import q from 'q';
 import { SpinalGraph } from 'spinal-model-graph';
-import BackEndSpatial from './backend/spatial';
-import BackEndViewer from './backend/viewer';
-import BackEndSpace from "./backend/space";
 import BackEndDataRoom from './backend/DataRoom';
+import BackEndHeatmap from './backend/heatmap';
+import BackEndSpace from './backend/space';
+import BackEndSpatial from './backend/spatial';
 import BackEndTicket from './backend/ticket';
-import BackEndHeatmap from "./backend/heatmap";
-import q from "q";
+import BackEndViewer from './backend/viewer';
+import { spinalIO } from './spinalIO';
 
 class SpinalBackEnd {
-  graph: SpinalGraph<any> = null;
+  graph: SpinalGraph<any>;
   spatialBack = new BackEndSpatial();
   viewerBack = new BackEndViewer();
   spaceBack = new BackEndSpace();
@@ -42,8 +42,7 @@ class SpinalBackEnd {
   heatmapBack = new BackEndHeatmap();
   initDefer = q.defer();
 
-  constructor() {
-  }
+  constructor() {}
 
   async init() {
     try {
@@ -64,14 +63,20 @@ class SpinalBackEnd {
 
   async getGraph() {
     const rootModel = await spinalIO.getModel();
-    if (rootModel instanceof SpinalGraph) { this.graph = rootModel; }
-    else if (typeof rootModel.graph !== 'undefined') { this.graph = rootModel.graph; }
+    if (rootModel instanceof SpinalGraph) {
+      this.graph = rootModel;
+      // handle old Digital Twin
+      // @ts-ignore
+    } else if (typeof rootModel.graph !== 'undefined') {
+      // @ts-ignore
+      this.graph = rootModel.graph;
+    }
     return this.graph;
   }
+
   waitInit() {
     return this.initDefer.promise;
   }
-
 }
 
 const spinalBackEnd = new SpinalBackEnd();
